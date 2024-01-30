@@ -5,14 +5,10 @@ import { IconType } from "react-icons";
 
 interface Props extends React.ComponentPropsWithoutRef<"input"> {
   label?: string;
-  children?: ReactNode;
 }
 
 export default function Input({ label, children, ...props }: Props) {
   const id = props.id;
-  const classes = classNames({
-    [styles.input]: true,
-  });
 
   return (
     <div className={styles.container}>
@@ -22,10 +18,7 @@ export default function Input({ label, children, ...props }: Props) {
         </label>
       )}
 
-      <div className={styles.inputBox}>
-        <input className={classes} type="text" {...props} />
-        {children && <div className={styles.child}>{children}</div>}
-      </div>
+      <input className={styles.input} type="text" {...props} />
     </div>
   );
 }
