@@ -2,25 +2,24 @@
 
 import "./globals.css";
 import Input from "@/components/Input";
-import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import InputContainer from "@/components/InputContainer";
+import { useState } from "react";
 
 export default function Home() {
   const [texto, setTexto] = useState<string>("");
 
   return (
     <>
-      <Input
-        label="Label"
-        id="input"
-        value={texto}
-        onChange={(e) => {
-          setTexto(e.target.value);
-        }}
-        placeholder="AAAA"
-        type="number"
-      >
-      </Input>
+      <InputContainer id="input" label="Label">
+        <Input
+          id="input"
+          placeholder="aaa"
+          value={texto}
+          onChange={(e) => {
+            setTexto(e.target.value);
+          }}
+        />
+      </InputContainer>
     </>
   );
 }
