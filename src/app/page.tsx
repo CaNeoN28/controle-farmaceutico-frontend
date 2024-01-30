@@ -7,6 +7,7 @@ export default function Home() {
   return (
     <>
       <Botao
+        fullWidth
         onClick={(e) => {
           e.preventDefault();
           console.log("Clicou primário");
@@ -15,6 +16,7 @@ export default function Home() {
         Botão
       </Botao>
       <Botao
+        fullWidth
         secundario
         onClick={(e) => {
           e.preventDefault();
