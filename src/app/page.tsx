@@ -15,13 +15,18 @@ export default function Home() {
   return (
     <>
       <InputContainer id="input" label="Label">
-        <InputImagem multiple onChange={(e) => {
-          const imagem = e.target.files
+        <InputImagem
+          id="input"
+          titulo="Fazer envio"
+          multiple
+          onChange={(e) => {
+            const imagem = e.target.files;
 
-          if(imagem){
-            setImagem(imagem)
-          }
-        }}/>
+            if (imagem) {
+              setImagem(imagem);
+            }
+          }}
+        />
       </InputContainer>
     </>
   );
