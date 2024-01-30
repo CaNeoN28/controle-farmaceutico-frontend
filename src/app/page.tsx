@@ -1,25 +1,27 @@
 "use client";
 
 import "./globals.css";
-import Input from "@/components/Input";
 import InputContainer from "@/components/InputContainer";
-import { useState } from "react";
+import InputImagem from "@/components/InputImagem";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [texto, setTexto] = useState<string>("DESATIVADO");
+  const [imagem, setImagem] = useState<FileList>();
+
+  useEffect(() => {
+    console.log(imagem);
+  }, [imagem]);
 
   return (
     <>
       <InputContainer id="input" label="Label">
-        <Input
-          id="input"
-          placeholder="aaa"
-          value={texto}
-          disabled
-          onChange={(e) => {
-            setTexto(e.target.value);
-          }}
-        />
+        <InputImagem multiple onChange={(e) => {
+          const imagem = e.target.files
+
+          if(imagem){
+            setImagem(imagem)
+          }
+        }}/>
       </InputContainer>
     </>
   );
