@@ -2,13 +2,14 @@
 
 import Botao from "@/components/Botao";
 import "./globals.css";
+import { FaPencilAlt } from "react-icons/fa";
 
 export default function Home() {
   return (
     <>
       <Botao>
-        <span>Botão</span>
-        
+        Botão
+        <FaPencilAlt/>
       </Botao>
     </>
   );

@@ -5,10 +5,17 @@ import styles from "./Botao.module.scss";
 interface Props extends React.ComponentPropsWithoutRef<"button"> {
   secundario?: boolean;
   fullWidth?: boolean;
+  icone?: JSX.Element;
   children: ReactNode;
 }
 
-export default function Botao({ secundario, fullWidth, children, ...props }: Props) {
+export default function Botao({
+  secundario,
+  fullWidth,
+  children,
+  icone,
+  ...props
+}: Props) {
   const classes = classnames({
     [styles.botao]: true,
     [styles.secundario]: secundario,
