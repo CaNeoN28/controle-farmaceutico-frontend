@@ -12,6 +12,7 @@ export default function Botao({
   const classes = classnames({
     [styles.botao]: true,
     [styles.secundario]: secundario,
+    "box-shadow": true,
   });
 
   return <button className={classes}>{children}</button>;
