@@ -8,11 +8,15 @@
   color: var(--white);
 
   border: 1px solid var(--primary-color);
+
+  font-weight: bold;
 }
 
 .secundario {
   background-color: var(--white);
   color: var(--primary-color);
+
+  font-weight: normal;
 }
 
 .botao:hover {
