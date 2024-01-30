@@ -6,7 +6,7 @@ import Input from "@/components/Input";
 export default function Home() {
   return (
     <>
-      <Input placeholder="AAAA"/>
+      <Input label="Label" id="input" placeholder="AAAA"/>
     </>
   );
 }
