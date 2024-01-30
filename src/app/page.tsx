@@ -1,13 +1,26 @@
+"use client";
+
 import Botao from "@/components/Botao";
-import "./globals.css"
+import "./globals.css";
 
 export default function Home() {
   return (
     <>
-      <Botao>
+      <Botao
+        onClick={(e) => {
+          e.preventDefault();
+          console.log("Clicou primário");
+        }}
+      >
         Botão
       </Botao>
-      <Botao secundario>
+      <Botao
+        secundario
+        onClick={(e) => {
+          e.preventDefault();
+          console.log("Clicou secundário");
+        }}
+      >
         Botão
       </Botao>
     </>
