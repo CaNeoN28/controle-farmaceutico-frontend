@@ -1,0 +1,42 @@
+.botao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 40px;
+  padding: 8px 24px;
+  font-size: 14px;
+  border-radius: 8px;
+  gap: 8px;
+
+  background-color: var(--primary-color);
+  color: var(--white);
+
+  border: 1px solid var(--primary-color);
+
+  font-weight: bold;
+}
+
+.botao > svg {
+  height: 20px;
+  width: 20px;
+}
+
+.secundario {
+  background-color: var(--white);
+  color: var(--primary-color);
+
+  font-weight: normal;
+}
+
+.botao:hover {
+  cursor: pointer;
+
+  filter: brightness(95%);
+}
+
+.botao:active {
+  box-shadow: none;
+
+  transform: translateY(1px);
+}
