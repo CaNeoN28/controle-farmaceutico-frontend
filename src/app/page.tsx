@@ -2,14 +2,14 @@
 
 import Botao from "@/components/Botao";
 import "./globals.css";
-import { AiFillEdit } from "react-icons/ai";
+import { FaPlus } from "react-icons/fa";
 
 export default function Home() {
   return (
     <>
       <Botao>
         Botão
-        <AiFillEdit/>
+        <FaPlus/>
       </Botao>
     </>
   );
