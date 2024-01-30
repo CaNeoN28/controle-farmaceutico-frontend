@@ -1,16 +1,12 @@
 "use client";
 
-import Botao from "@/components/Botao";
 import "./globals.css";
-import { FaPlus } from "react-icons/fa";
+import Input from "@/components/Input";
 
 export default function Home() {
   return (
     <>
-      <Botao tamanho={180}>
-        Botão
-        <FaPlus/>
-      </Botao>
+      <Input/>
     </>
   );
 }
