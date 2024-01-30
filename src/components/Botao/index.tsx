@@ -5,15 +5,15 @@ import styles from "./Botao.module.scss";
 interface Props extends React.ComponentPropsWithoutRef<"button"> {
   secundario?: boolean;
   fullWidth?: boolean;
-  icone?: JSX.Element;
+  tamanho?: number;
   children: ReactNode;
 }
 
 export default function Botao({
   secundario,
   fullWidth,
+  tamanho,
   children,
-  icone,
   ...props
 }: Props) {
   const classes = classnames({
@@ -23,8 +23,16 @@ export default function Botao({
     "box-shadow": true,
   });
 
+  const getTamanho = () => {
+    if (tamanho) {
+      return { width: tamanho };
+    }
+
+    return {};
+  };
+
   return (
-    <button className={classes} {...props}>
+    <button className={classes} style={{ ...getTamanho() }} {...props}>
       {children}
     </button>
   );

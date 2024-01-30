@@ -7,7 +7,7 @@ import { FaPlus } from "react-icons/fa";
 export default function Home() {
   return (
     <>
-      <Botao fullWidth>
+      <Botao tamanho={180}>
         Botão
         <FaPlus/>
       </Botao>
