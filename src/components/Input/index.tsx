@@ -1,9 +1,17 @@
 import React from "react";
+import classNames from "classnames";
+import styles from "./Input.module.scss";
 
 interface Props extends React.ComponentPropsWithoutRef<"input"> {}
 
 export default function Input({ ...props }: Props) {
-  return <div>
-    <input type="text" {...props}/>
-  </div>;
+  const classes = classNames({
+    [styles.input]: true,
+  });
+  
+  return (
+    <div>
+      <input className={classes} type="text" {...props} />
+    </div>
+  );
 }
