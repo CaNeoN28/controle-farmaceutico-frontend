@@ -7,6 +7,9 @@ export default function Home() {
       <Botao>
         Botão
       </Botao>
+      <Botao secundario>
+        Botão
+      </Botao>
     </>
   );
 }
