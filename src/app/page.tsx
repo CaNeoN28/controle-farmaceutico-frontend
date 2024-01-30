@@ -1,7 +1,11 @@
+import Botao from "@/components/Botao";
+
 export default function Home() {
   return (
     <>
-      <span>Olá mundo</span>
+      <Botao>
+        Botão
+      </Botao>
     </>
   );
 }
