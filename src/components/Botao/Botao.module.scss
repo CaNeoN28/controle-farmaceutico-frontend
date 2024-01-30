@@ -20,3 +20,9 @@
 
   filter: brightness(95%);
 }
+
+.botao:active {
+  box-shadow: none;
+
+  transform: translateY(1px);
+}
