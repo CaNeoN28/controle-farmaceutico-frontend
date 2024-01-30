@@ -6,7 +6,7 @@ import InputContainer from "@/components/InputContainer";
 import { useState } from "react";
 
 export default function Home() {
-  const [texto, setTexto] = useState<string>("");
+  const [texto, setTexto] = useState<string>("DESATIVADO");
 
   return (
     <>
@@ -15,6 +15,7 @@ export default function Home() {
           id="input"
           placeholder="aaa"
           value={texto}
+          disabled
           onChange={(e) => {
             setTexto(e.target.value);
           }}
