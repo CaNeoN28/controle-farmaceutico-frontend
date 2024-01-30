@@ -1,4 +1,4 @@
-.inputBox {
+.container {
   display: flex;
   flex-direction: column;
 
@@ -9,17 +9,31 @@
   padding-left: 8px;
 }
 
-.input {
+.inputBox {
   min-height: 40px;
-  padding: 8px;
   border-radius: 8px;
+  width: 100%;
 
-  outline: none;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
 
-  border-color: var(--gray);
+  border: 1px solid var(--gray);
   color: var(--gray);
+}
+
+.input {
+  outline: none;
+  border: none;
+
+  padding: 12px 8px;
+  width: 100%;
 }
 
 .input::placeholder {
   color: var(--light-gray);
+}
+
+.child {
+  color: var(--primary-color);
 }
