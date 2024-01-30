@@ -16,6 +16,11 @@
   font-weight: bold;
 }
 
+.botao > svg {
+  height: 24px;
+  width: 24px;
+}
+
 .secundario {
   background-color: var(--white);
   color: var(--primary-color);

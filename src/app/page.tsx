@@ -2,14 +2,14 @@
 
 import Botao from "@/components/Botao";
 import "./globals.css";
-import { FaPencilAlt } from "react-icons/fa";
+import { AiFillEdit } from "react-icons/ai";
 
 export default function Home() {
   return (
     <>
       <Botao>
         Botão
-        <FaPencilAlt/>
+        <AiFillEdit/>
       </Botao>
     </>
   );
