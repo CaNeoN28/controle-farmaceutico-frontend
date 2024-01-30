@@ -6,11 +6,7 @@ import InputImagem from "@/components/InputImagem";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [imagem, setImagem] = useState<FileList>();
-
-  useEffect(() => {
-    console.log(imagem);
-  }, [imagem]);
+  const [imagens, setImagens] = useState<FileList>();
 
   return (
     <>
@@ -20,10 +16,10 @@ export default function Home() {
           titulo="Fazer envio"
           multiple
           onChange={(e) => {
-            const imagem = e.target.files;
+            const arquivos = e.target.files;
 
-            if (imagem) {
-              setImagem(imagem);
+            if (arquivos) {
+              setImagens(arquivos);
             }
           }}
         />
