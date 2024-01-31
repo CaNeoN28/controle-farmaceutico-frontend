@@ -24,6 +24,7 @@
   background: none;
   border: none;
   position: relative;
+  cursor: pointer;
 
   min-width: 40px;
   font-size: 24px;
@@ -32,25 +33,31 @@
 }
 
 @keyframes ativar {
-    0% {
-        opacity: 0;
-      } 30% {
-        opacity: 0.6;
-      } 60% {
-        opacity: 0.9;
-      } 100% {
-        opacity: 1;
-      }
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes inativar {
   0% {
     opacity: 1;
-  } 30% {
+  }
+  30% {
     opacity: 0.4;
-  } 60% {
+  }
+  60% {
     opacity: 0.1;
-  } 100% {
+  }
+  100% {
     opacity: 0;
   }
 }
