@@ -1,0 +1,81 @@
+.container {
+  display: flex;
+  overflow: hidden;
+
+  border-radius: 8px;
+
+  border: 1px solid var(--gray);
+  background-color: var(--white);
+}
+
+.input {
+  border: none;
+  outline: none;
+  background: none;
+
+  padding: 12px 8px;
+  min-height: 40px;
+  width: 100%;
+
+  color: var(--gray);
+}
+
+.button {
+  background: none;
+  border: none;
+  position: relative;
+  cursor: pointer;
+
+  min-width: 40px;
+  font-size: 24px;
+
+  color: var(--primary-color);
+}
+
+@keyframes ativar {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes inativar {
+  0% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.4;
+  }
+  60% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.icone {
+  position: absolute;
+
+  right: 8px;
+  bottom: 8px;
+
+  opacity: 0;
+}
+
+.ativo {
+  animation: ativar 100ms;
+  opacity: 1;
+}
+
+.inativo {
+  animation: inativar 100ms;
+}

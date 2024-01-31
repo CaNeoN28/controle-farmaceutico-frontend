@@ -5,7 +5,7 @@ import styles from "./Botao.module.scss";
 interface Props extends React.ComponentPropsWithoutRef<"button"> {
   secundario?: boolean;
   fullWidth?: boolean;
-  tamanho?: number;
+  tamanho?: number | string;
   children: ReactNode;
 }
 

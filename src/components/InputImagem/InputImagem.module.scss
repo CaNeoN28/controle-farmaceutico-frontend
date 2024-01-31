@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.label {
+  padding: 8px;
+  min-height: 40px;
+  border-radius: 8px;
+  width: 100%;
+
+  border: 1px solid var(--primary-color);
+
+  color: var(--primary-color);
+  background-color: var(--white);
+}
+
+.label:hover {
+  cursor: pointer;
+  filter: brightness(0.95);
+}
+
+.legenda {
+  font-size: 14px;
+}
+
+.input {
+  display: none;
+}

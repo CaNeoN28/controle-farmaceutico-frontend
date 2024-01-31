@@ -1,0 +1,21 @@
+.input {
+  padding: 12px 8px;
+  min-height: 40px;
+  border-radius: 8px;
+  width: 100%;
+
+  outline: none;
+
+  background-color: var(--white);
+  border: 1px solid var(--gray);
+  color: var(--gray);
+}
+
+.input::placeholder {
+  color: var(--light-gray);
+}
+
+.input:disabled {
+  background-color: var(--light-gray);
+  color: var(--gray);
+}
