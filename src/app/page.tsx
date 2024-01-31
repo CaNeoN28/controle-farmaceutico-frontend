@@ -3,10 +3,11 @@
 import Input from "@/components/Input";
 import "./globals.css";
 import InputContainer from "@/components/InputContainer";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Botao from "@/components/Botao";
 import InputSenha from "@/components/InputSenha";
+import InputMascara from "@/components/InputMascara/indext";
 
 export default function Home() {
   const {
@@ -37,7 +38,7 @@ export default function Home() {
               minLength: { message: "Mínimo 3", value: 3 },
             }}
             render={({ field }) => (
-              <InputSenha {...{...field, ref: null}}/>
+              <InputMascara mask="aaa.999.999" {...{...field, ref: null}}/>
             )}
           />
         </InputContainer>
