@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  overflow: hidden;
+
+  border-radius: 8px;
+
+  border: 1px solid var(--gray);
+  background-color: var(--white);
+}
+
+.input {
+  border: none;
+  outline: none;
+  background: none;
+
+  padding: 12px 8px;
+  min-height: 40px;
+  width: 100%;
+
+  color: var(--gray);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+
+  background: none;
+  border: none;
+
+  padding: 8px;
+  font-size: 24px;
+
+  color: var(--primary-color);
+}

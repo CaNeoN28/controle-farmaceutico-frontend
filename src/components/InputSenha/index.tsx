@@ -16,7 +16,7 @@ export default function InputSenha({ ...props }: Props) {
     <div className={styles.container}>
       <input className={styles.input} type={ativo ? "password" : "text"} />
       <button className={styles.button} onClick={alterarAtivo}>
-        {ativo ? <FaEye /> : <FaEyeSlash />}
+        {ativo ? <FaEye/> : <FaEyeSlash/>}
       </button>
     </div>
   );
