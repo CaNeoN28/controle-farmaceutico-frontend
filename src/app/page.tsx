@@ -6,6 +6,7 @@ import InputContainer from "@/components/InputContainer";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Botao from "@/components/Botao";
+import InputSenha from "@/components/InputSenha";
 
 export default function Home() {
   const {
@@ -36,7 +37,7 @@ export default function Home() {
               minLength: { message: "Mínimo 3", value: 3 },
             }}
             render={({ field }) => (
-              <Input {...{ ...field, ref: null }} id="input" />
+              <InputSenha {...{...field, ref: null}}/>
             )}
           />
         </InputContainer>
