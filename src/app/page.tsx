@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <InputContainer id="input" label="Label" error={errors.input}>
+        <InputContainer id="input" label="Label" error={errors.input} fullWidth>
           <Controller
             name="input"
             control={control}
