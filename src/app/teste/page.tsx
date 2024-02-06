@@ -1,9 +1,9 @@
-import Botao from "@/components/Botao";
+"use client";
 
 export default function Teste() {
-  return (
-    <div>
-      <Botao>Teste</Botao>
-    </div>
-  );
+	return (
+		<div>
+			
+		</div>
+	);
 }
