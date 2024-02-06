@@ -3,5 +3,8 @@
 import DiaPlantao from "@/components/DiaPlantao";
 
 export default function Teste() {
-	return <DiaPlantao data="1aaaa"/>;
+	return <div>
+		<DiaPlantao data="aaaa"/>
+		<DiaPlantao data="2020/10/10"/>
+	</div>;
 }
