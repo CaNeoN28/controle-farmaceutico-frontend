@@ -1,0 +1,40 @@
+.container {
+	display: flex;
+	overflow: hidden;
+
+	border: 1px solid var(--gray);
+
+	border-radius: 8px;
+}
+
+.input {
+	outline: none;
+	border: none;
+	background: none;
+
+	padding: 11px 16px;
+	padding-right: 0;
+	width: 100%;
+	min-height: 40px;
+
+	color: var(--gray);
+}
+
+.icone {
+	border: none;
+	background: none;
+	display: flex;
+	align-items: center;
+
+	padding-right: 8px;
+	padding-left: 8px;
+	font-size: 20px;
+
+	color: var(--primary-color);
+}
+.icone:hover {
+	cursor: pointer;
+}
+.icone::placeholder {
+	color: var(--light-gray);
+}
