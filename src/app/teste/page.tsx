@@ -1,9 +1,9 @@
-import Botao from "@/components/Botao";
+import InputPesquisa from "@/components/InputPesquisa";
 
 export default function Teste() {
   return (
     <div>
-      <Botao>Teste</Botao>
+      <InputPesquisa/>
     </div>
   );
 }
