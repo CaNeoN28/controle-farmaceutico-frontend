@@ -18,9 +18,16 @@ export default function DiaPlantao({ data, onClick }: Props) {
 		return <></>;
 	}
 
+	const { dia, mes, ano } = {
+		dia: date.getDate(),
+		mes: date.getMonth() + 1,
+		ano: date.getFullYear(),
+	};
+
 	return (
 		<button className={classes} onClick={onClick}>
-			{data}
+			<span>{dia}/{mes}</span>
+			<span className={styles.ano}>{ano}</span>
 		</button>
 	);
 }
