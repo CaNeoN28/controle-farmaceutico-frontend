@@ -1,5 +1,7 @@
 "use client";
 
+import DiaPlantao from "@/components/DiaPlantao";
+
 export default function Teste() {
-	return <div></div>;
+	return <DiaPlantao data="1aaaa"/>;
 }
