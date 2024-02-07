@@ -1,9 +1,5 @@
 "use client";
 
 export default function Teste() {
-	return (
-		<div>
-			
-		</div>
-	);
+  return <div></div>;
 }
