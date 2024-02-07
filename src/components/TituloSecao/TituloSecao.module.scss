@@ -1,9 +1,19 @@
 .titulo_secao{
-	padding: 14px 16px;
+	padding: 8px;
 
 	border: 1px solid var(--primary-color);
 	border-radius: 8px;
 
-	font-size: 24px;
-	color: var(--primary-color)
+	font-size: 20px;
+	color: var(--primary-color);
+	text-align: center;
+}
+
+@media screen and (min-width: 480px) {
+	.titulo_secao{
+		padding: 14px 16px;
+
+		font-size: 24px;
+		text-align: left;
+	}
 }
