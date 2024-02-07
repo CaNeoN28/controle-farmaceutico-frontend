@@ -12,10 +12,10 @@ export default function HorarioServicoView({
 	saida,
 }: Props) {
 	return (
-		<div>
+		<div className={styles.container}>
 			<span>{dia_semana}</span>
 			<span>
-				{entrada}/{saida}
+				{entrada}-{saida}
 			</span>
 		</div>
 	);
