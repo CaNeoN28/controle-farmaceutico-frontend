@@ -19,7 +19,7 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 	};
 
 	return (
-		<div>
+		<div className={styles.paginacao}>
 			{getPaginas().map((p, i) => (
 				<Pagina
 					key={i}
