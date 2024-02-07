@@ -20,11 +20,6 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 		let inicial = pagina - Math.floor(numeros / 2);
 		let final = pagina + Math.floor(numeros / 2);
 
-		console.log({
-			inicial,
-			final,
-		});
-
 		for (let i = inicial; i <= final && paginas.length < numeros; i++) {
 			paginas.push(i);
 		}
