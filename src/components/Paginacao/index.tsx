@@ -9,14 +9,23 @@ import Pagina from "../Pagina";
 interface Props {
 	pagina: number;
 	paginaMax: number;
-	botoes: number;
 	setPagina: Dispatch<SetStateAction<number>>;
 }
 
 export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 	const getPaginas = () => {
 		const paginas = [];
-		for (let i = 1; i <= paginaMax; i++) {
+		const numeros = 3;
+
+		let inicial = pagina - Math.floor(numeros / 2);
+		let final = pagina + Math.floor(numeros / 2);
+
+		console.log({
+			inicial,
+			final,
+		});
+
+		for (let i = inicial; i <= final && paginas.length < numeros; i++) {
 			paginas.push(i);
 		}
 
@@ -47,10 +56,10 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 					onClick={(e) => {
 						pagina != p && setPagina(p);
 					}}
-					clicavel={pagina != p}
+					clicavel={pagina != p && p >= 1 && p <= paginaMax}
 					ativo={pagina == p}
 				>
-					{p}
+					{p >= 1 && p <= paginaMax && p}
 				</Pagina>
 			))}
 			<Pagina
