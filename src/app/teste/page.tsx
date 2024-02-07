@@ -1,11 +1,11 @@
 "use client";
 
-import HorarioServicoView from "@/components/HorarioServicoView";
+import TituloSecao from "@/components/TituloSecao";
 
 export default function Teste() {
 	return (
 		<div>
-			<HorarioServicoView dia_semana="Dia" entrada="entrada" saida="saida" />
+			<TituloSecao></TituloSecao>
 		</div>
 	);
 }
