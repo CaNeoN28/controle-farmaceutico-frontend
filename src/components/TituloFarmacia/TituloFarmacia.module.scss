@@ -10,6 +10,16 @@
 	padding-left: 16px;
 }
 
+.image{
+	border: 1px solid var(--primary-color);
+	border-radius: 8px;
+
+	object-fit: cover;
+
+	aspect-ratio: calc(1/1);
+	width: 56px;
+}
+
 .placeholder {
 	display: flex;
 	align-items: center;

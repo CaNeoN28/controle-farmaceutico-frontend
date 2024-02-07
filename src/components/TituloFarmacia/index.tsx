@@ -14,7 +14,7 @@ export default function TituloFarmacia({ image_url, children }: Props) {
 				{children}
 			</div>
 			{image_url ? (
-				<image href={image_url} />
+				<img src={image_url} className={styles.image}/>
 			) : (
 				<div className={styles.placeholder}>
 					<MdLocalPharmacy />
