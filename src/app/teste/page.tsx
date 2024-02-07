@@ -1,12 +1,11 @@
 "use client";
 
-import HorarioServico from "@/components/HorarioServico";
-import { useState } from "react";
+import HorarioServicoView from "@/components/HorarioServicoView";
 
 export default function Teste() {
 	return (
 		<div>
-			
+			<HorarioServicoView dia_semana="Dia" entrada="entrada" saida="saida" />
 		</div>
 	);
 }
