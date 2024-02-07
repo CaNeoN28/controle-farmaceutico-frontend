@@ -18,3 +18,17 @@
 
 	color: var(--primary-color);
 }
+
+@media screen and (min-width: 480px) {
+	.opcao_administrativa{
+		justify-content: flex-start;
+		
+		padding: 16px;
+		gap: 16px;
+	}
+
+	.icone{
+		font-size: 48px;
+		height: 48px;
+	}
+}
