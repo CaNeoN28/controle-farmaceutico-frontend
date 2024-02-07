@@ -13,7 +13,7 @@ export default function Teste() {
 
 	return (
 		<div>
-			<Paginacao pagina={pagina} paginaMax={paginaMax} setPagina={setPagina} />
+			<Paginacao pagina={pagina} paginaMax={paginaMax} setPagina={setPagina} botoes={5}/>
 		</div>
 	);
 }

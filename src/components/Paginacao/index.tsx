@@ -1,10 +1,15 @@
 import { Dispatch, SetStateAction } from "react";
+import {
+	MdOutlineKeyboardArrowLeft,
+	MdOutlineKeyboardArrowRight,
+} from "react-icons/md";
 import styles from "./Paginacao.module.scss";
 import Pagina from "../Pagina";
 
 interface Props {
 	pagina: number;
 	paginaMax: number;
+	botoes: number;
 	setPagina: Dispatch<SetStateAction<number>>;
 }
 
@@ -18,8 +23,23 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 		return paginas;
 	};
 
+	const diminuirPagina = () => {
+		setPagina(pagina - 1);
+	};
+
+	const aumentarPagina = () => {
+		setPagina(pagina + 1);
+	};
+
 	return (
 		<div className={styles.paginacao}>
+			<Pagina
+				onClick={(e) => {
+					diminuirPagina();
+				}}
+			>
+				<MdOutlineKeyboardArrowLeft />
+			</Pagina>
 			{getPaginas().map((p, i) => (
 				<Pagina
 					key={i}
@@ -31,6 +51,13 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 					{p}
 				</Pagina>
 			))}
+			<Pagina
+				onClick={(e) => {
+					aumentarPagina();
+				}}
+			>
+				<MdOutlineKeyboardArrowRight />
+			</Pagina>
 		</div>
 	);
 }

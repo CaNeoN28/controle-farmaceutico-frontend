@@ -1,6 +1,10 @@
+.paginacao{
+	display: flex;
+	justify-content: space-between;
+}
+
 @media screen and (min-width: 480px) {
 	.paginacao{
-		display: flex;
 		justify-content: center;
 
 		gap: 16px;
