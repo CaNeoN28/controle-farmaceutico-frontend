@@ -1,6 +1,7 @@
 .pagina {
-	color: var(--primary-color);
-	background-color: var(--white);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
 	border: 1px solid var(--primary-color);
 	border-radius: 8px;
@@ -11,7 +12,12 @@
 	height: 40px;
 }
 
-.pagina:hover {
+.clicavel {
+	color: var(--primary-color);
+	background-color: var(--white);
+}
+
+.clicavel:hover {
 	cursor: pointer;
 
 	background-color: var(--primary-color);
@@ -20,9 +26,11 @@
 
 .ativo {
 	background-color: var(--primary-color);
-	color: var(--white)
+	color: var(--white);
 }
 
-.ativo:hover{
-	cursor: auto;
+.inativo {
+	background-color: var(--white);
+	border-color: var(--light-gray);
+	color: var(--light-gray);
 }

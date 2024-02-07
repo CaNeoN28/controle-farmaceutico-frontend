@@ -37,6 +37,7 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 				onClick={(e) => {
 					diminuirPagina();
 				}}
+				clicavel={pagina !== 1}
 			>
 				<MdOutlineKeyboardArrowLeft />
 			</Pagina>
@@ -46,6 +47,7 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 					onClick={(e) => {
 						pagina != p && setPagina(p);
 					}}
+					clicavel={pagina != p}
 					ativo={pagina == p}
 				>
 					{p}
@@ -55,6 +57,7 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 				onClick={(e) => {
 					aumentarPagina();
 				}}
+				clicavel={pagina != paginaMax}
 			>
 				<MdOutlineKeyboardArrowRight />
 			</Pagina>

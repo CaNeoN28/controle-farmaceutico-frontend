@@ -4,18 +4,22 @@ import { ComponentPropsWithoutRef, MouseEventHandler, ReactNode } from "react";
 
 interface Props {
 	ativo?: boolean;
+	clicavel?: boolean;
 	children?: ReactNode;
 }
 
 export default function Pagina({
 	children,
 	ativo,
+	clicavel,
 	onClick,
 	...props
 }: Props & ComponentPropsWithoutRef<"button">) {
 	const classes = classNames({
 		[styles.pagina]: true,
 		[styles.ativo]: ativo,
+		[styles.clicavel]: clicavel,
+		[styles.inativo]: !ativo && !clicavel,
 	});
 
 	return (
@@ -23,7 +27,7 @@ export default function Pagina({
 			className={classes}
 			onClick={(e) => {
 				e.preventDefault();
-				onClick && onClick(e);
+				clicavel && onClick && onClick(e);
 			}}
 			{...props}
 		>
