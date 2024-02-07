@@ -5,7 +5,7 @@ import HorarioServico from "@/components/HorarioServico";
 export default function Teste() {
 	return (
 		<div>
-			<HorarioServico/>
+			<HorarioServico dia_semana="Segunda feira" entrada="entrada" saida="saida"/>
 		</div>
 	);
 }
