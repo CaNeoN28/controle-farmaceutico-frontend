@@ -1,4 +1,16 @@
-.placeholder{
+.titulo_farmacia {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	border: 1px solid var(--primary-color);
+	border-radius: 8px;
+
+	padding: 8px;
+	padding-left: 16px;
+}
+
+.placeholder {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -6,9 +18,8 @@
 	color: var(--white);
 	background-color: var(--primary-color);
 
-	width: 56px;
-	height: 56px;
 	border-radius: 8px;
-
+	padding: 8px;
+	
 	font-size: 40px;
 }
