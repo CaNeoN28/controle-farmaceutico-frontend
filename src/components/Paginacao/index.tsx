@@ -1,9 +1,4 @@
-import {
-	ComponentPropsWithoutRef,
-	Dispatch,
-	ReactNode,
-	SetStateAction,
-} from "react";
+import { Dispatch, SetStateAction } from "react";
 import styles from "./Paginacao.module.scss";
 import Pagina from "../Pagina";
 
@@ -29,8 +24,9 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 				<Pagina
 					key={i}
 					onClick={(e) => {
-						setPagina(p);
+						pagina != p && setPagina(p);
 					}}
+					ativo={pagina == p}
 				>
 					{p}
 				</Pagina>
