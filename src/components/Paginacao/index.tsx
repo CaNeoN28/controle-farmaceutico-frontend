@@ -1,5 +1,11 @@
-import { Dispatch, SetStateAction } from "react";
+import {
+	ComponentPropsWithoutRef,
+	Dispatch,
+	ReactNode,
+	SetStateAction,
+} from "react";
 import styles from "./Paginacao.module.scss";
+import Pagina from "../Pagina";
 
 interface Props {
 	pagina: number;
@@ -20,14 +26,14 @@ export default function Paginacao({ pagina, paginaMax, setPagina }: Props) {
 	return (
 		<div>
 			{getPaginas().map((p, i) => (
-				<a
+				<Pagina
 					key={i}
-					onClick={() => {
+					onClick={(e) => {
 						setPagina(p);
 					}}
 				>
 					{p}
-				</a>
+				</Pagina>
 			))}
 		</div>
 	);
