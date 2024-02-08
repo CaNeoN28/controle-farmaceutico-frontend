@@ -32,7 +32,19 @@
 	display: flex;
 	align-items: center;
 
+	transition-property: all;
+	transition-duration: 100ms;
+	transition-timing-function: cubic-bezier(1, 1, 1, 1);
+
 	padding: 8px;
+}
+
+.icone:hover {
+	cursor: pointer;
+}
+
+.icone.aberto{
+	transform: rotateX(180deg)
 }
 
 .hidden {

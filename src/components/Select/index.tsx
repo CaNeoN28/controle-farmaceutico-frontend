@@ -39,18 +39,15 @@ export default function Select({
 		[styles.input_ativo]: ativo,
 	});
 
-	const iconeClasses = classNames({
-		[styles.icone]: true,
-		[styles.icone_inativo]: !ativo,
-	});
-
 	!name && console.error("Name é obrigatório");
 
 	useLayoutEffect(() => {
 		if (ativo !== undefined) {
 			const opcoes = document.querySelector(`#opcoes_${name}`);
+			const icone = document.querySelector(`#icone_${name}`);
 
 			opcoes!.classList.toggle(styles.aberto);
+			icone!.classList.toggle(styles.aberto);
 		}
 	}, [ativo]);
 
@@ -71,8 +68,12 @@ export default function Select({
 						setFiltro(value);
 					}}
 				/>
-				<span className={iconeClasses} onClick={() => setAtivo(!ativo)}>
-					{ativo ? <FaChevronUp /> : <FaChevronDown />}
+				<span
+					id={`icone_${name}`}
+					className={styles.icone}
+					onClick={() => setAtivo(!ativo)}
+				>
+					<FaChevronDown />
 				</span>
 			</div>
 			<div id={`opcoes_${name}`} className={styles.opcoes}>
