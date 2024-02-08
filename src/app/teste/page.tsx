@@ -31,6 +31,10 @@ export default function Teste() {
 			label: "6",
 			valor: "6",
 		},
+		{
+			label: "7",
+			valor: "7",
+		},
 	];
 
 	const [filtro, setFiltro] = useState("");

@@ -2,6 +2,7 @@ import {
 	ComponentPropsWithoutRef,
 	Dispatch,
 	SetStateAction,
+	useLayoutEffect,
 	useState,
 } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -9,6 +10,7 @@ import styles from "./Select.module.scss";
 import classNames from "classnames";
 import { UseFormSetValue } from "react-hook-form";
 import { isNativeError } from "util/types";
+import { isUndefined } from "util";
 
 export interface Opcao {
 	valor: string | number;
@@ -30,19 +32,27 @@ export default function Select({
 	setValue,
 	...props
 }: Props) {
-	const [ativo, setAtivo] = useState(false);
+	const [ativo, setAtivo] = useState<boolean>();
 
 	const inputBoxClasses = classNames({
 		[styles.input_box]: true,
-		[styles.input_ativo]: opcoes.length > 0 && ativo,
+		[styles.input_ativo]: ativo,
 	});
 
-	const opcoesClasses = classNames({
-		[styles.opcoes]: true,
-		[styles.opcoes_ativo]: ativo,
+	const iconeClasses = classNames({
+		[styles.icone]: true,
+		[styles.icone_inativo]: !ativo,
 	});
 
 	!name && console.error("Name é obrigatório");
+
+	useLayoutEffect(() => {
+		if (ativo !== undefined) {
+			const opcoes = document.querySelector(`#opcoes_${name}`);
+
+			opcoes!.classList.toggle(styles.aberto);
+		}
+	}, [ativo]);
 
 	return (
 		<div className={styles.container}>
@@ -52,24 +62,22 @@ export default function Select({
 					type="text"
 					value={filtro}
 					onChange={(e) => {
-						const value = e.target.value
-						if(ativo && !value){
-							setAtivo(false)
-						}
-						else if(!ativo){
-							setAtivo(true)
+						const value = e.target.value;
+
+						if (!ativo) {
+							setAtivo(true);
 						}
 
-						setFiltro(value)
+						setFiltro(value);
 					}}
 				/>
-				<span className={styles.icone}>
+				<span className={iconeClasses} onClick={() => setAtivo(!ativo)}>
 					{ativo ? <FaChevronUp /> : <FaChevronDown />}
 				</span>
 			</div>
-			{opcoes.length > 0 && (
-				<div className={opcoesClasses}>
-					{opcoes.map((o, i) => (
+			<div id={`opcoes_${name}`} className={styles.opcoes}>
+				{opcoes.length > 0 ? (
+					opcoes.map((o, i) => (
 						<button
 							key={i}
 							onClick={(e) => {
@@ -79,9 +87,11 @@ export default function Select({
 						>
 							{o.label}
 						</button>
-					))}
-				</div>
-			)}
+					))
+				) : (
+					<span className={styles.erro}>Não encontrado</span>
+				)}
+			</div>
 			<input className={styles.hidden} {...props} type="text" disabled />
 		</div>
 	);
