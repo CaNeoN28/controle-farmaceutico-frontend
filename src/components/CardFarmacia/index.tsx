@@ -18,13 +18,15 @@ export default function CardFarmacia({
 }: Props) {
 	return (
 		<Link href={link_farmacia} className={styles.card_farmacia}>
-			{imagem_url ? (
-				<Image src={imagem_url} alt="imagem" />
-			) : (
-				<div className={styles.placeholder}>
-					<MdLocalPharmacy />
-				</div>
-			)}
+			<div className={styles.imagem}>
+				{imagem_url ? (
+					<Image src={imagem_url} alt="imagem" />
+				) : (
+					<div className={styles.placeholder}>
+						<MdLocalPharmacy />
+					</div>
+				)}
+			</div>
 			<div className={styles.dados}>
 				<span>{nome}</span>
 				<span>{informacao}</span>

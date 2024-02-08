@@ -1,18 +1,67 @@
 .card_farmacia{
 	display: flex;
-	flex-direction: column;
+	align-items: center;
+	overflow: hidden;
 
-	border: 1px solid var(--light-gray);
+	gap: 16px;
 
-	max-width: 200px;
+	border: 1px solid var(--gray);
+	border-radius: 8px;
 
-	text-align: center;
 	text-decoration: none;
 	color: var(--black);
 
+	box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .dados{
 	display: flex;
 	flex-direction: column;
+
+	gap: 4px;
+}
+
+.imagem{
+	padding: 8px;
+}
+
+.placeholder{
+	display: flex;
+	color: var(--white);
+
+	background-color: var(--primary-color);
+	border-radius: 8px;
+
+	font-size: 40px;
+	padding: 8px;
+}
+
+@media screen and (min-width: 480px) {
+	.card_farmacia{
+		flex-direction: column;
+
+		gap: 0;
+
+		max-width: 200px;
+		text-align: center;
+	}
+
+	.imagem{
+		border: 1px solid var(--gray);
+		border-radius: 8px;
+
+		padding: 20px;
+	}
+
+	.placeholder{
+		justify-content: center;
+
+		padding: 20px;
+		font-size: 120px;
+	}
+
+	.dados{
+		padding: 12px;
+		gap: 4px;
+	}
 }
