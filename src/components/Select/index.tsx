@@ -81,9 +81,9 @@ export default function Select({
 							key={i}
 							onClick={(e) => {
 								e.preventDefault();
-								name && setValue(name, o.valor);
-								setFiltro(o.label);
 								setAtivo(false);
+								setFiltro(o.label);
+								name && setValue(name, o.valor);
 							}}
 						>
 							{o.label}
