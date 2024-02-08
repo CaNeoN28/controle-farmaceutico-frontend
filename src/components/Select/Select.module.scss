@@ -1,7 +1,13 @@
-.container{
+.container {
+	position: relative;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.input_box {
 	display: flex;
 	flex-direction: row;
-
 	overflow: hidden;
 
 	border: 1px solid var(--gray);
@@ -10,7 +16,7 @@
 	color: var(--gray);
 }
 
-.input{
+.input {
 	outline: none;
 	border: none;
 
@@ -18,13 +24,43 @@
 	width: 100%;
 }
 
-.icone{
+.icone {
 	display: flex;
 	align-items: center;
 
 	padding: 8px;
 }
 
-.hidden{
+.hidden {
 	display: none;
+}
+
+.opcoes {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	width: 100%;
+	top: 100%;
+
+	border: 1px solid var(--gray);
+	border-radius: 0 0 8px 8px;
+
+	
+	button {
+		width: 100%;
+		padding: 8px;
+		
+		z-index: 999;
+
+		color: var(--gray);
+
+		border: none;
+	}
+
+	button:hover {
+		cursor: pointer;
+
+		filter: brightness(0.9);
+	}
 }

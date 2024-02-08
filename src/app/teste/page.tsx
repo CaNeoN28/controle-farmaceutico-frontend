@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export default function Teste() {
-	const opcoes: Opcao<string>[] = [
+	const opcoes: Opcao[] = [
 		{
 			label: "1",
 			valor: "1",
@@ -36,7 +36,7 @@ export default function Teste() {
 	const [filtro, setFiltro] = useState("");
 	const [opcoesFiltradas, setOpcoes] = useState(opcoes);
 
-	const { handleSubmit, control } = useForm({ defaultValues: { select: 3 } });
+	const { handleSubmit, control, setValue } = useForm({ defaultValues: { select: 3 } });
 
 	const onSubmit = (data: any) => {
 		console.log(data);
@@ -62,8 +62,9 @@ export default function Teste() {
 						<Select
 							{...{ ...field, ref: null }}
 							filtro={filtro}
-							setFiltro={setFiltro}
 							opcoes={opcoes}
+							setFiltro={setFiltro}
+							setValue={setValue}
 						/>
 					)}
 				/>

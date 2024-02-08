@@ -6,45 +6,65 @@ import {
 } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import styles from "./Select.module.scss";
+import classNames from "classnames";
+import { UseFormSetValue } from "react-hook-form";
 
-export interface Opcao<T> {
-	valor: T;
+export interface Opcao {
+	valor: string | number;
 	label: string;
 }
 
-interface Props<T> extends ComponentPropsWithoutRef<"input"> {
+interface Props extends ComponentPropsWithoutRef<"input"> {
 	filtro: string;
 	setFiltro: Dispatch<SetStateAction<string>>;
-	opcoes: Opcao<T>[];
+	setValue: UseFormSetValue<any>;
+	opcoes: Opcao[];
 }
 
-export default function Select<T>({
+export default function Select({
 	filtro,
-	setFiltro,
 	opcoes,
-	onChange,
+	name,
+	setFiltro,
+	setValue,
 	...props
-}: Props<T>) {
+}: Props) {
 	const [ativo, setAtivo] = useState(false);
+
+	const opcoesClasses = classNames({
+		[styles.opcoes]: true,
+		[styles.opcoes_ativo]: ativo,
+	});
+
+	!name && console.error("Name é obrigatório")
 
 	return (
 		<div className={styles.container}>
-			<input
-				className={styles.input}
-				type="text"
-				value={filtro}
-				onChange={(e) => setFiltro(e.target.value)}
-			/>
-			<span className={styles.icone}>
-				{ativo ? <FaChevronUp /> : <FaChevronDown />}
-			</span>
-			<input
-				className={styles.hidden}
-				onChange={onChange}
-				{...props}
-				type="text"
-				disabled
-			/>
+			<div className={styles.input_box}>
+				<input
+					className={styles.input}
+					type="text"
+					value={filtro}
+					onChange={(e) => setFiltro(e.target.value)}
+				/>
+				<span className={styles.icone}>
+					{ativo ? <FaChevronUp /> : <FaChevronDown />}
+				</span>
+			</div>
+			<div className={opcoesClasses}>
+				{opcoes.map((o, i) => (
+					<button
+						key={i}
+						onClick={(e) => {
+							e.preventDefault();
+							name && setValue(name, o.valor)
+						}}
+					>
+						{o.label}
+					</button>
+				))}
+			</div>
+			<input className={styles.hidden} {...props} type="text" disabled />
 		</div>
 	);
 }
