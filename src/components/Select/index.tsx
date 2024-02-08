@@ -31,6 +31,11 @@ export default function Select({
 }: Props) {
 	const [ativo, setAtivo] = useState(false);
 
+	const inputBoxClasses = classNames({
+		[styles.input_box]: true,
+		[styles.input_ativo]: ativo,
+	});
+
 	const opcoesClasses = classNames({
 		[styles.opcoes]: true,
 		[styles.opcoes_ativo]: ativo,
@@ -40,7 +45,7 @@ export default function Select({
 
 	return (
 		<div className={styles.container}>
-			<div className={styles.input_box}>
+			<div className={inputBoxClasses}>
 				<input
 					className={styles.input}
 					type="text"
