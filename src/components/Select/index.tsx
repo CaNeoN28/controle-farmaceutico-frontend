@@ -5,12 +5,10 @@ import {
 	useLayoutEffect,
 	useState,
 } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import styles from "./Select.module.scss";
 import classNames from "classnames";
 import { UseFormSetValue } from "react-hook-form";
-import { isNativeError } from "util/types";
-import { isUndefined } from "util";
 
 export interface Opcao {
 	valor: string | number;
@@ -84,6 +82,8 @@ export default function Select({
 							onClick={(e) => {
 								e.preventDefault();
 								name && setValue(name, o.valor);
+								setFiltro(o.label);
+								setAtivo(false);
 							}}
 						>
 							{o.label}
