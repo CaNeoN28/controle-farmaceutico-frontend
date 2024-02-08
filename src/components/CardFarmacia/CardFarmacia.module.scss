@@ -1,0 +1,18 @@
+.card_farmacia{
+	display: flex;
+	flex-direction: column;
+
+	border: 1px solid var(--light-gray);
+
+	max-width: 200px;
+
+	text-align: center;
+	text-decoration: none;
+	color: var(--black);
+
+}
+
+.dados{
+	display: flex;
+	flex-direction: column;
+}
