@@ -8,6 +8,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import styles from "./Select.module.scss";
 import classNames from "classnames";
 import { UseFormSetValue } from "react-hook-form";
+import { isNativeError } from "util/types";
 
 export interface Opcao {
 	valor: string | number;
@@ -33,7 +34,7 @@ export default function Select({
 
 	const inputBoxClasses = classNames({
 		[styles.input_box]: true,
-		[styles.input_ativo]: ativo,
+		[styles.input_ativo]: opcoes.length > 0 && ativo,
 	});
 
 	const opcoesClasses = classNames({
@@ -50,7 +51,17 @@ export default function Select({
 					className={styles.input}
 					type="text"
 					value={filtro}
-					onChange={(e) => setFiltro(e.target.value)}
+					onChange={(e) => {
+						const value = e.target.value
+						if(ativo && !value){
+							setAtivo(false)
+						}
+						else if(!ativo){
+							setAtivo(true)
+						}
+
+						setFiltro(value)
+					}}
 				/>
 				<span className={styles.icone}>
 					{ativo ? <FaChevronUp /> : <FaChevronDown />}
