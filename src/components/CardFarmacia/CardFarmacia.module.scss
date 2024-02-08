@@ -1,4 +1,4 @@
-.card_farmacia{
+.card_farmacia {
 	display: flex;
 	align-items: center;
 	overflow: hidden;
@@ -14,18 +14,30 @@
 	box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.dados{
+.dados {
 	display: flex;
 	flex-direction: column;
 
 	gap: 4px;
 }
 
-.imagem{
+.imagem {
+	display: flex;
+	align-items: center;
+	
 	padding: 8px;
+
+	img {
+		object-fit: cover;
+
+		border-radius: 8px;
+
+		max-width: 56px;
+		aspect-ratio: calc(1 / 1);
+	}
 }
 
-.placeholder{
+.placeholder {
 	display: flex;
 	color: var(--white);
 
@@ -37,7 +49,7 @@
 }
 
 @media screen and (min-width: 480px) {
-	.card_farmacia{
+	.card_farmacia {
 		flex-direction: column;
 
 		gap: 0;
@@ -46,21 +58,25 @@
 		text-align: center;
 	}
 
-	.imagem{
+	.imagem {
 		border: 1px solid var(--primary-color);
 		border-radius: 8px;
 
 		padding: 20px;
+
+		img {
+			max-width: 160px;
+		}
 	}
 
-	.placeholder{
+	.placeholder {
 		justify-content: center;
 
 		padding: 20px;
 		font-size: 120px;
 	}
 
-	.dados{
+	.dados {
 		padding: 12px;
 		gap: 4px;
 	}

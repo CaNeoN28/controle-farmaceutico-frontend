@@ -20,7 +20,7 @@ export default function CardFarmacia({
 		<Link href={link_farmacia} className={styles.card_farmacia}>
 			<div className={styles.imagem}>
 				{imagem_url ? (
-					<Image src={imagem_url} alt="imagem" />
+					<img src={imagem_url} alt="imagem" />
 				) : (
 					<div className={styles.placeholder}>
 						<MdLocalPharmacy />
