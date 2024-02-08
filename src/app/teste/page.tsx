@@ -2,7 +2,7 @@
 
 import Botao from "@/components/Botao";
 import Select, { Opcao } from "@/components/Select";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export default function Teste() {
@@ -42,7 +42,7 @@ export default function Teste() {
 		console.log(data);
 	};
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const filtrados = opcoes.filter((o) => {
 			const regex = new RegExp(filtro, "i");
 
@@ -62,7 +62,7 @@ export default function Teste() {
 						<Select
 							{...{ ...field, ref: null }}
 							filtro={filtro}
-							opcoes={opcoes}
+							opcoes={opcoesFiltradas}
 							setFiltro={setFiltro}
 							setValue={setValue}
 						/>

@@ -36,7 +36,7 @@ export default function Select({
 		[styles.opcoes_ativo]: ativo,
 	});
 
-	!name && console.error("Name é obrigatório")
+	!name && console.error("Name é obrigatório");
 
 	return (
 		<div className={styles.container}>
@@ -51,19 +51,21 @@ export default function Select({
 					{ativo ? <FaChevronUp /> : <FaChevronDown />}
 				</span>
 			</div>
-			<div className={opcoesClasses}>
-				{opcoes.map((o, i) => (
-					<button
-						key={i}
-						onClick={(e) => {
-							e.preventDefault();
-							name && setValue(name, o.valor)
-						}}
-					>
-						{o.label}
-					</button>
-				))}
-			</div>
+			{opcoes.length > 0 && (
+				<div className={opcoesClasses}>
+					{opcoes.map((o, i) => (
+						<button
+							key={i}
+							onClick={(e) => {
+								e.preventDefault();
+								name && setValue(name, o.valor);
+							}}
+						>
+							{o.label}
+						</button>
+					))}
+				</div>
+			)}
 			<input className={styles.hidden} {...props} type="text" disabled />
 		</div>
 	);
