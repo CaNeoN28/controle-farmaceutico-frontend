@@ -1,21 +1,38 @@
-.titulo{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.secao {
+  overflow: hidden;
 
-  font-size: 16px;
+  max-height: 40px;
 
-  padding: 8px 16px;
+  transition-duration: 200ms;
+
+  .titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 16px;
+
+    padding: 8px 16px;
+  }
+
+  .titulo:hover {
+    cursor: pointer;
+  }
+
+  .icone {
+    font-size: 24px;
+
+    transition-duration: 100ms;
+  }
 }
 
-.titulo:hover{
-  cursor: pointer;
-}
+.secao.ativo {
+  max-height: 400vh;
 
-.icone{
-  font-size: 24px;
+  .icone {
+    transform: rotateX(180deg);
+  }
 }
 
 @media screen and (min-width: 480px) {
-  
 }

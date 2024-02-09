@@ -18,7 +18,7 @@ export default function Secao({ titulo, children }: Props) {
 
   return (
     <div className={classes}>
-      <span className={styles.titulo}>
+      <span className={styles.titulo} onClick={() => {setAtivo(!ativo)}}>
         {titulo}
         <FaChevronDown className={styles.icone}/>
       </span>
