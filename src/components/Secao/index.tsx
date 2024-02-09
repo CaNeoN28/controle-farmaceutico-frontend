@@ -1,10 +1,28 @@
-import { ReactNode } from "react"
-import styles from "./Secao.module.scss"
+import { ReactNode, useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
+import styles from "./Secao.module.scss";
+import classNames from "classnames";
 
-interface Props{
-  children?: ReactNode
+interface Props {
+  titulo: string;
+  children?: ReactNode;
 }
 
-export default function Secao({children}: Props){
-  return <div className={styles.secao}>{children}</div>
+export default function Secao({ titulo, children }: Props) {
+  const [ativo, setAtivo] = useState(false);
+
+  const classes = classNames({
+    [styles.secao]: true,
+    [styles.ativo]: ativo,
+  });
+
+  return (
+    <div className={classes}>
+      <span className={styles.titulo}>
+        {titulo}
+        <FaChevronDown className={styles.icone}/>
+      </span>
+      <div className={styles.content}>{children}</div>
+    </div>
+  );
 }
