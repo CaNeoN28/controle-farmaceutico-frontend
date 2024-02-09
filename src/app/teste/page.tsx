@@ -1,11 +1,11 @@
 "use client";
 
-import Secao from "@/components/Secao";
+import FarmaciaItem from "@/components/FarmaciaItem";
 
 export default function Teste() {
 	return (
-		<div style={{width:"500px"}}>
-			
+		<div>
+			<FarmaciaItem/>
 		</div>
 	);
 }
