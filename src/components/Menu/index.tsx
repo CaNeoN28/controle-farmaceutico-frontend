@@ -30,15 +30,15 @@ export default function Menu({}: Props) {
 		return (
 			<div className={styles.menu}>
 				<div className={styles.opcoes}>
-					<BotaoMenu>
-						<span>PLATAFORMA</span> <MdMedication/>
+					<BotaoMenu link="/">
+						<span>PLATAFORMA</span> <MdMedication />
 					</BotaoMenu>
-					<BotaoMenu>Farmácias</BotaoMenu>
-					<BotaoMenu>Plantões</BotaoMenu>
-					<BotaoMenu>Administração</BotaoMenu>
+					<BotaoMenu link="/listagem/farmacia">Farmácias</BotaoMenu>
+					<BotaoMenu link="/listagem/plantoes">Plantões</BotaoMenu>
+					<BotaoMenu link="/administracao">Administração</BotaoMenu>
 				</div>
 				<div>
-					<BotaoMenu>Entrar</BotaoMenu>
+					<BotaoMenu link="/login">Entrar</BotaoMenu>
 				</div>
 			</div>
 		);

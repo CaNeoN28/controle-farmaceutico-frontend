@@ -3,7 +3,8 @@
 		display: flex;
 		align-items: center;
 		border: none;
-		
+		text-decoration: none;
+
 		background-color: var(--primary-color);
 		color: var(--white);
 
@@ -21,8 +22,4 @@
 	.botao:hover{
 		filter: brightness(0.95);
 	}
-}
-
-.botao:hover{
-	cursor: pointer;
 }

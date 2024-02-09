@@ -1,10 +1,16 @@
 import { ComponentPropsWithoutRef, ReactNode } from "react";
 import styles from "./BotaoMenu.module.scss";
+import Link from "next/link";
 
-interface Props extends ComponentPropsWithoutRef<"button"> {
+interface Props {
+	link: string;
 	children?: ReactNode;
 }
 
-export default function BotaoMenu({ children, ...props }: Props) {
-	return <button className={styles.botao}>{children}</button>;
+export default function BotaoMenu({ children, link }: Props) {
+	return (
+		<Link href={link} className={styles.botao}>
+			{children}
+		</Link>
+	);
 }
