@@ -5,7 +5,7 @@ import FarmaciaItem from "@/components/FarmaciaItem";
 export default function Teste() {
 	return (
 		<div>
-			<FarmaciaItem/>
+			<FarmaciaItem informacao="10:00 - 20:00" nome="Farmácia"/>
 		</div>
 	);
 }
