@@ -1,8 +1,11 @@
 .menu{
 	display: flex;
 	align-items: center;
+	overflow: hidden;
 
-	height: 72px;
+	border: 1px solid var(--primary-color);
+
+	height: 64px;
 
 	background-color: var(--primary-color);
 	color: var(--white);
