@@ -71,7 +71,7 @@ export default function Menu({}: Props) {
 						setAtivo(true);
 					}}
 				/>
-				<div className={classesBackground}/>
+				<div className={classesBackground} onClick={() => {setAtivo(false)}}/>
 				<div className={classesContent}>
 						<span className={styles.fechar}>
 							<MdOutlineClose
