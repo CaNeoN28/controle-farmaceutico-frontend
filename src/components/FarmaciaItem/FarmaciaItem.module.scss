@@ -28,3 +28,13 @@
 
   gap: 8px;
 }
+
+@media screen and (min-width: 480px) {
+  .item{
+    justify-content: space-between;
+  }
+
+  .conteudo{
+    text-align: right;
+  }
+}
