@@ -81,6 +81,11 @@ export default function Menu({}: Props) {
 								}}
 							/>
 						</span>
+						<BotaoMenu link="/">Início</BotaoMenu>
+						<BotaoMenu link="/listagem/farmacias">Listagem de farmácia</BotaoMenu>
+						<BotaoMenu link="/listagem/plantoes">Listagem de plantões</BotaoMenu>
+						<BotaoMenu link="/administracao">Administracao</BotaoMenu>
+						<BotaoMenu link="/login">Entrar</BotaoMenu>
 					</div>
 			</div>
 		</div>
