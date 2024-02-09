@@ -24,6 +24,10 @@
 
     transition-duration: 100ms;
   }
+
+  .content {
+    padding: 8px;
+  }
 }
 
 .secao.ativo {
@@ -35,4 +39,9 @@
 }
 
 @media screen and (min-width: 480px) {
+  .secao {
+    .content {
+      padding: 0 24px;
+    }
+  }
 }
