@@ -46,6 +46,11 @@ export default function Menu({}: Props) {
 		);
 	}
 
+	const classesBackground = classNames({
+		[styles.background]: true,
+		[styles.ativo]: ativo
+	})
+
 	const classesContent = classNames({
 		[styles.content]: true,
 		[styles.ativo]: ativo,
@@ -66,16 +71,17 @@ export default function Menu({}: Props) {
 						setAtivo(true);
 					}}
 				/>
+				<div className={classesBackground}/>
 				<div className={classesContent}>
-					<span className={styles.fechar}>
-						<MdOutlineClose
-							className={classesBotao}
-							onClick={() => {
-								setAtivo(false);
-							}}
-						/>
-					</span>
-				</div>
+						<span className={styles.fechar}>
+							<MdOutlineClose
+								className={classesBotao}
+								onClick={() => {
+									setAtivo(false);
+								}}
+							/>
+						</span>
+					</div>
 			</div>
 		</div>
 	);
