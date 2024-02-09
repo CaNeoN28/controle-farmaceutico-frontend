@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MdMedication } from "react-icons/md";
+import { MdMedication, MdOutlineMenu } from "react-icons/md";
 import styles from "./Menu.module.scss";
 import BotaoMenu from "../BotaoMenu";
 
@@ -44,5 +44,13 @@ export default function Menu({}: Props) {
 		);
 	}
 
-	return <></>;
+	return (
+		<div className={styles.hamburguer}>
+				<MdMedication className={styles.icone}/>
+			<div className={styles.content}>
+				<MdOutlineMenu className={styles.icone}/>
+				<div></div>
+			</div>
+		</div>
+	);
 }

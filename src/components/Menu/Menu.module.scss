@@ -1,4 +1,4 @@
-.menu{
+.menu {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -12,7 +12,27 @@
 	color: var(--white);
 }
 
-.opcoes{
+.opcoes {
 	display: flex;
+	align-items: center;
+}
+
+.hamburguer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	height: 64px;
+	padding: 8px;
+
+	background-color: var(--primary-color);
+	color: var(--white);
+
+	font-size: 36px;
+}
+
+.icone{
+	display: flex;
+	justify-content: center;
 	align-items: center;
 }
