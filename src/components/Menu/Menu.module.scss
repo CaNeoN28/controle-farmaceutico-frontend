@@ -28,11 +28,41 @@
 	background-color: var(--primary-color);
 	color: var(--white);
 
-	font-size: 36px;
+	font-size: 32px;
 }
 
 .icone{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.content{
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	
+	top: 0;
+	right: 100%;
+
+	padding: 8px;
+	min-width: 240px;
+
+	border: 1px solid var(--light-gray);
+
+	background-color: var(--white);
+	color: var(--primary-color);
+}
+
+.content.ativo{
+	right: 0;
+}
+
+.fechar{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-end;
+
+	min-height: 48px;
 }

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { MdMedication, MdOutlineMenu } from "react-icons/md";
+import { useLayoutEffect, useState } from "react";
+import { MdMedication, MdOutlineMenu, MdOutlineClose } from "react-icons/md";
 import styles from "./Menu.module.scss";
 import BotaoMenu from "../BotaoMenu";
+import classNames from "classnames";
 
 interface Props {}
 
@@ -12,9 +13,10 @@ const getWidth = () => {
 };
 
 export default function Menu({}: Props) {
+	const [ativo, setAtivo] = useState(false);
 	const [width, setWidth] = useState(getWidth());
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		window.addEventListener("resize", () => {
 			setWidth(getWidth());
 		});
@@ -44,12 +46,36 @@ export default function Menu({}: Props) {
 		);
 	}
 
+	const classesContent = classNames({
+		[styles.content]: true,
+		[styles.ativo]: ativo,
+	});
+
+	const classesBotao = classNames({
+		[styles.icone]: true,
+		[styles.botao]: true,
+	});
+
 	return (
 		<div className={styles.hamburguer}>
-				<MdMedication className={styles.icone}/>
-			<div className={styles.content}>
-				<MdOutlineMenu className={styles.icone}/>
-				<div></div>
+			<MdMedication className={styles.icone} />
+			<div>
+				<MdOutlineMenu
+					className={classesBotao}
+					onClick={() => {
+						setAtivo(true);
+					}}
+				/>
+				<div className={classesContent}>
+					<span className={styles.fechar}>
+						<MdOutlineClose
+							className={classesBotao}
+							onClick={() => {
+								setAtivo(false);
+							}}
+						/>
+					</span>
+				</div>
 			</div>
 		</div>
 	);
