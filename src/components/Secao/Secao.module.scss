@@ -1,0 +1,47 @@
+.secao {
+  overflow: hidden;
+
+  max-height: 40px;
+
+  transition-duration: 200ms;
+
+  .titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 16px;
+
+    padding: 8px 16px;
+  }
+
+  .titulo:hover {
+    cursor: pointer;
+  }
+
+  .icone {
+    font-size: 24px;
+
+    transition-duration: 100ms;
+  }
+
+  .content {
+    padding: 8px;
+  }
+}
+
+.secao.ativo {
+  max-height: 400vh;
+
+  .icone {
+    transform: rotateX(180deg);
+  }
+}
+
+@media screen and (min-width: 480px) {
+  .secao {
+    .content {
+      padding: 0 24px;
+    }
+  }
+}
