@@ -1,20 +1,22 @@
 import { MdLocalPharmacy } from "react-icons/md";
 import styles from "./FarmaciaItem.module.scss";
 import classNames from "classnames";
+import Link from "next/link";
 
 interface Props {
   nome: string;
   informacao: string;
+  para: string;
   imagem_url?: string;
 }
 
-export default function FarmaciaItem({ informacao, nome, imagem_url }: Props) {
+export default function FarmaciaItem({ informacao, nome, para, imagem_url }: Props) {
   const classes = classNames({
     [styles.item]: true,
     "box-shadow": true
   })
   return (
-    <div className={classes}>
+    <Link href={para} className={classes}>
       <div className={styles.imagem}>
         {imagem_url ? (
           <img />
@@ -28,6 +30,6 @@ export default function FarmaciaItem({ informacao, nome, imagem_url }: Props) {
         <span>{nome}</span>
         <span>{informacao}</span>
       </div>
-    </div>
+    </Link>
   );
 }
