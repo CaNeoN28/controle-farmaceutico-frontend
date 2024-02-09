@@ -1,6 +1,7 @@
 .menu{
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	overflow: hidden;
 
 	border: 1px solid var(--primary-color);
@@ -9,4 +10,9 @@
 
 	background-color: var(--primary-color);
 	color: var(--white);
+}
+
+.opcoes{
+	display: flex;
+	align-items: center;
 }

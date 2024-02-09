@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { MdMedication } from "react-icons/md";
 import styles from "./Menu.module.scss";
 import BotaoMenu from "../BotaoMenu";
 
@@ -25,10 +26,22 @@ export default function Menu({}: Props) {
 		};
 	}, []);
 
-	if (width >= 480) {
-		return <div className={styles.menu}>
-			<BotaoMenu>Teste</BotaoMenu>
-		</div>;
+	if (width >= 672) {
+		return (
+			<div className={styles.menu}>
+				<div className={styles.opcoes}>
+					<BotaoMenu>
+						<span>PLATAFORMA</span> <MdMedication/>
+					</BotaoMenu>
+					<BotaoMenu>Farmácias</BotaoMenu>
+					<BotaoMenu>Plantões</BotaoMenu>
+					<BotaoMenu>Administração</BotaoMenu>
+				</div>
+				<div>
+					<BotaoMenu>Entrar</BotaoMenu>
+				</div>
+			</div>
+		);
 	}
 
 	return <></>;
