@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./Menu.module.scss";
+import BotaoMenu from "../BotaoMenu";
 
 interface Props {}
 
@@ -25,7 +26,9 @@ export default function Menu({}: Props) {
 	}, []);
 
 	if (width >= 480) {
-		return <div>Teste</div>;
+		return <div className={styles.menu}>
+			<BotaoMenu>Teste</BotaoMenu>
+		</div>;
 	}
 
 	return <></>;
