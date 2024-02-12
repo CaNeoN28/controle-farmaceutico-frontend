@@ -8,6 +8,8 @@ import TituloFarmacia from "@/components/TituloFarmacia";
 import Botao from "@/components/Botao";
 import FarmaciaItem from "@/components/FarmaciaItem";
 import FarmaciaFetch from "@/fetch/farmacias";
+import { GetManyRequest } from "@/types/Requests";
+import Farmacia from "@/types/Farmacia";
 
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
@@ -20,7 +22,9 @@ export default function Home() {
 		fFarmacias
 			.getFarmaciasProximas({ limite: 6, latitude: 0, longitude: 0 })
 			.then((res) => {
-				const farmacias = res.data.dados as any[];
+				const resposta = res.data as GetManyRequest<Farmacia>
+				const farmacias = resposta.dados;
+				
 				setFarmaciaMaisProxima(farmacias[0]);
 				setFarmaciasProximas(farmacias.slice(1, 6));
 			});
