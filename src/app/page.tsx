@@ -1,7 +1,7 @@
 "use client";
 
 import Menu from "@/components/Menu";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./globals.css";
 import styles from "./Home.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
@@ -12,46 +12,54 @@ import FarmaciaFetch from "@/fetch/farmacias";
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
 
-	const getFarmacia = () => {
+	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<any>();
+	const [farmaciasProximas, setFarmaciasProximas] = useState<any[]>([]);
+	const [farmaciasEscala, setFarmaciasEscala] = useState<any[]>([]);
+
+	const getFarmacias = () => {
 		fFarmacias
-			.getFarmaciasProximas({ limite: 5, latitude: 0, longitude: 0 })
+			.getFarmaciasProximas({ limite: 6, latitude: 0, longitude: 0 })
 			.then((res) => {
-				console.log(res);
+				const farmacias = res.data.dados as any[];
+				setFarmaciaMaisProxima(farmacias[0]);
+				setFarmaciasProximas(farmacias.slice(1, 6));
 			});
 	};
 
 	useEffect(() => {
-		getFarmacia();
+		getFarmacias();
 	}, []);
 
 	return (
 		<>
 			<Menu />
 			<main className={styles.main}>
-				<div className={styles.farmacia_proxima}>
-					<div className={styles.farmacia}>
-						<div className={styles.map}></div>
-						<TituloFarmacia>
-							<div className={styles.info}>
-								<span>Farmácia são José</span>
-								<span>Farmácia aberta mais próxima</span>
-							</div>
-						</TituloFarmacia>
+				{farmaciaMaisProxima && (
+					<div className={styles.farmacia_proxima}>
+						<div className={styles.farmacia}>
+							<div className={styles.map}></div>
+							<TituloFarmacia>
+								<div className={styles.info}>
+									<span>{farmaciaMaisProxima.nome_fantasia}</span>
+									<span>Farmácia aberta mais próxima</span>
+								</div>
+							</TituloFarmacia>
+						</div>
+						<Botao fullWidth onClick={() => {}}>
+							Traçar Rota
+						</Botao>
 					</div>
-					<Botao fullWidth onClick={() => {}}>
-						Traçar Rota
-					</Botao>
-				</div>
+				)}
 				<div className={styles.farmacias}>
 					<div className={styles.listagem}>
 						<span className={styles.title}>Outras farmácias abertas</span>
 						<div className={styles.items}>
-							{[1, 2, 3, 4, 5, 6].map((v) => (
+							{farmaciasProximas.map((f, i) => (
 								<FarmaciaItem
-									key={v}
+									key={i}
 									informacao="07:00 - 17:00"
-									nome="Farmácia"
-									para=""
+									nome={f.nome_fantasia}
+									para={`/farmacias/${f._id}`}
 								/>
 							))}
 						</div>
