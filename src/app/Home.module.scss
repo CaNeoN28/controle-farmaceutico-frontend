@@ -1,0 +1,15 @@
+.map {
+	width: 100%;
+	aspect-ratio: calc(320 / 172);
+
+	background-color: var(--gray);
+
+	border-radius: 8px;
+
+}
+
+@media screen and (min-width: 672px) {
+	.map {
+		aspect-ratio: calc(480 / 270);
+	}
+}
