@@ -1,15 +1,29 @@
 "use client";
 
 import Menu from "@/components/Menu";
-import React from "react";
+import React, { useEffect } from "react";
 import "./globals.css";
 import styles from "./Home.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
 import Botao from "@/components/Botao";
-import { redirect } from "next/dist/server/api-utils";
 import FarmaciaItem from "@/components/FarmaciaItem";
+import FarmaciaFetch from "@/fetch/farmacias";
 
 export default function Home() {
+	const fFarmacias = new FarmaciaFetch();
+
+	const getFarmacia = () => {
+		fFarmacias
+			.getFarmaciasProximas({ limite: 5, latitude: 0, longitude: 0 })
+			.then((res) => {
+				console.log(res);
+			});
+	};
+
+	useEffect(() => {
+		getFarmacia();
+	}, []);
+
 	return (
 		<>
 			<Menu />
@@ -34,6 +48,7 @@ export default function Home() {
 						<div className={styles.items}>
 							{[1, 2, 3, 4, 5, 6].map((v) => (
 								<FarmaciaItem
+									key={v}
 									informacao="07:00 - 17:00"
 									nome="Farmácia"
 									para=""
@@ -48,7 +63,12 @@ export default function Home() {
 						<span className={styles.title}>Plantões nos próximos dias</span>
 						<div className={styles.items}>
 							{[1, 2, 3, 4, 5, 6].map((v) => (
-								<FarmaciaItem informacao="24/10/2024" nome="Farmácia" para="" />
+								<FarmaciaItem
+									key={v}
+									informacao="24/10/2024"
+									nome="Farmácia"
+									para=""
+								/>
 							))}
 						</div>
 						<Botao secundario fullWidth>
