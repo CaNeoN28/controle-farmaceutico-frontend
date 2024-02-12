@@ -1,15 +1,79 @@
-.map {
-	width: 100%;
-	aspect-ratio: calc(320 / 172);
+.main {
+	display: flex;
 
-	background-color: var(--gray);
+	gap: 40px;
 
-	border-radius: 8px;
+	.farmacia_proxima {
+		display: flex;
+		flex-direction: column;
 
+		.farmacia {
+			display: flex;
+			flex-direction: column;
+
+			.map {
+				width: 100%;
+				aspect-ratio: calc(320 / 172);
+
+				background-color: var(--gray);
+
+				border-radius: 8px;
+			}
+
+			.info{
+				display: flex;
+				flex-direction: column;
+			}
+		}
+	}
+
+	.farmacias {
+		display: flex;
+
+		.listagem {
+			display: flex;
+			flex-direction: column;
+
+			.items {
+				display: flex;
+				flex-direction: column;
+			}
+		}
+	}
 }
 
 @media screen and (min-width: 672px) {
-	.map {
-		aspect-ratio: calc(480 / 270);
+	.main {
+		padding: 64px 40px;
+
+		.farmacia_proxima {
+			width: 40%;
+
+			gap: 16px;
+
+			.farmacia {
+				gap: 24px;
+
+				.map {
+					aspect-ratio: calc(480 / 270);
+				}
+			}
+		}
+
+		.farmacias {
+			gap: 40px;
+
+			width: 60%;
+
+			.listagem {
+				justify-content: space-between;
+
+				width: 100%;
+
+				.items {
+					gap: 16px;
+				}
+			}
+		}
 	}
 }
