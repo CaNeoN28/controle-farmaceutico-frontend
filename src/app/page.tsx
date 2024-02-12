@@ -52,9 +52,22 @@ export default function Home() {
 
 				Object.keys(escala).map((e) => {
 					escala[e].map((f) => {
+						const dia = new Date(e);
+
+						const { d, m, y } = {
+							d: String(dia.getDate()),
+							m: String(dia.getMonth() + 1),
+							y: String(dia.getFullYear()),
+						};
+
+						const dia_semana = `${d.padStart(2, "0")}/${m.padStart(
+							2,
+							"0"
+						)}/${y.padStart(4, "0")}`;
+
 						farmacias.push({
 							...f,
-							dia_semana: e,
+							dia_semana,
 						});
 					});
 				});
