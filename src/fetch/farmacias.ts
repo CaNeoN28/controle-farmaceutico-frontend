@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const { API_URL } = process.env;
-const url = `http://localhost:3030/farmacias`;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const url = `${API_URL}/farmacias`;
 
 interface ParamsProximas {
 	pagina?: number;
