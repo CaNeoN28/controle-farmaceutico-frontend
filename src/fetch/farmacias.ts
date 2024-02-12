@@ -11,6 +11,14 @@ interface ParamsProximas {
 	tempo?: Date;
 }
 
+interface ParamsPlantoes {
+	pagina?: number;
+	limite?: number;
+	municipio?: string;
+	estado?: string;
+	tempo?: Date;
+}
+
 export default class FarmaciaFetch {
 	getFarmacias(params: any) {
 		const response = axios.get(url, {
@@ -20,8 +28,8 @@ export default class FarmaciaFetch {
 		return response;
 	}
 
-	getFarmaciasPlantoes(params: any) {
-		const response = axios.get(`${url}/plantoes`, {
+	getFarmaciasPlantoes(params: ParamsPlantoes) {
+		const response = axios.get(`${url}/plantao`, {
 			params,
 		});
 

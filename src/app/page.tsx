@@ -9,7 +9,7 @@ import Botao from "@/components/Botao";
 import FarmaciaItem from "@/components/FarmaciaItem";
 import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
-import Farmacia from "@/types/Farmacia";
+import Farmacia, { Escala } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
 
 export default function Home() {
@@ -19,7 +19,9 @@ export default function Home() {
 
 	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<any>();
 	const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
-	const [farmaciasEscala, setFarmaciasEscala] = useState<any[]>([]);
+	const [farmaciasEscala, setFarmaciasEscala] = useState<
+		Array<Farmacia & { dia_semana: string }>
+	>([]);
 
 	const getFarmacias = () => {
 		fFarmacias
@@ -30,11 +32,34 @@ export default function Home() {
 				longitude: 0,
 			})
 			.then((res) => {
-				const resposta = res.data as GetManyRequest<Farmacia>;
+				const resposta = res.data as GetManyRequest<Farmacia[]>;
 				const farmacias = resposta.dados;
 
 				setFarmaciaMaisProxima(farmacias[0]);
 				setFarmaciasProximas(farmacias.slice(1, 6));
+			});
+
+		fFarmacias
+			.getFarmaciasPlantoes({
+				limite: 5,
+				tempo: date,
+			})
+			.then((res) => {
+				const resposta = res.data as GetManyRequest<Escala>;
+				const escala = resposta.dados;
+
+				const farmacias: Array<Farmacia & { dia_semana: string }> = [];
+
+				Object.keys(escala).map((e) => {
+					escala[e].map((f) => {
+						farmacias.push({
+							...f,
+							dia_semana: e,
+						});
+					});
+				});
+
+				setFarmaciasEscala(farmacias.slice(0, 5));
 			});
 	};
 
@@ -87,12 +112,12 @@ export default function Home() {
 						<div className={styles.listagem}>
 							<span className={styles.title}>Plantões nos próximos dias</span>
 							<div className={styles.items}>
-								{[1, 2, 3, 4, 5, 6].map((v) => (
+								{farmaciasEscala.map((f, i) => (
 									<FarmaciaItem
-										key={v}
-										informacao="24/10/2024"
-										nome="Farmácia"
-										para=""
+										key={i}
+										informacao={f.dia_semana}
+										nome={f.nome_fantasia}
+										para={`/farmacias/${f._id}`}
 									/>
 								))}
 							</div>
