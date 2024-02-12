@@ -8,6 +8,7 @@ interface ParamsProximas {
 	limite?: number;
 	latitude: number;
 	longitude: number;
+	tempo?: Date;
 }
 
 export default class FarmaciaFetch {

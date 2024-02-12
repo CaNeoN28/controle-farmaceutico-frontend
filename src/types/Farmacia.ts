@@ -1,4 +1,4 @@
-import DiasSemana from "./DiasSemana";
+import DiaSemana from "./DiasSemana";
 
 export default interface Farmacia {
 	_id: string;
@@ -18,7 +18,7 @@ export default interface Farmacia {
 	};
 	plantoes: string[];
 	horarios_servico: {
-		[dia_semana in DiasSemana]: {
+		[dia_semana in DiaSemana]: {
 			horario_entrada: string;
 			horario_saida: string;
 		};

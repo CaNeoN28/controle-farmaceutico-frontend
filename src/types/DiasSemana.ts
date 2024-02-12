@@ -1,10 +1,26 @@
-type DiasSemana =
-| "segunda_feira"
-| "terca_feira"
-| "quarta_feira"
-| "quinta_feira"
-| "sexta_feira"
-| "sabado"
-| "domingo";
+const getDayFromNum = (num: number) : DiaSemana => {
+	const days : DiaSemana[] = [
+		"domingo",
+		"segunda_feira",
+		"terca_feira",
+		"quarta_feira",
+		"quinta_feira",
+		"sexta_feira",
+		"sabado",
+	];
 
-export default DiasSemana
+	return days[num];
+};
+
+type DiaSemana =
+	| "segunda_feira"
+	| "terca_feira"
+	| "quarta_feira"
+	| "quinta_feira"
+	| "sexta_feira"
+	| "sabado"
+	| "domingo";
+
+export default DiaSemana;
+
+export { getDayFromNum };
