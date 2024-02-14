@@ -18,7 +18,7 @@ export default function Home() {
 
 	const [date, setDate] = useState(new Date());
 
-	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<any>();
+	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<Farmacia>();
 	const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
 	const [farmaciasEscala, setFarmaciasEscala] = useState<
 		Array<Farmacia & { dia_semana: string }>
@@ -35,6 +35,8 @@ export default function Home() {
 			.then((res) => {
 				const resposta = res.data as GetManyRequest<Farmacia[]>;
 				const farmacias = resposta.dados;
+
+				console.log(farmacias[0]);
 
 				setFarmaciaMaisProxima(farmacias[0]);
 				setFarmaciasProximas(farmacias.slice(1, 6));
@@ -90,7 +92,12 @@ export default function Home() {
 						<div className={styles.farmacia_proxima}>
 							<div className={styles.farmacia}>
 								<div className={styles.map}>
-									<Map/>
+									<Map
+										map_center={{
+											lng: Number(farmaciaMaisProxima.endereco.localizacao.y),
+											lat: Number(farmaciaMaisProxima.endereco.localizacao.x),
+										}}
+									/>
 								</div>
 								<TituloFarmacia>
 									<div className={styles.info}>
