@@ -11,6 +11,7 @@ import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import Farmacia, { Escala } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
+import Map from "@/components/Map";
 
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
@@ -88,7 +89,9 @@ export default function Home() {
 					{farmaciaMaisProxima && (
 						<div className={styles.farmacia_proxima}>
 							<div className={styles.farmacia}>
-								<div className={styles.map}></div>
+								<div className={styles.map}>
+									<Map/>
+								</div>
 								<TituloFarmacia>
 									<div className={styles.info}>
 										<span>{farmaciaMaisProxima.nome_fantasia}</span>
