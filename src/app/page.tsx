@@ -112,6 +112,16 @@ export default function Home() {
 		}
 	};
 
+	const tracarRota = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		e.preventDefault();
+
+		if (localizacao && farmaciaMaisProxima) {
+			const url = `https://www.google.com/maps/dir/${localizacao.lat},${localizacao.lng}/${farmaciaMaisProxima.endereco.localizacao.x},${farmaciaMaisProxima.endereco.localizacao.y}`;
+			
+			window.open(url, "_blank");
+		}
+	};
+
 	useEffect(() => {
 		getLocation();
 	}, []);
@@ -147,7 +157,7 @@ export default function Home() {
 									</div>
 								</TituloFarmacia>
 							</div>
-							<Botao fullWidth onClick={() => {}}>
+							<Botao fullWidth onClick={tracarRota}>
 								Traçar Rota
 							</Botao>
 						</div>
