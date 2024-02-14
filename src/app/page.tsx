@@ -130,7 +130,7 @@ export default function Home() {
 							<div className={styles.farmacia}>
 								<div className={styles.map}>
 									{erroLocalizacao ? (
-										<span>{erroLocalizacao}</span>
+										<span className={styles.erro}>{erroLocalizacao}</span>
 									) : (
 										<Map
 											map_center={{

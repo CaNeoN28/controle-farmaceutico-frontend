@@ -12,10 +12,19 @@
 			flex-direction: column;
 
 			.map {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
 				width: 100%;
 				aspect-ratio: calc(320 / 172);
 
-				background-color: var(--gray);
+				background-color: var(--white);
+				border: 1px solid var(--gray);
+
+				.erro{
+					font-size: 18px;
+				}
 			}
 
 			.info{
