@@ -18,6 +18,12 @@ export default function Home() {
 
 	const [date, setDate] = useState(new Date());
 
+	const [localizacao, setLocalizacao] = useState<{
+		lng: number;
+		lat: number;
+	}>();
+	const [erroLocalizacao, setErroLocalizacao] = useState<string>();
+
 	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<Farmacia>();
 	const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
 	const [farmaciasEscala, setFarmaciasEscala] = useState<
@@ -25,63 +31,94 @@ export default function Home() {
 	>([]);
 
 	const getFarmacias = () => {
-		fFarmacias
-			.getFarmaciasProximas({
-				limite: 6,
-				tempo: date,
-				latitude: 0,
-				longitude: 0,
-			})
-			.then((res) => {
-				const resposta = res.data as GetManyRequest<Farmacia[]>;
-				const farmacias = resposta.dados;
+		if (localizacao) {
+			const { lat, lng } = localizacao;
 
-				console.log(farmacias[0]);
+			fFarmacias
+				.getFarmaciasProximas({
+					limite: 6,
+					tempo: date,
+					latitude: lat,
+					longitude: lng,
+				})
+				.then((res) => {
+					const resposta = res.data as GetManyRequest<Farmacia[]>;
+					const farmacias = resposta.dados;
 
-				setFarmaciaMaisProxima(farmacias[0]);
-				setFarmaciasProximas(farmacias.slice(1, 6));
-			});
-
-		fFarmacias
-			.getFarmaciasPlantoes({
-				limite: 5,
-				tempo: date,
-			})
-			.then((res) => {
-				const resposta = res.data as GetManyRequest<Escala>;
-				const escala = resposta.dados;
-
-				const farmacias: Array<Farmacia & { dia_semana: string }> = [];
-
-				Object.keys(escala).map((e) => {
-					escala[e].map((f) => {
-						const dia = new Date(e);
-
-						const { d, m, y } = {
-							d: String(dia.getDate()),
-							m: String(dia.getMonth() + 1),
-							y: String(dia.getFullYear()),
-						};
-
-						const dia_semana = `${d.padStart(2, "0")}/${m.padStart(
-							2,
-							"0"
-						)}/${y.padStart(4, "0")}`;
-
-						farmacias.push({
-							...f,
-							dia_semana,
-						});
-					});
+					setFarmaciaMaisProxima(farmacias[0]);
+					setFarmaciasProximas(farmacias.slice(1, 6));
 				});
 
-				setFarmaciasEscala(farmacias.slice(0, 5));
-			});
+			fFarmacias
+				.getFarmaciasPlantoes({
+					limite: 5,
+					tempo: date,
+				})
+				.then((res) => {
+					const resposta = res.data as GetManyRequest<Escala>;
+					const escala = resposta.dados;
+
+					const farmacias: Array<Farmacia & { dia_semana: string }> = [];
+
+					Object.keys(escala).map((e) => {
+						escala[e].map((f) => {
+							const dia = new Date(e);
+
+							const { d, m, y } = {
+								d: String(dia.getDate()),
+								m: String(dia.getMonth() + 1),
+								y: String(dia.getFullYear()),
+							};
+
+							const dia_semana = `${d.padStart(2, "0")}/${m.padStart(
+								2,
+								"0"
+							)}/${y.padStart(4, "0")}`;
+
+							farmacias.push({
+								...f,
+								dia_semana,
+							});
+						});
+					});
+
+					setFarmaciasEscala(farmacias.slice(0, 5));
+				});
+		}
+	};
+
+	const getLocation = () => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					const { latitude, longitude } = position.coords;
+
+					setLocalizacao({
+						lat: latitude,
+						lng: longitude,
+					});
+				},
+				(error) => {
+					setErroLocalizacao(error.message);
+
+					setLocalizacao({
+						lat: 0,
+						lng: 0,
+					});
+				}
+			);
+		} else {
+			setErroLocalizacao("Geolocalização não permitida no navegador");
+		}
 	};
 
 	useEffect(() => {
-		getFarmacias();
+		getLocation();
 	}, []);
+
+	useEffect(() => {
+		getFarmacias();
+	}, [localizacao]);
 
 	if (farmaciaMaisProxima && farmaciasEscala && farmaciasProximas)
 		return (
@@ -92,12 +129,16 @@ export default function Home() {
 						<div className={styles.farmacia_proxima}>
 							<div className={styles.farmacia}>
 								<div className={styles.map}>
-									<Map
-										map_center={{
-											lng: Number(farmaciaMaisProxima.endereco.localizacao.y),
-											lat: Number(farmaciaMaisProxima.endereco.localizacao.x),
-										}}
-									/>
+									{erroLocalizacao ? (
+										<span>{erroLocalizacao}</span>
+									) : (
+										<Map
+											map_center={{
+												lat: Number(farmaciaMaisProxima.endereco.localizacao.x),
+												lng: Number(farmaciaMaisProxima.endereco.localizacao.y),
+											}}
+										/>
+									)}
 								</div>
 								<TituloFarmacia>
 									<div className={styles.info}>
