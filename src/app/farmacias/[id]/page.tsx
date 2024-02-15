@@ -11,6 +11,8 @@ import Botao from "@/components/Botao";
 import DiaSemana, { getDayName } from "@/types/DiasSemana";
 import HorarioServico from "@/components/HorarioServico";
 import HorarioServicoView from "@/components/HorarioServicoView";
+import farmaciaEstaAberta from "@/utils/farmaciaEstaAberta";
+import DiaPlantao from "@/components/DiaPlantao";
 
 interface Params {
 	id: string;
@@ -22,18 +24,25 @@ interface Horario {
 	saida: string;
 }
 
+interface Plantoes {
+	[ano: string]: string[];
+}
+
 export default function Farmacia({ params }: { params: Params }) {
 	const { id: farmaciaId } = params;
 
 	const fFarmacias = new FarmaciaFetch();
 
-	const [date, setDate] = useState(new Date());
+	const [date, setDate] = useState(new Date(2024, 4, 4, 20));
 	const [farmacia, setFarmacia] = useState<Farmacia>();
 	const [localizacaoFarmacia, setLocalizacaoFarmacia] = useState({
 		lat: 0,
 		lng: 0,
 	});
 	const [horarios, setHorarios] = useState<Horario[]>([]);
+	const [plantoes, setPlantoes] = useState<Plantoes>({});
+	const [aberto, setAberto] = useState<boolean>(false);
+
 	const [erroFarmacia, setErroFarmacia] = useState("");
 
 	const getFarmacia = () => {
@@ -75,6 +84,25 @@ export default function Farmacia({ params }: { params: Params }) {
 			);
 
 			setHorarios(horarios);
+
+			const plantoes: Plantoes = {};
+
+			farmacia.plantoes
+				.sort((a, b) => (Number(new Date(a)) > Number(new Date(b)) ? 1 : -1))
+				.map((p) => {
+					const [ano] = p.split("/");
+
+					if (plantoes[ano] == undefined) {
+						plantoes[ano] = [];
+					}
+
+					plantoes[ano].push(p);
+				});
+
+			setPlantoes(plantoes);
+
+			const aberto = farmaciaEstaAberta(farmacia, date);
+			setAberto(aberto);
 		}
 	}, [farmacia]);
 
@@ -88,17 +116,33 @@ export default function Farmacia({ params }: { params: Params }) {
 							<div className={styles.map}>
 								<Map map_center={localizacaoFarmacia} />
 							</div>
-							<TituloFarmacia>{farmacia.nome_fantasia}</TituloFarmacia>
+							<TituloFarmacia>
+								<div>
+									<span>{farmacia.nome_fantasia}</span>
+									<span>{aberto ? "Aberto agora" : "Fechado agora"}</span>
+								</div>
+							</TituloFarmacia>
 						</div>
 						<Botao fullWidth>Traçar rota</Botao>
 					</div>
 					<div className={styles.informacoes}>
 						<div className={styles.container}>
 							{horarios.map((h) => (
-								<HorarioServicoView key={h.dia_semana} {...h}/>
+								<HorarioServicoView key={h.dia_semana} {...h} />
 							))}
 						</div>
-						<div className={styles.container}></div>
+						<div className={styles.container}>
+							{Object.keys(plantoes).map((p) => (
+								<div key={p}>
+									<span>{p}</span>
+									<div>
+										{plantoes[p].map((v) => (
+											<DiaPlantao key={v} data={v} />
+										))}
+									</div>
+								</div>
+							))}
+						</div>
 					</div>
 				</main>
 			) : (
