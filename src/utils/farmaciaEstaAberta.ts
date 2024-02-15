@@ -34,7 +34,6 @@ export default function farmaciaEstaAberta(farmacia: Farmacia, horario: Date) {
 	const umDia = 60 * 60 * 24 * 1000;
 
 	if (hora < 7) {
-		console.log(hora)
 		horario = new Date(Number(horario) - umDia);
 	}
 

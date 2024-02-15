@@ -33,7 +33,7 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	const fFarmacias = new FarmaciaFetch();
 
-	const [date, setDate] = useState(new Date(2024, 4, 4, 20));
+	const [date, setDate] = useState(new Date());
 	const [farmacia, setFarmacia] = useState<Farmacia>();
 	const [localizacaoFarmacia, setLocalizacaoFarmacia] = useState({
 		lat: 0,
@@ -50,6 +50,22 @@ export default function Farmacia({ params }: { params: Params }) {
 			.getFarmacia(farmaciaId)
 			.then((res) => {
 				const resposta = res.data as Farmacia;
+
+				resposta.plantoes = resposta.plantoes.filter((p) => {
+					const dataP = new Date(p);
+
+					const hora = date.getHours();
+
+					const dataAtual = new Date(
+						[date.getFullYear(), date.getMonth() + 1, date.getDate()].join("/")
+					);
+
+					if (hora < 7) {
+						return Number(dataP) + 60 * 60 * 24 * 1000 >= Number(dataAtual);
+					}
+
+					return Number(dataP) >= Number(dataAtual);
+				});
 
 				setFarmacia(resposta);
 			})
