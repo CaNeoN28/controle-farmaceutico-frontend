@@ -1,9 +1,16 @@
-.main{
-
+.main {
 }
 
 @media screen and (min-width: 672px) {
-	.main{
+	.main {
 		padding: 64px 40px;
+
+		.farmacia {
+			.informacao_principal {
+				.map {
+					aspect-ratio: calc(480 / 270);
+				}
+			}
+		}
 	}
 }
