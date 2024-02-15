@@ -99,7 +99,7 @@ export default function Home() {
 					});
 				},
 				(error) => {
-					setErroLocalizacao(error.message);
+					setErroLocalizacao("Não foi possível rastrear sua localização");
 
 					setLocalizacao({
 						lat: 0,
