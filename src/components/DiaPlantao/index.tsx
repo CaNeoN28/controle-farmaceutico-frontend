@@ -21,16 +21,16 @@ export default function DiaPlantao({ data, onClick }: Props) {
   }
 
   const { dia, mes, ano } = {
-    dia: date.getDate(),
-    mes: date.getMonth() + 1,
-    ano: date.getFullYear(),
+    dia: String(date.getDate()),
+    mes: String(date.getMonth() + 1),
+    ano: String(date.getFullYear()),
   };
 
   return (
     <button className={classes} onClick={onClick}>
       <div className={styles.container}>
         <span>
-          {dia}/{mes}
+          {dia.padStart(2, "0")}/{mes.padStart(2, "0")}
         </span>
         {onClick && <span className={styles.ano}>{ano}</span>}
       </div>

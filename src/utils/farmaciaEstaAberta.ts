@@ -45,7 +45,7 @@ export default function farmaciaEstaAberta(farmacia: Farmacia, horario: Date) {
 
 	const data = [ano, mes, dia].join("/")
 
-	const nosPlantoes = plantoes.find(p => {
+	const nosPlantoes = !!plantoes.find(p => {
 		return Number(new Date(data)) === Number(new Date(p)) 
 	}) 
 
