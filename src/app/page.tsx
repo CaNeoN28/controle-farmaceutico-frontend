@@ -1,7 +1,7 @@
 "use client";
 
 import Menu from "@/components/Menu";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import "./globals.css";
 import styles from "./Home.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
@@ -18,7 +18,7 @@ interface Localizacao {
 	lat: number;
 }
 
-type FarmaciaEscala = Array<Farmacia & { dia_semana: string }>
+type FarmaciaEscala = Array<Farmacia & { dia_semana: string }>;
 
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
@@ -30,7 +30,11 @@ export default function Home() {
 
 	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<Farmacia>();
 	const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
+	const [farmaciasProximasF, setFarmaciasProximasF] = useState<Farmacia[]>([]);
 	const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaEscala>([]);
+	const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<FarmaciaEscala>([]);
+
+	const [numFarmacias, setNumFarmacias] = useState<number>(5);
 
 	const getFarmacias = () => {
 		if (localizacao) {
@@ -48,12 +52,12 @@ export default function Home() {
 					const farmacias = resposta.dados;
 
 					setFarmaciaMaisProxima(farmacias[0]);
-					setFarmaciasProximas(farmacias.slice(1, 6));
+					setFarmaciasProximas(farmacias);
 				});
 
 			fFarmacias
 				.getFarmaciasPlantoes({
-					limite: 5,
+					limite: numFarmacias,
 					tempo: date,
 				})
 				.then((res) => {
@@ -84,7 +88,7 @@ export default function Home() {
 						});
 					});
 
-					setFarmaciasEscala(farmacias.slice(0, 5));
+					setFarmaciasEscala(farmacias);
 				});
 		}
 	};
@@ -119,18 +123,48 @@ export default function Home() {
 
 		if (localizacao && farmaciaMaisProxima) {
 			const url = `https://www.google.com/maps/dir/${localizacao.lat},${localizacao.lng}/${farmaciaMaisProxima.endereco.localizacao.x},${farmaciaMaisProxima.endereco.localizacao.y}`;
-			
+
 			window.open(url, "_blank");
 		}
 	};
 
 	useEffect(() => {
 		getLocation();
+
+		const getMaxFarmacias = () => {
+			const width = window.innerWidth;
+
+			if (width > 1680) {
+				setNumFarmacias(5);
+			} else if (width > 1280) {
+				setNumFarmacias(4);
+			} else {
+				setNumFarmacias(3)
+			}
+		};
+
+		getMaxFarmacias();
+
+		window.addEventListener("resize", getMaxFarmacias);
+		return () => window.removeEventListener("resize", getMaxFarmacias);
 	}, []);
 
 	useEffect(() => {
 		getFarmacias();
 	}, [localizacao]);
+
+	useEffect(() => {
+		setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));
+	}, [farmaciasProximas]);
+
+	useEffect(() => {
+		setFarmaciasEscalaF(farmaciasEscala.slice(0, numFarmacias));
+	}, [farmaciasEscala]);
+
+	useLayoutEffect(() => {
+		setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));
+		setFarmaciasEscalaF(farmaciasEscala.slice(0, numFarmacias));
+	}, [numFarmacias]);
 
 	if (farmaciaMaisProxima && farmaciasEscala && farmaciasProximas)
 		return (
@@ -168,7 +202,7 @@ export default function Home() {
 						<div className={styles.listagem}>
 							<span className={styles.title}>Outras farmácias abertas</span>
 							<div className={styles.items}>
-								{farmaciasProximas.map((f, i) => {
+								{farmaciasProximasF.map((f, i) => {
 									const dia = f.horarios_servico[getDayFromNum(date.getDay())];
 
 									return (
@@ -188,7 +222,7 @@ export default function Home() {
 						<div className={styles.listagem}>
 							<span className={styles.title}>Plantões nos próximos dias</span>
 							<div className={styles.items}>
-								{farmaciasEscala.map((f, i) => (
+								{farmaciasEscalaF.map((f, i) => (
 									<FarmaciaItem
 										key={i}
 										informacao={f.dia_semana}
