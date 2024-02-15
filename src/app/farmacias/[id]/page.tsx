@@ -133,7 +133,7 @@ export default function Farmacia({ params }: { params: Params }) {
 								<Map map_center={localizacaoFarmacia} />
 							</div>
 							<TituloFarmacia>
-								<div>
+								<div className={styles.titulo}>
 									<span>{farmacia.nome_fantasia}</span>
 									<span>{aberto ? "Aberto agora" : "Fechado agora"}</span>
 								</div>
@@ -142,22 +142,30 @@ export default function Farmacia({ params }: { params: Params }) {
 						<Botao fullWidth>Traçar rota</Botao>
 					</div>
 					<div className={styles.informacoes}>
-						<div className={styles.container}>
-							{horarios.map((h) => (
-								<HorarioServicoView key={h.dia_semana} {...h} />
-							))}
-						</div>
-						<div className={styles.container}>
-							{Object.keys(plantoes).map((p) => (
-								<div key={p}>
-									<span>{p}</span>
-									<div>
-										{plantoes[p].map((v) => (
-											<DiaPlantao key={v} data={v} />
-										))}
-									</div>
+						<div className={styles.secao}>
+							<span>Horário de funcionamento:</span>
+							<div className={styles.container}>
+								<div className={styles.horarios}>
+									{horarios.map((h) => (
+										<HorarioServicoView key={h.dia_semana} {...h} />
+									))}
 								</div>
-							))}
+							</div>
+						</div>
+						<div>
+							<span>Escala de plantão</span>
+							<div className={styles.container}>
+								{Object.keys(plantoes).map((p) => (
+									<div key={p}>
+										<span>{p}</span>
+										<div>
+											{plantoes[p].map((v) => (
+												<DiaPlantao key={v} data={v} />
+											))}
+										</div>
+									</div>
+								))}
+							</div>
 						</div>
 					</div>
 				</main>
