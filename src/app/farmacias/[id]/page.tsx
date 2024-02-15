@@ -4,6 +4,11 @@ import Menu from "@/components/Menu";
 import FarmaciaFetch from "@/fetch/farmacias";
 import Farmacia from "@/types/Farmacia";
 import { useEffect, useState } from "react";
+import styles from "./Farmacia.module.scss"
+import TituloFarmacia from "@/components/TituloFarmacia";
+import Map from "@/components/Map";
+import Botao from "@/components/Botao";
+
 
 interface Params {
 	id: string;
@@ -26,7 +31,7 @@ export default function Farmacia({ params }: { params: Params }) {
 				setFarmacia(resposta);
 			})
 			.catch((err) => {
-				setErroFarmacia(`Não foi possível encontrar farmácia: ${err.data}`);
+				setErroFarmacia(`Não foi possível encontrar farmácia`);
 			});
 	};
 
@@ -38,7 +43,19 @@ export default function Farmacia({ params }: { params: Params }) {
 		<>
 			<Menu />
 			{farmacia ? (
-				<main>{farmacia.nome_fantasia}</main>
+				<main className={styles.main}>
+					<div className={styles.farmacia}>
+						<div className={styles.localizacao}>
+							<Map/>
+							<TituloFarmacia/>
+						</div>
+						<Botao fullWidth>Traçar rota</Botao>
+					</div>
+					<div className={styles.informacoes}>
+						<div className={styles.container}></div>
+						<div className={styles.container}></div>
+					</div>
+				</main>
 			) : (
 				<span>{erroFarmacia}</span>
 			)}
