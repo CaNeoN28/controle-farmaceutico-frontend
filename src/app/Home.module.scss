@@ -1,0 +1,119 @@
+.main {
+	display: flex;
+
+	padding: 40px 20px;
+	gap: 40px;
+
+	.farmacia_proxima {
+		display: flex;
+		flex-direction: column;
+
+		.farmacia {
+			display: flex;
+			flex-direction: column;
+
+			margin-bottom: 8px;
+
+			.map {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				margin-bottom: 8px;
+				width: 100%;
+				aspect-ratio: calc(320 / 172);
+
+				background-color: var(--white);
+				border: 1px solid var(--gray);
+
+				.erro {
+					font-size: 18px;
+				}
+			}
+
+			.info {
+				display: flex;
+				flex-direction: column;
+			}
+		}
+	}
+
+	.farmacias {
+		display: flex;
+
+		.listagem {
+			display: flex;
+			flex-direction: column;
+
+			.items {
+				display: flex;
+				flex-direction: column;
+
+				gap: 8px
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 672px) {
+	.main {
+		padding: 64px 40px;
+
+		.farmacia_proxima {
+			width: 40%;
+
+			gap: 16px;
+
+			.farmacia {
+				gap: 24px;
+
+				.map {
+					aspect-ratio: calc(480 / 270);
+				}
+			}
+		}
+
+		.farmacias {
+			gap: 40px;
+
+			width: 60%;
+
+			.listagem {
+				justify-content: space-between;
+
+				width: 100%;
+
+				.items {
+					gap: 16px;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 948px) {
+	.main {
+		flex-direction: column;
+
+		gap: 40px;
+
+		.farmacia_proxima {
+			width: 100%;
+		}
+
+		.farmacias {
+			flex-direction: column;
+
+			width: 100%;
+			gap: 40px;
+
+			.listagem {
+				gap: 8px;
+
+				.items {
+					margin-bottom: 8px;
+				}
+			}
+		}
+	}
+}
