@@ -13,22 +13,24 @@ import Farmacia, { Escala } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
 import Map from "@/components/Map";
 
+interface Localizacao {
+	lng: number;
+	lat: number;
+}
+
+type FarmaciaEscala = Array<Farmacia & { dia_semana: string }>
+
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
 
 	const [date, setDate] = useState(new Date());
 
-	const [localizacao, setLocalizacao] = useState<{
-		lng: number;
-		lat: number;
-	}>();
+	const [localizacao, setLocalizacao] = useState<Localizacao>();
 	const [erroLocalizacao, setErroLocalizacao] = useState<string>();
 
 	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<Farmacia>();
 	const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
-	const [farmaciasEscala, setFarmaciasEscala] = useState<
-		Array<Farmacia & { dia_semana: string }>
-	>([]);
+	const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaEscala>([]);
 
 	const getFarmacias = () => {
 		if (localizacao) {
