@@ -24,6 +24,6 @@ export default function Map({ map_center }: Props) {
 	}
 
 	return (
-		<GoogleMap center={center} zoom={18} mapContainerClassName={styles.map} />
+		<GoogleMap center={center} zoom={14} mapContainerClassName={styles.map} />
 	);
 }

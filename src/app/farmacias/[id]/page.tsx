@@ -28,6 +28,11 @@ interface Plantoes {
   [ano: string]: string[];
 }
 
+interface Localizacao {
+  lng: number;
+  lat: number;
+}
+
 export default function Farmacia({ params }: { params: Params }) {
   const { id: farmaciaId } = params;
 
@@ -35,15 +40,47 @@ export default function Farmacia({ params }: { params: Params }) {
 
   const [date, setDate] = useState(new Date());
   const [farmacia, setFarmacia] = useState<Farmacia>();
-  const [localizacaoFarmacia, setLocalizacaoFarmacia] = useState({
-    lat: 0,
-    lng: 0,
-  });
+  const [localizacao, setLocalizacao] = useState({ lat: 0, lng: 0 });
+  const [erroLocalizacao, setErroLocalizacao] = useState<string>();
+  const [localizacaoFarmacia, setLocalizacaoFarmacia] = useState<Localizacao>();
   const [horarios, setHorarios] = useState<Horario[]>([]);
   const [plantoes, setPlantoes] = useState<Plantoes>({});
   const [aberto, setAberto] = useState<boolean>(false);
 
   const [erroFarmacia, setErroFarmacia] = useState("");
+
+  const tracarRota = () => {
+    if (localizacao && localizacaoFarmacia) {
+      const url = `https://www.google.com/maps/dir/${localizacao.lat},${localizacao.lng}/${localizacaoFarmacia.lat},${localizacaoFarmacia.lng}`;
+
+      window.open(url, "_blank");
+    }
+  };
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+
+          setLocalizacao({
+            lat: latitude,
+            lng: longitude,
+          });
+        },
+        (error) => {
+          setErroLocalizacao("Não foi possível rastrear sua localização");
+
+          setLocalizacao({
+            lat: 0,
+            lng: 0,
+          });
+        }
+      );
+    } else {
+      setErroLocalizacao("Geolocalização não permitida no navegador");
+    }
+  };
 
   const getFarmacia = () => {
     fFarmacias
@@ -75,6 +112,7 @@ export default function Farmacia({ params }: { params: Params }) {
   };
 
   useEffect(() => {
+    getLocation();
     getFarmacia();
   }, []);
 
@@ -127,20 +165,24 @@ export default function Farmacia({ params }: { params: Params }) {
       <Menu />
       {farmacia ? (
         <main className={styles.main}>
-          <div className={styles.farmacia}>
-            <div className={styles.informacao_principal}>
-              <div className={styles.map}>
-                <Map map_center={localizacaoFarmacia} />
-              </div>
-              <TituloFarmacia>
-                <div className={styles.titulo}>
-                  <span>{farmacia.nome_fantasia}</span>
-                  <span>{aberto ? "Aberto agora" : "Fechado agora"}</span>
+          {localizacaoFarmacia && (
+            <div className={styles.farmacia}>
+              <div className={styles.informacao_principal}>
+                <div className={styles.map}>
+                  <Map map_center={localizacaoFarmacia} />
                 </div>
-              </TituloFarmacia>
+                <TituloFarmacia>
+                  <div className={styles.titulo}>
+                    <span>{farmacia.nome_fantasia}</span>
+                    <span>{aberto ? "Aberto agora" : "Fechado agora"}</span>
+                  </div>
+                </TituloFarmacia>
+              </div>
+              <Botao fullWidth onClick={tracarRota}>
+                Traçar rota
+              </Botao>
             </div>
-            <Botao fullWidth>Traçar rota</Botao>
-          </div>
+          )}
           <div className={styles.informacoes}>
             <div className={styles.secao}>
               <span>Horário de funcionamento:</span>
@@ -170,9 +212,7 @@ export default function Farmacia({ params }: { params: Params }) {
           </div>
         </main>
       ) : (
-        <div className={styles.erro}>
-          {erroFarmacia}
-        </div>
+        <div className={styles.erro}>{erroFarmacia}</div>
       )}
     </>
   );
