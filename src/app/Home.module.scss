@@ -1,5 +1,6 @@
 .main {
   display: flex;
+  flex-direction: column;
 
   padding: 40px 20px;
   gap: 40px;
@@ -44,6 +45,8 @@
 .listagem {
   display: flex;
   flex-direction: column;
+
+  gap: 16px;
 }
 
 .items {
@@ -61,8 +64,6 @@
   }
 
   .farmacia_proxima {
-    width: 40%;
-
     gap: 16px;
   }
 
@@ -76,8 +77,6 @@
 
   .listagem {
     justify-content: space-between;
-
-    width: 20%;
   }
 
   .items {
@@ -85,23 +84,26 @@
   }
 }
 
-@media screen and (max-width: 948px) {
-  .main {
-    flex-direction: column;
-
-    gap: 40px;
+@media screen and (min-width: 920px) {
+  .main{
+    flex-direction: row;
   }
 
-  .farmacia_proxima {
-    width: 100%;
+  .farmacia_proxima{
+    width: 30%;
   }
 
   .listagem {
-    width: 100%;
-    gap: 8px;
+    width: 35%;
+  }
+}
+
+@media screen and (min-width: 1350px){
+  .farmacia_proxima {
+    width: 40%;
   }
 
-  .items {
-    margin-bottom: 8px;
+  .listagem{
+    width: 30%;
   }
 }
