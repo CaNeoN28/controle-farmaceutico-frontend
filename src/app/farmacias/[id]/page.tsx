@@ -153,7 +153,7 @@ export default function Farmacia({ params }: { params: Params }) {
 							</div>
 						</div>
 						<div className={styles.secao}>
-							<span>Escala de plantão</span>
+							<span>Escala de plantão:</span>
 							<div className={styles.container}>
 								{Object.keys(plantoes).map((p) => (
 									<div className={styles.plantoes} key={p}>
