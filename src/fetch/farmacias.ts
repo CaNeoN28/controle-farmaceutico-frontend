@@ -20,6 +20,11 @@ interface ParamsPlantoes {
 }
 
 export default class FarmaciaFetch {
+	getFarmacia(id: string) {
+		const response = axios.get(`${API_URL}/farmacia/${id}`);
+
+		return response;
+	}
 	getFarmacias(params: any) {
 		const response = axios.get(url, {
 			params,
