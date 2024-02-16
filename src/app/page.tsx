@@ -166,81 +166,78 @@ export default function Home() {
     setFarmaciasEscalaF(farmaciasEscala.slice(0, numFarmacias));
   }, [numFarmacias]);
 
-  if (farmaciaMaisProxima && farmaciasEscala && farmaciasProximas)
-    return (
-      <>
-        <Menu />
-        <main className={styles.main}>
-          {farmaciaMaisProxima && (
-            <div className={styles.farmacia_proxima}>
-              <div className={styles.farmacia}>
-                <div className={styles.map}>
-                  {erroLocalizacao ? (
-                    <span className={styles.erro}>{erroLocalizacao}</span>
-                  ) : (
-                    <Map
-                      map_center={{
-                        lat: Number(farmaciaMaisProxima.endereco.localizacao.x),
-                        lng: Number(farmaciaMaisProxima.endereco.localizacao.y),
-                      }}
-                    />
-                  )}
+  return (
+    <>
+      <Menu />
+      <main className={styles.main}>
+        {farmaciaMaisProxima && (
+          <div className={styles.farmacia_proxima}>
+            <div className={styles.farmacia}>
+              <div className={styles.map}>
+                {erroLocalizacao ? (
+                  <span className={styles.erro}>{erroLocalizacao}</span>
+                ) : (
+                  <Map
+                    map_center={{
+                      lat: Number(farmaciaMaisProxima.endereco.localizacao.x),
+                      lng: Number(farmaciaMaisProxima.endereco.localizacao.y),
+                    }}
+                  />
+                )}
+              </div>
+              <TituloFarmacia>
+                <div className={styles.info}>
+                  <span>{farmaciaMaisProxima.nome_fantasia}</span>
+                  <span>Farmácia aberta mais próxima</span>
                 </div>
-                <TituloFarmacia>
-                  <div className={styles.info}>
-                    <span>{farmaciaMaisProxima.nome_fantasia}</span>
-                    <span>Farmácia aberta mais próxima</span>
-                  </div>
-                </TituloFarmacia>
-              </div>
-              <Botao fullWidth onClick={tracarRota}>
-                Traçar Rota
-              </Botao>
+              </TituloFarmacia>
             </div>
-          )}
-          {farmaciasProximasF.length > 0 && (
-            <div className={styles.listagem}>
-              <span className={styles.title}>Outras farmácias abertas</span>
-              <div className={styles.items}>
-                {farmaciasProximasF.map((f, i) => {
-                  const dia = f.horarios_servico[getDayFromNum(date.getDay())];
+            <Botao fullWidth onClick={tracarRota}>
+              Traçar Rota
+            </Botao>
+          </div>
+        )}
+        {farmaciasProximasF.length > 0 && (
+          <div className={styles.listagem}>
+            <span className={styles.title}>Outras farmácias abertas</span>
+            <div className={styles.items}>
+              {farmaciasProximasF.map((f, i) => {
+                const dia = f.horarios_servico[getDayFromNum(date.getDay())];
 
-                  return (
-                    <FarmaciaItem
-                      key={i}
-                      informacao={`${dia.horario_entrada} - ${dia.horario_saida}`}
-                      nome={f.nome_fantasia}
-                      para={`/farmacias/${f._id}`}
-                    />
-                  );
-                })}
-              </div>
-              <Botao secundario fullWidth>
-                Ver mais
-              </Botao>
-            </div>
-          )}
-          {farmaciasEscalaF.length > 0 && (
-            <div className={styles.listagem}>
-              <span className={styles.title}>Plantões nos próximos dias</span>
-              <div className={styles.items}>
-                {farmaciasEscalaF.map((f, i) => (
+                return (
                   <FarmaciaItem
                     key={i}
-                    informacao={f.dia_semana}
+                    informacao={`${dia.horario_entrada} - ${dia.horario_saida}`}
                     nome={f.nome_fantasia}
                     para={`/farmacias/${f._id}`}
                   />
-                ))}
-              </div>
-              <Botao secundario fullWidth>
-                Ver mais
-              </Botao>
+                );
+              })}
             </div>
-          )}
-        </main>
-      </>
-    );
-
-  return <></>;
+            <Botao secundario fullWidth>
+              Ver mais
+            </Botao>
+          </div>
+        )}
+        {farmaciasEscalaF.length > 0 && (
+          <div className={styles.listagem}>
+            <span className={styles.title}>Plantões nos próximos dias</span>
+            <div className={styles.items}>
+              {farmaciasEscalaF.map((f, i) => (
+                <FarmaciaItem
+                  key={i}
+                  informacao={f.dia_semana}
+                  nome={f.nome_fantasia}
+                  para={`/farmacias/${f._id}`}
+                />
+              ))}
+            </div>
+            <Botao secundario fullWidth>
+              Ver mais
+            </Botao>
+          </div>
+        )}
+      </main>
+    </>
+  );
 }
