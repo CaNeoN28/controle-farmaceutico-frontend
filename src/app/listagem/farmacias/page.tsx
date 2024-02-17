@@ -2,21 +2,29 @@
 
 import Menu from "@/components/Menu";
 import styles from "./Farmacias.module.scss";
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Farmacia from "@/types/Farmacia";
 import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import CardFarmacia from "@/components/CardFarmacia";
+import InputPesquisa from "@/components/InputPesquisa";
 
 export default function Farmacias() {
 	const farmaciaFetch = new FarmaciaFetch();
 
 	const [position, setPosition] = useState<Localizacao>();
+	const [pesquisa, setPesquisa] = useState("");
 	const [farmacias, setFarmacias] = useState<Farmacia[]>([]);
 
 	const getFarmacias = () => {
 		if (position) {
-			farmaciaFetch.getFarmacias({}).then((res) => {
+			const filtros: { [key: string]: string | number } = {};
+
+			if (pesquisa) {
+				filtros.nome_fantasia = pesquisa;
+			}
+
+			farmaciaFetch.getFarmacias(filtros).then((res) => {
 				const response = res.data as GetManyRequest<Farmacia[]>;
 				const farmacias = response.dados;
 
@@ -45,6 +53,17 @@ export default function Farmacias() {
 		}
 	};
 
+	const inputProps = {
+		onChange: (e: ChangeEvent<HTMLInputElement>) => {
+			setPesquisa(e.target.value);
+		},
+		onSubmit: (e: FormEvent<HTMLFormElement> & FormEvent<HTMLInputElement>) => {
+			e.preventDefault();
+
+			getFarmacias();
+		},
+	};
+
 	useEffect(() => {
 		getPosition();
 	}, []);
@@ -57,6 +76,9 @@ export default function Farmacias() {
 		<>
 			<Menu />
 			<main className={styles.main}>
+				<div className={styles.input_container}>
+					<InputPesquisa value={pesquisa} {...inputProps} />
+				</div>
 				<div className={styles.farmacias}>
 					{farmacias.length > 0 &&
 						farmacias.map((f) => (

@@ -1,16 +1,25 @@
 .main {
 	display: flex;
+	flex-direction: column;
+	
 	justify-content: center;
 	
 	padding: 92px 64px;
 }
 
+.input_container{
+	display: flex;
+
+	
+	
+	width: 800px;
+}
+
 .farmacias{
 	display: grid;
 	grid-template-columns: auto auto auto auto;
-
 	margin: auto;
-
+	
 	max-width: 1096px;
 
 	gap: 24px;
