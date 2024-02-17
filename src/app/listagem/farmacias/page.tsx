@@ -21,7 +21,9 @@ export default function Farmacias() {
 
 	const getFarmacias = () => {
 		if (position) {
-			const filtros: { [key: string]: string | number } = {};
+			const filtros: { [key: string]: string | number } = {
+				pagina,
+			};
 
 			if (pesquisa) {
 				filtros.nome_fantasia = pesquisa;
@@ -31,6 +33,7 @@ export default function Farmacias() {
 				const response = res.data as GetManyRequest<Farmacia[]>;
 				const farmacias = response.dados;
 
+				setPaginaMax(response.paginas_totais);
 				setFarmacias(farmacias);
 			});
 		}
@@ -75,6 +78,10 @@ export default function Farmacias() {
 		getFarmacias();
 	}, [position]);
 
+	useEffect(() => {
+		getFarmacias();
+	}, [pagina]);
+
 	return (
 		<>
 			<Menu />
@@ -96,7 +103,7 @@ export default function Farmacias() {
 						</div>
 						<Paginacao
 							pagina={pagina}
-							paginaMax={pagina}
+							paginaMax={paginaMax}
 							setPagina={setPagina}
 						/>
 					</>
