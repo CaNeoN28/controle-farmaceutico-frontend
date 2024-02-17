@@ -1,25 +1,71 @@
 .main {
 	display: flex;
 	flex-direction: column;
-	
+
 	justify-content: center;
-	
-	padding: 92px 64px;
+
+	padding: 40px 20px;
 	gap: 40px;
 }
 
-.input_container{
+.input_container {
 	margin: auto;
 
-	width: 800px;
+	width: 100%;
 }
 
-.farmacias{
-	display: grid;
-	grid-template-columns: auto auto auto auto auto;
-	margin: auto;
-	
-	max-width: 1096px;
+.farmacias {
+	display: flex;
+	flex-direction: column;
 
-	gap: 24px;
+	gap: 8px;
+}
+
+@media screen and (min-width: 480px) {
+	.main {
+		padding: 72px 48px;
+	}
+	
+	.input_container{
+		width: 400px;
+	}
+
+	.farmacias {
+		display: grid;
+		grid-template-columns: auto auto;
+
+		margin: auto;
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.main {
+		padding: 92px 64px;
+	}
+
+	.input_container{
+		width: 600px;
+	}
+
+	.farmacias {
+		grid-template-columns: auto auto auto;
+
+		gap: 24px;
+	}
+}
+
+@media screen and (min-width: 1020px) {
+	.input_container {
+		width: 800px;
+	}
+
+	.farmacias {
+		grid-template-columns: auto auto auto auto;
+	}
+}
+
+@media screen and (min-width: 1220px) {
+	.farmacias {
+		grid-template-columns: auto auto auto auto auto;
+	}
 }

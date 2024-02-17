@@ -2,7 +2,7 @@
 
 import Menu from "@/components/Menu";
 import styles from "./Farmacias.module.scss";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useLayoutEffect, useState } from "react";
 import Farmacia from "@/types/Farmacia";
 import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
@@ -17,12 +17,15 @@ export default function Farmacias() {
 	const [pesquisa, setPesquisa] = useState("");
 	const [pagina, setPagina] = useState(1);
 	const [paginaMax, setPaginaMax] = useState(5);
+	const [limite, setLimite] = useState(10);
+
 	const [farmacias, setFarmacias] = useState<Farmacia[]>([]);
 
 	const getFarmacias = () => {
 		if (position) {
 			const filtros: { [key: string]: string | number } = {
 				pagina,
+				limite
 			};
 
 			if (pesquisa) {
@@ -70,17 +73,36 @@ export default function Farmacias() {
 		},
 	};
 
+	const onResize = () => {
+		const { innerWidth } = window;
+
+		if (innerWidth > 1220) {
+			setLimite(15);
+		} else if (innerWidth > 800){
+			setLimite(12);
+		} else {
+			setLimite(10);
+		}
+	};
+
 	useEffect(() => {
 		getPosition();
+		onResize()
+
+		window.addEventListener("resize", onResize);
+
+		return () => {
+			window.removeEventListener("resize", onResize);
+		};
 	}, []);
 
 	useEffect(() => {
 		getFarmacias();
 	}, [position]);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		getFarmacias();
-	}, [pagina]);
+	}, [pagina, limite]);
 
 	return (
 		<>
