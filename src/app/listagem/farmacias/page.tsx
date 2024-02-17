@@ -35,7 +35,8 @@ interface FarmaciaEHorario extends Farmacia {
 export default function Farmacias() {
 	const farmaciaFetch = new FarmaciaFetch();
 
-	const [data, setDate] = useState(new Date());
+	const [data] = useState(new Date());
+
 	const [position, setPosition] = useState<Localizacao>();
 	const [pesquisa, setPesquisa] = useState("");
 	const [pagina, setPagina] = useState(1);
@@ -46,6 +47,7 @@ export default function Farmacias() {
 	const [estado, setEstado] = useState<string>();
 
 	const [farmacias, setFarmacias] = useState<FarmaciaEHorario[]>([]);
+	const [erro, setErro] = useState("");
 
 	const getFarmacias = () => {
 		if (position) {
@@ -66,31 +68,43 @@ export default function Farmacias() {
 				filtros.nome_fantasia = pesquisa;
 			}
 
-			farmaciaFetch.getFarmacias(filtros).then((res) => {
-				const response = res.data as GetManyRequest<Farmacia[]>;
-				const farmacias = response.dados.map((f) => {
-					const dia_semana = getDayFromNum(data.getDay());
+			farmaciaFetch
+				.getFarmacias(filtros)
+				.then((res) => {
+					const response = res.data as GetManyRequest<Farmacia[]>;
+					const farmacias = response.dados.map((f) => {
+						const dia_semana = getDayFromNum(data.getDay());
 
-					const horario = f.horarios_servico[dia_semana];
+						const horario = f.horarios_servico[dia_semana];
 
-					if (horario) {
+						if (horario) {
+							return {
+								...f,
+								aberto_hoje: true,
+								entrada: horario.horario_entrada,
+								saida: horario.horario_saida,
+							};
+						}
+
 						return {
 							...f,
-							aberto_hoje: true,
-							entrada: horario.horario_entrada,
-							saida: horario.horario_saida,
+							aberto_hoje: false,
 						};
+					});
+
+					if (farmacias.length > 0) {
+						setPaginaMax(response.paginas_totais);
+						setFarmacias(farmacias);
+						setErro("");
+					} else {
+						setErro("Não foram encontradas farmácias");
 					}
+				})
+				.catch((err) => {
+					console.log(err);
 
-					return {
-						...f,
-						aberto_hoje: false,
-					};
+					setErro("Não foi possível listar farmácias");
 				});
-
-				setPaginaMax(response.paginas_totais);
-				setFarmacias(farmacias);
-			});
 		}
 	};
 
@@ -99,11 +113,6 @@ export default function Farmacias() {
 			navigator.geolocation.watchPosition(
 				(position) => {
 					const { latitude, longitude } = position.coords;
-
-					setPosition({
-						lat: latitude,
-						lng: longitude,
-					});
 
 					fromLatLng(latitude, longitude)
 						.then((res) => {
@@ -118,15 +127,20 @@ export default function Farmacias() {
 							setMunicipio(municipio);
 						})
 						.catch((err) => {
-							console.log(err);
+							setErro("Não foi possível rastrear seu endereço");
 						});
+
+					setPosition({
+						lat: latitude,
+						lng: longitude,
+					});
 				},
 				(error) => {
-					console.log(error);
+					setErro("Não foi possível encontrar sua localização");
 				}
 			);
 		} else {
-			console.log("Não foi possível encontrar localização");
+			setErro("Seu navegador não suporta geolocalização");
 		}
 	};
 
@@ -186,7 +200,7 @@ export default function Farmacias() {
 				<div className={styles.input_container}>
 					<InputPesquisa value={pesquisa} {...inputProps} />
 				</div>
-				{farmacias.length > 0 && (
+				{farmacias.length > 0 ? (
 					<>
 						<div className={styles.farmacias}>
 							{farmacias.map((f) => (
@@ -206,6 +220,10 @@ export default function Farmacias() {
 							setPagina={setPagina}
 						/>
 					</>
+				) : erro ? (
+					<span>{erro}</span>
+				) : (
+					<span>Carregando...</span>
 				)}
 			</main>
 		</>
