@@ -8,12 +8,15 @@ import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import CardFarmacia from "@/components/CardFarmacia";
 import InputPesquisa from "@/components/InputPesquisa";
+import Paginacao from "@/components/Paginacao";
 
 export default function Farmacias() {
 	const farmaciaFetch = new FarmaciaFetch();
 
 	const [position, setPosition] = useState<Localizacao>();
 	const [pesquisa, setPesquisa] = useState("");
+	const [pagina, setPagina] = useState(1);
+	const [paginaMax, setPaginaMax] = useState(5);
 	const [farmacias, setFarmacias] = useState<Farmacia[]>([]);
 
 	const getFarmacias = () => {
@@ -79,17 +82,25 @@ export default function Farmacias() {
 				<div className={styles.input_container}>
 					<InputPesquisa value={pesquisa} {...inputProps} />
 				</div>
-				<div className={styles.farmacias}>
-					{farmacias.length > 0 &&
-						farmacias.map((f) => (
-							<CardFarmacia
-								key={f._id}
-								nome={f.nome_fantasia}
-								informacao=""
-								link_farmacia={`/farmacias/${f._id}`}
-							/>
-						))}
-				</div>
+				{farmacias.length > 0 && (
+					<>
+						<div className={styles.farmacias}>
+							{farmacias.map((f) => (
+								<CardFarmacia
+									key={f._id}
+									nome={f.nome_fantasia}
+									informacao=""
+									link_farmacia={`/farmacias/${f._id}`}
+								/>
+							))}
+						</div>
+						<Paginacao
+							pagina={pagina}
+							paginaMax={pagina}
+							setPagina={setPagina}
+						/>
+					</>
+				)}
 			</main>
 		</>
 	);
