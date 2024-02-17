@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Farmacia from "@/types/Farmacia";
 import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
+import CardFarmacia from "@/components/CardFarmacia";
 
 export default function Farmacias() {
 	const farmaciaFetch = new FarmaciaFetch();
@@ -19,7 +20,7 @@ export default function Farmacias() {
 				const response = res.data as GetManyRequest<Farmacia[]>;
 				const farmacias = response.dados;
 
-				console.log(response)
+				setFarmacias(farmacias);
 			});
 		}
 	};
@@ -49,12 +50,25 @@ export default function Farmacias() {
 	}, []);
 
 	useEffect(() => {
-		getFarmacias()
+		getFarmacias();
 	}, [position]);
 
 	return (
 		<>
 			<Menu />
+			<main className={styles.main}>
+				<div className={styles.farmacias}>
+					{farmacias.length > 0 &&
+						farmacias.map((f) => (
+							<CardFarmacia
+								key={f._id}
+								nome={f.nome_fantasia}
+								informacao=""
+								link_farmacia={`/farmacias/${f._id}`}
+							/>
+						))}
+				</div>
+			</main>
 		</>
 	);
 }

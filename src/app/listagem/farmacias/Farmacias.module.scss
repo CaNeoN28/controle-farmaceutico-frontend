@@ -1,0 +1,17 @@
+.main {
+	display: flex;
+	justify-content: center;
+	
+	padding: 92px 64px;
+}
+
+.farmacias{
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+
+	margin: auto;
+
+	max-width: 1096px;
+
+	gap: 24px;
+}
