@@ -19,13 +19,22 @@ interface ParamsPlantoes {
 	tempo?: Date;
 }
 
+interface FiltrosFarmacias {
+	bairro?: string;
+	estado?: string;
+	municipio?: string;
+	nome_fantasia?: string;
+	pagina?: number;
+	limite?: number;
+}
+
 export default class FarmaciaFetch {
 	getFarmacia(id: string) {
 		const response = axios.get(`${API_URL}/farmacia/${id}`);
 
 		return response;
 	}
-	getFarmacias(params: any) {
+	getFarmacias(params: FiltrosFarmacias) {
 		const response = axios.get(url, {
 			params,
 		});
