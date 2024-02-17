@@ -16,6 +16,15 @@ import CardFarmacia from "@/components/CardFarmacia";
 import InputPesquisa from "@/components/InputPesquisa";
 import Paginacao from "@/components/Paginacao";
 import { getDayFromNum } from "@/types/DiasSemana";
+import {
+	setDefaults,
+	fromLatLng,
+	setKey,
+	setLanguage,
+	setRegion,
+	OutputFormat,
+} from "react-geocode";
+import { getEstadoFromSigla } from "@/utils/estadosParaSigla";
 
 interface FarmaciaEHorario extends Farmacia {
 	aberto_hoje: boolean;
@@ -33,6 +42,9 @@ export default function Farmacias() {
 	const [paginaMax, setPaginaMax] = useState(5);
 	const [limite, setLimite] = useState(10);
 
+	const [municipio, setMunicipio] = useState<string>();
+	const [estado, setEstado] = useState<string>();
+
 	const [farmacias, setFarmacias] = useState<FarmaciaEHorario[]>([]);
 
 	const getFarmacias = () => {
@@ -41,6 +53,14 @@ export default function Farmacias() {
 				pagina,
 				limite,
 			};
+
+			if (municipio) {
+				filtros.municipio = municipio;
+			}
+
+			if (estado) {
+				filtros.estado = estado;
+			}
 
 			if (pesquisa) {
 				filtros.nome_fantasia = pesquisa;
@@ -84,6 +104,22 @@ export default function Farmacias() {
 						lat: latitude,
 						lng: longitude,
 					});
+
+					fromLatLng(latitude, longitude)
+						.then((res) => {
+							const [municipio, sigla] = res.plus_code.compound_code
+								.split(" ")
+								.slice(1, 3)
+								.map((v: string) => v.replace(",", ""));
+
+							const estado = getEstadoFromSigla(sigla);
+
+							setEstado(estado);
+							setMunicipio(municipio);
+						})
+						.catch((err) => {
+							console.log(err);
+						});
 				},
 				(error) => {
 					console.log(error);
@@ -120,6 +156,13 @@ export default function Farmacias() {
 	useEffect(() => {
 		getPosition();
 		onResize();
+
+		setDefaults({
+			key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
+			region: "br",
+			language: "pt",
+			outputFormat: OutputFormat.JSON,
+		});
 
 		window.addEventListener("resize", onResize);
 
