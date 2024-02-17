@@ -44,7 +44,7 @@
 	display: flex;
 	color: var(--white);
 
-	background-color: var(--primary-color);
+	background-color: var(--secondary-color);
 	border-radius: 8px;
 
 	font-size: 40px;
@@ -57,12 +57,12 @@
 
 		gap: 0;
 
-		max-width: 200px;
+		max-width: 240px;
 		text-align: center;
 	}
 
 	.imagem {
-		border: 1px solid var(--primary-color);
+		border-bottom: 1px solid var(--primary-color);
 		border-radius: 8px;
 
 		padding: 20px;
