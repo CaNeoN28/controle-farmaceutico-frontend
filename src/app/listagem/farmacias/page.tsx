@@ -43,26 +43,33 @@ export default function Farmacias() {
 	const [paginaMax, setPaginaMax] = useState(5);
 	const [limite, setLimite] = useState(10);
 
-	const [municipio, setMunicipio] = useState<string>();
-	const [estado, setEstado] = useState<string>();
-
 	const [farmacias, setFarmacias] = useState<FarmaciaEHorario[]>([]);
 	const [erro, setErro] = useState("");
 
-	const getFarmacias = () => {
+	const getFarmacias = async () => {
 		if (position) {
+			const { lat, lng } = position;
+
 			const filtros: { [key: string]: string | number } = {
 				pagina,
 				limite,
 			};
 
-			if (municipio) {
-				filtros.municipio = municipio;
-			}
+			await fromLatLng(lat, lng)
+				.then((res) => {
+					const [municipio, sigla] = res.plus_code.compound_code
+						.split(" ")
+						.slice(1, 3)
+						.map((v: string) => v.replace(",", ""));
 
-			if (estado) {
-				filtros.estado = estado;
-			}
+					const estado = getEstadoFromSigla(sigla);
+
+					if (estado) filtros.estado = estado;
+					if (municipio) filtros.municipio = municipio;
+				})
+				.catch((err) => {
+					setErro("Não foi possível rastrear seu endereço");
+				});
 
 			if (pesquisa) {
 				filtros.nome_fantasia = pesquisa;
@@ -113,22 +120,6 @@ export default function Farmacias() {
 			navigator.geolocation.watchPosition(
 				(position) => {
 					const { latitude, longitude } = position.coords;
-
-					fromLatLng(latitude, longitude)
-						.then((res) => {
-							const [municipio, sigla] = res.plus_code.compound_code
-								.split(" ")
-								.slice(1, 3)
-								.map((v: string) => v.replace(",", ""));
-
-							const estado = getEstadoFromSigla(sigla);
-
-							setEstado(estado);
-							setMunicipio(municipio);
-						})
-						.catch((err) => {
-							setErro("Não foi possível rastrear seu endereço");
-						});
 
 					setPosition({
 						lat: latitude,
@@ -187,7 +178,7 @@ export default function Farmacias() {
 
 	useEffect(() => {
 		getFarmacias();
-	}, [position]);
+	}, [position, municipio, estado]);
 
 	useLayoutEffect(() => {
 		getFarmacias();
