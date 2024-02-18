@@ -33,7 +33,7 @@ interface FarmaciaEscala extends Farmacia {
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
 
-	const [date] = useState(new Date(2025, 2, 14, 18));
+	const [date] = useState(new Date(2025, 0, 1, 12));
 
 	const [localizacao, setLocalizacao] = useState<Localizacao>();
 	const [erroLocalizacao, setErroLocalizacao] = useState<string>();
@@ -284,44 +284,44 @@ export default function Home() {
 								)}
 							</>
 						) : (
-							<span className={styles.erro_listagem}>
-								{erroFarmaciasProximas}
-							</span>
-						)}
-						{farmaciasEscalaF.length > 0 ? (
 							<div className={styles.listagem}>
-								<span className={styles.title}>Plantões nos próximos dias</span>
-								<div className={styles.items}>
-									{farmaciasEscalaF.map((f, i) => (
-										<FarmaciaItem
-											key={i}
-											informacao={f.dia_semana}
-											nome={f.nome_fantasia}
-											para={`/farmacias/${f._id}`}
-										/>
-									))}
-								</div>
-								<Botao secundario fullWidth>
-									Ver mais
-								</Botao>
-							</div>
-						) : (
-							erroFarmaciasEscala && (
 								<span className={styles.erro_listagem}>
-									{erroFarmaciasEscala}
+									{erroFarmaciasProximas}
 								</span>
-							)
+							</div>
 						)}
-
-						{farmaciasEscala.length == 0 && farmaciasProximas.length == 0 && (
-							<Carregando />
+						{farmaciasEscalaF.length > 0 && (
+							<div className={styles.listagem}>
+								<>
+									<span className={styles.title}>
+										Plantões nos próximos dias
+									</span>
+									<div className={styles.items}>
+										{farmaciasEscalaF.map((f, i) => (
+											<FarmaciaItem
+												key={i}
+												informacao={f.dia_semana}
+												nome={f.nome_fantasia}
+												para={`/farmacias/${f._id}`}
+											/>
+										))}
+									</div>
+									<Botao secundario fullWidth>
+										Ver mais
+									</Botao>
+								</>
+							</div>
 						)}
 					</>
 				) : (
 					<>
-						<span className={styles.erro_listagem}>
-							Não há farmácias para serem listadas aqui
-						</span>
+						{erroFarmaciasEscala && erroFarmaciasProximas ? (
+							<span className={styles.erro_listagem}>
+								Não há farmácias para serem listadas aqui
+							</span>
+						) : (
+							<Carregando />
+						)}
 					</>
 				)}
 			</main>
