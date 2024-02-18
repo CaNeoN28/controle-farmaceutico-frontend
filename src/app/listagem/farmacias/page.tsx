@@ -102,11 +102,12 @@ export default function Farmacias() {
 
 					if (farmacias.length > 0) {
 						setPaginaMax(response.paginas_totais);
-						setFarmacias(farmacias);
 						setErro("");
 					} else {
 						setErro("Não foram encontradas farmácias");
 					}
+
+					setFarmacias(farmacias);
 				})
 				.catch((err) => {
 					console.log(err);
@@ -213,9 +214,9 @@ export default function Farmacias() {
 						/>
 					</>
 				) : erro ? (
-					<span>{erro}</span>
+					<div className={styles.erro}>{erro}</div>
 				) : (
-					<Carregando/>
+					<Carregando />
 				)}
 			</main>
 		</>

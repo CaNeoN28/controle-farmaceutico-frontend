@@ -25,8 +25,8 @@
 	.main {
 		padding: 72px 48px;
 	}
-	
-	.input_container{
+
+	.input_container {
 		width: 400px;
 	}
 
@@ -43,7 +43,7 @@
 		padding: 92px 64px;
 	}
 
-	.input_container{
+	.input_container {
 		width: 600px;
 	}
 
@@ -68,4 +68,15 @@
 	.farmacias {
 		grid-template-columns: auto auto auto auto auto;
 	}
+}
+
+.erro {
+	position: fixed;
+	text-align: center;
+
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+
+	font-size: 20px;
 }
