@@ -1,0 +1,29 @@
+.link_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 40px;
+  padding: 8px 24px;
+  font-size: 14px;
+	
+  background-color: var(--primary-color);
+  color: var(--white);
+	
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+
+  font-weight: bold;
+	text-decoration: none;
+}
+
+.link_button:hover {
+  filter: brightness(95%);
+}
+
+.secundario {
+  background-color: var(--white);
+  color: var(--primary-color);
+
+  font-weight: normal;
+}

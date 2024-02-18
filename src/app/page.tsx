@@ -20,6 +20,7 @@ import {
 	FiltrosFarmaciasProximas,
 	FiltrosPlantoes,
 } from "@/types/fetchFarmacias";
+import LinkButton from "@/components/LinkButton";
 
 interface Localizacao {
 	lng: number;
@@ -33,7 +34,7 @@ interface FarmaciaEscala extends Farmacia {
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
 
-	const [date] = useState(new Date());
+	const [date] = useState(new Date(2024, 0, 1, 12));
 
 	const [localizacao, setLocalizacao] = useState<Localizacao>();
 	const [erroLocalizacao, setErroLocalizacao] = useState<string>();
@@ -250,9 +251,9 @@ export default function Home() {
 									{erroLocalizacao ? (
 										<span className={styles.erro}>{erroLocalizacao}</span>
 									) : (
-										<Botao fullWidth onClick={tracarRota}>
+										<LinkButton link="">
 											Traçar Rota
-										</Botao>
+										</LinkButton>
 									)}
 								</div>
 								{farmaciasProximasF.length > 0 ? (
@@ -279,9 +280,9 @@ export default function Home() {
 												);
 											})}
 										</div>
-										<Botao secundario fullWidth>
+										<LinkButton link="/listagem/farmacias" secundario>
 											Ver mais
-										</Botao>
+										</LinkButton>
 									</div>
 								) : (
 									erroFarmaciasProximas && <span className={styles.erro} />
@@ -310,9 +311,9 @@ export default function Home() {
 											/>
 										))}
 									</div>
-									<Botao secundario fullWidth>
-										Ver mais
-									</Botao>
+									<LinkButton link="/listagem/plantoes" secundario>
+											Ver mais
+									</LinkButton>
 								</>
 							</div>
 						)}
