@@ -67,7 +67,6 @@ export default function Home() {
 					setLocalizacao(localizacao);
 				},
 				(error) => {
-					console.log(error);
 					setErroLocalizacao("Não foi possível rastrear sua localização");
 				}
 			);
@@ -147,6 +146,10 @@ export default function Home() {
 							});
 						});
 					});
+
+					if(farmacias.length == 0){
+						setErroFarmaciasEscala("Não há plantões definidos para os próximos dias")
+					}
 
 					setFarmaciasEscala(farmacias);
 				})
@@ -271,7 +274,7 @@ export default function Home() {
 						)}
 					</>
 				) : (
-					<span className={styles.erro_farmacias_proximas}>{erroFarmaciasProximas}</span>
+					<span className={styles.erro_listagem}>{erroFarmaciasProximas}</span>
 				)}
 				{farmaciasEscalaF.length > 0 ? (
 					<div className={styles.listagem}>
@@ -292,7 +295,7 @@ export default function Home() {
 					</div>
 				) : (
 					erroFarmaciasEscala && (
-						<span className={styles.erro}>{erroFarmaciasEscala}</span>
+						<span className={styles.erro_listagem}>{erroFarmaciasEscala}</span>
 					)
 				)}
 
