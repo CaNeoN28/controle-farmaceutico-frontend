@@ -207,7 +207,7 @@ export default function Home() {
                 return (
                   <FarmaciaItem
                     key={i}
-                    informacao={`${dia.horario_entrada} - ${dia.horario_saida}`}
+                    informacao={dia ? `${dia.horario_entrada} - ${dia.horario_saida}` : "Aberta no sistema de plantão"}
                     nome={f.nome_fantasia}
                     para={`/farmacias/${f._id}`}
                   />
