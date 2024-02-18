@@ -35,7 +35,7 @@ export default function Menu({}: Props) {
 					<BotaoMenu link="/">
 						<span>PLATAFORMA</span> <MdMedication />
 					</BotaoMenu>
-					<BotaoMenu link="/listagem/farmacia">Farmácias</BotaoMenu>
+					<BotaoMenu link="/listagem/farmacias">Farmácias</BotaoMenu>
 					<BotaoMenu link="/listagem/plantoes">Plantões</BotaoMenu>
 					<BotaoMenu link="/administracao">Administração</BotaoMenu>
 				</div>
