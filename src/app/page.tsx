@@ -33,7 +33,7 @@ interface FarmaciaEscala extends Farmacia {
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
 
-	const [date] = useState(new Date(2025, 0, 1, 12));
+	const [date] = useState(new Date());
 
 	const [localizacao, setLocalizacao] = useState<Localizacao>();
 	const [erroLocalizacao, setErroLocalizacao] = useState<string>();
@@ -67,7 +67,13 @@ export default function Home() {
 					setLocalizacao(localizacao);
 				},
 				(error) => {
-					setErroLocalizacao("Não foi possível rastrear sua localização");
+					setLocalizacao({
+						lat: 0,
+						lng: 0,
+					});
+					setErroLocalizacao(
+						"Não foi possível recuperar sua localização, não é possível traçar rota"
+					);
 				}
 			);
 		} else {
@@ -220,37 +226,35 @@ export default function Home() {
 					<>
 						{farmaciaMaisProxima ? (
 							<>
-								{farmaciaMaisProxima ? (
-									<div className={styles.farmacia_proxima}>
-										<div className={styles.farmacia}>
-											<div className={styles.map}>
-												<Map
-													map_center={{
-														lat: Number(
-															farmaciaMaisProxima.endereco.localizacao.x
-														),
-														lng: Number(
-															farmaciaMaisProxima.endereco.localizacao.y
-														),
-													}}
-												/>
-											</div>
-											<TituloFarmacia>
-												<div className={styles.info}>
-													<span>{farmaciaMaisProxima.nome_fantasia}</span>
-													<span>Farmácia aberta mais próxima</span>
-												</div>
-											</TituloFarmacia>
+								<div className={styles.farmacia_proxima}>
+									<div className={styles.farmacia}>
+										<div className={styles.map}>
+											<Map
+												map_center={{
+													lat: Number(
+														farmaciaMaisProxima.endereco.localizacao.x
+													),
+													lng: Number(
+														farmaciaMaisProxima.endereco.localizacao.y
+													),
+												}}
+											/>
 										</div>
+										<TituloFarmacia>
+											<div className={styles.info}>
+												<span>{farmaciaMaisProxima.nome_fantasia}</span>
+												<span>Farmácia aberta mais próxima</span>
+											</div>
+										</TituloFarmacia>
+									</div>
+									{erroLocalizacao ? (
+										<span className={styles.erro}>{erroLocalizacao}</span>
+									) : (
 										<Botao fullWidth onClick={tracarRota}>
 											Traçar Rota
 										</Botao>
-									</div>
-								) : (
-									erroLocalizacao && (
-										<span className={styles.erro}>{erroLocalizacao}</span>
-									)
-								)}
+									)}
+								</div>
 								{farmaciasProximasF.length > 0 ? (
 									<div className={styles.listagem}>
 										<span className={styles.title}>
