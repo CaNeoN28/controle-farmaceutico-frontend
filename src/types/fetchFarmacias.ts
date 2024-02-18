@@ -7,3 +7,11 @@ export interface FiltrosFarmaciasProximas {
 	estado?: string,
 	municipio?: string,
 }
+
+export interface FiltrosPlantoes {
+	pagina?: number;
+	limite?: number;
+	municipio?: string;
+	estado?: string;
+	tempo?: Date;
+}

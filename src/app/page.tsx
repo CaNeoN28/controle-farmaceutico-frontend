@@ -16,14 +16,19 @@ import Map from "@/components/Map";
 import Carregando from "@/components/Carregando";
 import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
-import { FiltrosFarmaciasProximas } from "@/utils/fetchFarmacias";
+import {
+	FiltrosFarmaciasProximas,
+	FiltrosPlantoes,
+} from "@/types/fetchFarmacias";
 
 interface Localizacao {
 	lng: number;
 	lat: number;
 }
 
-type FarmaciaEscala = Array<Farmacia & { dia_semana: string }>;
+interface FarmaciaEscala extends Farmacia {
+	dia_semana: string;
+}
 
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
@@ -38,13 +43,15 @@ export default function Home() {
 	const [farmaciasProximasF, setFarmaciasProximasF] = useState<Farmacia[]>([]);
 	const [erroFarmaciasProximas, setErroFarmaciasProximas] = useState("");
 
-	const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaEscala>([]);
-	const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<FarmaciaEscala>([]);
+	const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaEscala[]>([]);
+	const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<FarmaciaEscala[]>(
+		[]
+	);
 	const [erroFarmaciasEscala, setErroFarmaciasEscala] = useState("");
 
 	const [numFarmacias, setNumFarmacias] = useState<number>(5);
 
-	const getFarmacias = async () => {
+	const getLocation = async () => {
 		let localizacao: Localizacao | undefined = undefined;
 
 		if (navigator.geolocation) {
@@ -67,57 +74,57 @@ export default function Home() {
 		} else {
 			setErroLocalizacao("Geolocalização não permitida no navegador");
 		}
+	};
 
+	const getFarmacias = async () => {
 		if (localizacao) {
 			const { lat, lng } = localizacao;
-			const filtros: FiltrosFarmaciasProximas = {
+			const filtrosProximas: FiltrosFarmaciasProximas = {
 				limite: 6,
 				tempo: date,
 				latitude: lat,
 				longitude: lng,
+			};
+			const filtrosPlantoes: FiltrosPlantoes = {
+				limite: numFarmacias,
+				tempo: date,
 			};
 
 			const { erro, estado, municipio } = await getMunicipioEstado(localizacao);
 
 			if (erro) setErroLocalizacao(erro);
 
-			if (estado) filtros.estado = estado;
-			if (municipio) filtros.municipio = municipio;
+			if (estado) {
+				filtrosProximas.estado = estado;
+				filtrosPlantoes.estado = estado;
+			}
+			if (municipio) {
+				filtrosProximas.municipio = municipio;
+				filtrosPlantoes.municipio = municipio;
+			}
 
 			fFarmacias
-				.getFarmaciasProximas(filtros)
+				.getFarmaciasProximas(filtrosProximas)
 				.then((res) => {
 					const resposta = res.data as GetManyRequest<Farmacia[]>;
 					const farmacias = resposta.dados;
 
-					if (farmacias.length < 0) {
-						setErroFarmaciasProximas(
-							"Não foram encontradas farmácias abertas próximas "
-						);
-					} else {
-						setErroFarmaciasProximas("");
-						setFarmaciaMaisProxima(farmacias[0]);
-					}
+					setFarmaciaMaisProxima(farmacias[0]);
 					setFarmaciasProximas(farmacias);
 				})
 				.catch((err) => {
 					console.log(err);
 
-					setErroFarmaciasProximas(
-						"Não foi possível recuperar farmácias próximas"
-					);
+					setErroFarmaciasProximas(err.response.data)
 				});
 
 			fFarmacias
-				.getFarmaciasPlantoes({
-					limite: numFarmacias,
-					tempo: date,
-				})
+				.getFarmaciasPlantoes(filtrosPlantoes)
 				.then((res) => {
 					const resposta = res.data as GetManyRequest<Escala>;
 					const escala = resposta.dados;
 
-					const farmacias: Array<Farmacia & { dia_semana: string }> = [];
+					const farmacias: FarmaciaEscala[] = [];
 
 					Object.keys(escala).map((e) => {
 						escala[e].map((f) => {
@@ -142,7 +149,6 @@ export default function Home() {
 					});
 
 					setFarmaciasEscala(farmacias);
-					setErroFarmaciasEscala("");
 				})
 				.catch((err) => {
 					console.log(err);
@@ -163,6 +169,8 @@ export default function Home() {
 	};
 
 	useEffect(() => {
+		geocodeSetDefaults();
+
 		const getMaxFarmacias = () => {
 			const width = window.innerWidth;
 
@@ -176,15 +184,15 @@ export default function Home() {
 		};
 
 		getMaxFarmacias();
+		getLocation();
 
 		window.addEventListener("resize", getMaxFarmacias);
 		return () => window.removeEventListener("resize", getMaxFarmacias);
 	}, []);
 
 	useEffect(() => {
-		geocodeSetDefaults();
 		getFarmacias();
-	}, [numFarmacias]);
+	}, [localizacao]);
 
 	useEffect(() => {
 		setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));
@@ -204,59 +212,66 @@ export default function Home() {
 			<Menu />
 			<main className={styles.main}>
 				{farmaciaMaisProxima ? (
-					<div className={styles.farmacia_proxima}>
-						<div className={styles.farmacia}>
-							<div className={styles.map}>
-								<Map
-									map_center={{
-										lat: Number(farmaciaMaisProxima.endereco.localizacao.x),
-										lng: Number(farmaciaMaisProxima.endereco.localizacao.y),
-									}}
-								/>
-							</div>
-							<TituloFarmacia>
-								<div className={styles.info}>
-									<span>{farmaciaMaisProxima.nome_fantasia}</span>
-									<span>Farmácia aberta mais próxima</span>
+					<>
+						{farmaciaMaisProxima ? (
+							<div className={styles.farmacia_proxima}>
+								<div className={styles.farmacia}>
+									<div className={styles.map}>
+										<Map
+											map_center={{
+												lat: Number(farmaciaMaisProxima.endereco.localizacao.x),
+												lng: Number(farmaciaMaisProxima.endereco.localizacao.y),
+											}}
+										/>
+									</div>
+									<TituloFarmacia>
+										<div className={styles.info}>
+											<span>{farmaciaMaisProxima.nome_fantasia}</span>
+											<span>Farmácia aberta mais próxima</span>
+										</div>
+									</TituloFarmacia>
 								</div>
-							</TituloFarmacia>
-						</div>
-						<Botao fullWidth onClick={tracarRota}>
-							Traçar Rota
-						</Botao>
-					</div>
-				) : erroLocalizacao ? (
-					<span className={styles.erro}>{erroLocalizacao}</span>
-				) : (
-					<Carregando />
-				)}
-				{farmaciasProximasF.length > 0 ? (
-					<div className={styles.listagem}>
-						<span className={styles.title}>Outras farmácias abertas</span>
-						<div className={styles.items}>
-							{farmaciasProximasF.map((f, i) => {
-								const dia = f.horarios_servico[getDayFromNum(date.getDay())];
+								<Botao fullWidth onClick={tracarRota}>
+									Traçar Rota
+								</Botao>
+							</div>
+						) : (
+							erroLocalizacao && (
+								<span className={styles.erro}>{erroLocalizacao}</span>
+							)
+						)}
+						{farmaciasProximasF.length > 0 ? (
+							<div className={styles.listagem}>
+								<span className={styles.title}>Outras farmácias abertas</span>
+								<div className={styles.items}>
+									{farmaciasProximasF.map((f, i) => {
+										const dia =
+											f.horarios_servico[getDayFromNum(date.getDay())];
 
-								return (
-									<FarmaciaItem
-										key={i}
-										informacao={
-											dia
-												? `${dia.horario_entrada} - ${dia.horario_saida}`
-												: "Aberta no sistema de plantão"
-										}
-										nome={f.nome_fantasia}
-										para={`/farmacias/${f._id}`}
-									/>
-								);
-							})}
-						</div>
-						<Botao secundario fullWidth>
-							Ver mais
-						</Botao>
-					</div>
+										return (
+											<FarmaciaItem
+												key={i}
+												informacao={
+													dia
+														? `${dia.horario_entrada} - ${dia.horario_saida}`
+														: "Aberta no sistema de plantão"
+												}
+												nome={f.nome_fantasia}
+												para={`/farmacias/${f._id}`}
+											/>
+										);
+									})}
+								</div>
+								<Botao secundario fullWidth>
+									Ver mais
+								</Botao>
+							</div>
+						) : (
+							erroFarmaciasProximas && <span className={styles.erro} />
+						)}
+					</>
 				) : (
-					erroFarmaciasProximas && <span className={styles.erro} />
+					<span className={styles.erro_farmacias_proximas}>{erroFarmaciasProximas}</span>
 				)}
 				{farmaciasEscalaF.length > 0 ? (
 					<div className={styles.listagem}>
@@ -279,6 +294,10 @@ export default function Home() {
 					erroFarmaciasEscala && (
 						<span className={styles.erro}>{erroFarmaciasEscala}</span>
 					)
+				)}
+
+				{farmaciasEscala.length == 0 && farmaciasProximas.length == 0 && (
+					<Carregando />
 				)}
 			</main>
 		</>

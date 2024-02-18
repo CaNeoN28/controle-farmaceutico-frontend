@@ -1,16 +1,8 @@
-import { FiltrosFarmaciasProximas } from "@/utils/fetchFarmacias";
+import { FiltrosFarmaciasProximas, FiltrosPlantoes } from "@/types/fetchFarmacias";
 import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const url = `${API_URL}/farmacias`;
-
-interface ParamsPlantoes {
-	pagina?: number;
-	limite?: number;
-	municipio?: string;
-	estado?: string;
-	tempo?: Date;
-}
 
 interface FiltrosFarmacias {
 	bairro?: string;
@@ -35,7 +27,7 @@ export default class FarmaciaFetch {
 		return response;
 	}
 
-	getFarmaciasPlantoes(params: ParamsPlantoes) {
+	getFarmaciasPlantoes(params: FiltrosPlantoes) {
 		const response = axios.get(`${url}/plantao`, {
 			params,
 		});
