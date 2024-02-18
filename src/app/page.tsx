@@ -3,6 +3,7 @@
 import Menu from "@/components/Menu";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import "./globals.css";
+import { fromLatLng } from "react-geocode";
 import styles from "./Home.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
 import Botao from "@/components/Botao";
@@ -13,6 +14,9 @@ import Farmacia, { Escala } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
 import Map from "@/components/Map";
 import Carregando from "@/components/Carregando";
+import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
+import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
+import { FiltrosFarmaciasProximas } from "@/utils/fetchFarmacias";
 
 interface Localizacao {
 	lng: number;
@@ -24,7 +28,7 @@ type FarmaciaEscala = Array<Farmacia & { dia_semana: string }>;
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
 
-	const [date, setDate] = useState(new Date());
+	const [date] = useState(new Date());
 
 	const [localizacao, setLocalizacao] = useState<Localizacao>();
 	const [erroLocalizacao, setErroLocalizacao] = useState<string>();
@@ -40,24 +44,61 @@ export default function Home() {
 
 	const [numFarmacias, setNumFarmacias] = useState<number>(5);
 
-	const getFarmacias = () => {
+	const getFarmacias = async () => {
+		let localizacao: Localizacao | undefined = undefined;
+
+		if (navigator.geolocation) {
+			navigator.geolocation.watchPosition(
+				(position) => {
+					const { latitude, longitude } = position.coords;
+
+					localizacao = {
+						lat: latitude,
+						lng: longitude,
+					};
+
+					setLocalizacao(localizacao);
+				},
+				(error) => {
+					console.log(error);
+					setErroLocalizacao("Não foi possível rastrear sua localização");
+				}
+			);
+		} else {
+			setErroLocalizacao("Geolocalização não permitida no navegador");
+		}
+
 		if (localizacao) {
 			const { lat, lng } = localizacao;
+			const filtros: FiltrosFarmaciasProximas = {
+				limite: 6,
+				tempo: date,
+				latitude: lat,
+				longitude: lng,
+			};
+
+			const { erro, estado, municipio } = await getMunicipioEstado(localizacao);
+
+			if (erro) setErroLocalizacao(erro);
+
+			if (estado) filtros.estado = estado;
+			if (municipio) filtros.municipio = municipio;
 
 			fFarmacias
-				.getFarmaciasProximas({
-					limite: 6,
-					tempo: date,
-					latitude: lat,
-					longitude: lng,
-				})
+				.getFarmaciasProximas(filtros)
 				.then((res) => {
 					const resposta = res.data as GetManyRequest<Farmacia[]>;
 					const farmacias = resposta.dados;
 
-					setFarmaciaMaisProxima(farmacias[0]);
+					if (farmacias.length < 0) {
+						setErroFarmaciasProximas(
+							"Não foram encontradas farmácias abertas próximas "
+						);
+					} else {
+						setErroFarmaciasProximas("");
+						setFarmaciaMaisProxima(farmacias[0]);
+					}
 					setFarmaciasProximas(farmacias);
-					setErroFarmaciasProximas("");
 				})
 				.catch((err) => {
 					console.log(err);
@@ -111,31 +152,6 @@ export default function Home() {
 		}
 	};
 
-	const getLocation = () => {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(
-				(position) => {
-					const { latitude, longitude } = position.coords;
-
-					setLocalizacao({
-						lat: latitude,
-						lng: longitude,
-					});
-				},
-				(error) => {
-					setErroLocalizacao("Não foi possível rastrear sua localização");
-
-					setLocalizacao({
-						lat: 0,
-						lng: 0,
-					});
-				}
-			);
-		} else {
-			setErroLocalizacao("Geolocalização não permitida no navegador");
-		}
-	};
-
 	const tracarRota = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
 
@@ -147,8 +163,6 @@ export default function Home() {
 	};
 
 	useEffect(() => {
-		getLocation();
-
 		const getMaxFarmacias = () => {
 			const width = window.innerWidth;
 
@@ -168,8 +182,9 @@ export default function Home() {
 	}, []);
 
 	useEffect(() => {
+		geocodeSetDefaults();
 		getFarmacias();
-	}, [localizacao]);
+	}, [numFarmacias]);
 
 	useEffect(() => {
 		setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));

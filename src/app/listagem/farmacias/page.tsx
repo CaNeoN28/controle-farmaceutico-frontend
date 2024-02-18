@@ -16,16 +16,11 @@ import CardFarmacia from "@/components/CardFarmacia";
 import InputPesquisa from "@/components/InputPesquisa";
 import Paginacao from "@/components/Paginacao";
 import { getDayFromNum } from "@/types/DiasSemana";
-import {
-	setDefaults,
-	fromLatLng,
-	setKey,
-	setLanguage,
-	setRegion,
-	OutputFormat,
-} from "react-geocode";
+import { fromLatLng } from "react-geocode";
 import { getEstadoFromSigla } from "@/utils/estadosParaSigla";
 import Carregando from "@/components/Carregando";
+import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
+import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
 
 interface FarmaciaEHorario extends Farmacia {
 	aberto_hoje: boolean;
@@ -56,21 +51,12 @@ export default function Farmacias() {
 				limite,
 			};
 
-			await fromLatLng(lat, lng)
-				.then((res) => {
-					const [municipio, sigla] = res.plus_code.compound_code
-						.split(" ")
-						.slice(1, 3)
-						.map((v: string) => v.replace(",", ""));
+			const { erro, estado, municipio } = await getMunicipioEstado(position);
 
-					const estado = getEstadoFromSigla(sigla);
+			if (erro) setErro(erro);
 
-					if (estado) filtros.estado = estado;
-					if (municipio) filtros.municipio = municipio;
-				})
-				.catch((err) => {
-					setErro("Não foi possível rastrear seu endereço");
-				});
+			if (municipio) filtros.municipio = municipio;
+			if (estado) filtros.estado = estado;
 
 			if (pesquisa) {
 				filtros.nome_fantasia = pesquisa;
@@ -164,12 +150,7 @@ export default function Farmacias() {
 		getPosition();
 		onResize();
 
-		setDefaults({
-			key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
-			region: "br",
-			language: "pt",
-			outputFormat: OutputFormat.JSON,
-		});
+		geocodeSetDefaults();
 
 		window.addEventListener("resize", onResize);
 
