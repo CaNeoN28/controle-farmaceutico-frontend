@@ -178,7 +178,7 @@ export default function Farmacias() {
 
 	useEffect(() => {
 		getFarmacias();
-	}, [position, municipio, estado]);
+	}, [position]);
 
 	useLayoutEffect(() => {
 		getFarmacias();
