@@ -38,6 +38,7 @@ export default function Home() {
 
 	const [localizacao, setLocalizacao] = useState<Localizacao>();
 	const [erroLocalizacao, setErroLocalizacao] = useState<string>();
+	const [rota, setRota] = useState<string>("");
 
 	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<Farmacia>();
 	const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
@@ -79,6 +80,21 @@ export default function Home() {
 			);
 		} else {
 			setErroLocalizacao("Geolocalização não permitida no navegador");
+		}
+	};
+
+	const getRota = () => {
+		if (localizacao && farmaciaMaisProxima) {
+			const { lat, lng } = localizacao;
+			let url = "";
+
+			if (lat != 0 && lng != 0) {
+				url = `https://www.google.com/maps/dir/${lat},${lng}/${farmaciaMaisProxima.endereco.localizacao.x},${farmaciaMaisProxima.endereco.localizacao.y}`;
+			} else {
+				url = `https://www.google.com/maps/dir//${farmaciaMaisProxima.endereco.localizacao.x},${farmaciaMaisProxima.endereco.localizacao.y}`;
+			}
+
+			setRota(url);
 		}
 	};
 
@@ -170,16 +186,6 @@ export default function Home() {
 		}
 	};
 
-	const tracarRota = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		e.preventDefault();
-
-		if (localizacao && farmaciaMaisProxima) {
-			const url = `https://www.google.com/maps/dir/${localizacao.lat},${localizacao.lng}/${farmaciaMaisProxima.endereco.localizacao.x},${farmaciaMaisProxima.endereco.localizacao.y}`;
-
-			window.open(url, "_blank");
-		}
-	};
-
 	useEffect(() => {
 		geocodeSetDefaults();
 
@@ -207,6 +213,7 @@ export default function Home() {
 	}, [localizacao]);
 
 	useEffect(() => {
+		getRota();
 		setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));
 	}, [farmaciasProximas]);
 
@@ -248,13 +255,10 @@ export default function Home() {
 											</div>
 										</TituloFarmacia>
 									</div>
-									{erroLocalizacao ? (
+									{erroLocalizacao && (
 										<span className={styles.erro}>{erroLocalizacao}</span>
-									) : (
-										<LinkButton link="">
-											Traçar Rota
-										</LinkButton>
 									)}
+									<LinkButton link={rota}>Traçar Rota</LinkButton>
 								</div>
 								{farmaciasProximasF.length > 0 ? (
 									<div className={styles.listagem}>
@@ -312,7 +316,7 @@ export default function Home() {
 										))}
 									</div>
 									<LinkButton link="/listagem/plantoes" secundario>
-											Ver mais
+										Ver mais
 									</LinkButton>
 								</>
 							</div>
