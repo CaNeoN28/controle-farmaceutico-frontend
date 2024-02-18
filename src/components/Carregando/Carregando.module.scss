@@ -1,0 +1,41 @@
+.carregando {
+	position: fixed;
+	text-align: center;
+
+	left: 50%;
+	top: 50%;
+
+	transform: translate(-50%, -50%);
+
+	span {
+		font-size: 24px;
+	}
+}
+
+@keyframes icones_carregando {
+	0% {
+		color: var(--gray);
+	}
+	50% {
+		color: var(--light-gray);
+	}
+	100% {
+		color: var(--gray);
+	}
+}
+
+.icones {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	margin-top: 8px;
+
+	font-size: 24px;
+
+	svg {
+		animation-name: icones_carregando;
+		animation-duration: 2s;
+		animation-iteration-count: infinite;
+	}
+}

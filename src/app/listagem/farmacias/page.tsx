@@ -25,6 +25,7 @@ import {
 	OutputFormat,
 } from "react-geocode";
 import { getEstadoFromSigla } from "@/utils/estadosParaSigla";
+import Carregando from "@/components/Carregando";
 
 interface FarmaciaEHorario extends Farmacia {
 	aberto_hoje: boolean;
@@ -214,7 +215,7 @@ export default function Farmacias() {
 				) : erro ? (
 					<span>{erro}</span>
 				) : (
-					<span>Carregando...</span>
+					<Carregando/>
 				)}
 			</main>
 		</>
