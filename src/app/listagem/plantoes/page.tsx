@@ -38,15 +38,6 @@ export default function Plantoes() {
 			});
 	};
 
-	const inputProps = {
-		onChange: (e: ChangeEvent<HTMLInputElement>) => {
-			setPesquisa(e.target.value);
-		},
-		onSubmit: (e: FormEvent<HTMLFormElement> & FormEvent<HTMLInputElement>) => {
-			e.preventDefault();
-		},
-	};
-
 	useEffect(() => {
 		getFarmacias();
 	}, []);
@@ -59,24 +50,25 @@ export default function Plantoes() {
 		<>
 			<Menu />
 			<main>
-				<div>
-					<InputPesquisa value={pesquisa} {...inputProps} />
-				</div>
 				{Object.keys(escala).length > 0 ? (
 					<>
 						{Object.keys(escala).map((v: keyof Escala, i) => {
 							return (
 								<Secao titulo={String(v)} key={i}>
-									{escala[v].map((f) => {
-										return (
-											<CardFarmacia
-												key={f._id}
-												nome={f.nome_fantasia}
-												imagem_url={f.imagem_url || ""}
-												link_farmacia={`/farmacias/${f._id}`}
-											/>
-										);
-									})}
+									<div className={styles.farmacias}>
+										<Listagem>
+											{escala[v].map((f) => {
+												return (
+													<CardFarmacia
+														key={f._id}
+														nome={f.nome_fantasia}
+														imagem_url={f.imagem_url || ""}
+														link_farmacia={`/farmacias/${f._id}`}
+													/>
+												);
+											})}
+										</Listagem>
+									</div>
 								</Secao>
 							);
 						})}
