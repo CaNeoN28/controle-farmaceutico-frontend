@@ -74,12 +74,12 @@ export default function Home() {
 						lng: 0,
 					});
 					setErroLocalizacao(
-						"Não foi possível recuperar sua localização, não é possível traçar rota"
+						"Não foi possível determinar sua localização"
 					);
 				}
 			);
 		} else {
-			setErroLocalizacao("Geolocalização não permitida no navegador");
+			setErroLocalizacao("Localização não é permitida pelo seu navegador");
 		}
 	};
 
