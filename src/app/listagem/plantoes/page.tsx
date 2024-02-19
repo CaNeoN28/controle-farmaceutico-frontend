@@ -2,9 +2,8 @@
 
 import Menu from "@/components/Menu";
 import styles from "./Plantoes.module.scss";
-import InputPesquisa from "@/components/InputPesquisa";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { Escala, FarmaciaAberta, FarmaciaPlantao } from "@/types/Farmacia";
+import { useEffect, useState } from "react";
+import { Escala } from "@/types/Farmacia";
 import Listagem from "@/components/Listagem";
 import Paginacao from "@/components/Paginacao";
 import CardFarmacia from "@/components/CardFarmacia";
@@ -23,9 +22,7 @@ export default function Plantoes() {
 	const [position, setPosition] = useState<Localizacao>();
 	const [erroPosition, setErroPosition] = useState("");
 
-	const [pesquisa, setPesquisa] = useState("");
 	const [pagina, setPagina] = useState(1);
-	const [limite, setLimite] = useState(5);
 	const [paginaMax, setPaginaMax] = useState(5);
 	const [erroEscala, setErroEscala] = useState("");
 
@@ -54,11 +51,9 @@ export default function Plantoes() {
 	};
 
 	const getFarmacias = async () => {
-		const filtros: FiltrosPlantoes = { pagina, limite, tempo: date };
+		const filtros: FiltrosPlantoes = { pagina, limite: 10, tempo: date };
 
 		if (position) {
-			console.log("aqui");
-
 			const { erro, estado, municipio } = await getMunicipioEstado(position);
 
 			if (estado) filtros.estado = estado;
@@ -94,29 +89,33 @@ export default function Plantoes() {
 	return (
 		<>
 			<Menu />
-			<main>
+			<main className={styles.main}>
 				{Object.keys(escala).length > 0 ? (
 					<>
-						{Object.keys(escala).map((v: keyof Escala, i) => {
-							return (
-								<Secao titulo={String(v)} key={i}>
-									<div className={styles.farmacias}>
-										<Listagem>
-											{escala[v].map((f, i) => {
-												return (
-													<CardFarmacia
-														key={i}
-														nome={f.nome_fantasia}
-														imagem_url={f.imagem_url || ""}
-														link_farmacia={`/farmacias/${f._id}`}
-													/>
-												);
-											})}
-										</Listagem>
+						<div className={styles.secoes}>
+							{Object.keys(escala).map((v: keyof Escala, i) => {
+								return (
+									<div className={styles.secao}>
+										<Secao titulo={String(v)} key={i}>
+											<div className={styles.farmacias}>
+												<Listagem>
+													{escala[v].map((f, i) => {
+														return (
+															<CardFarmacia
+																key={i}
+																nome={f.nome_fantasia}
+																imagem_url={f.imagem_url || ""}
+																link_farmacia={`/farmacias/${f._id}`}
+															/>
+														);
+													})}
+												</Listagem>
+											</div>
+										</Secao>
 									</div>
-								</Secao>
-							);
-						})}
+								);
+							})}
+						</div>
 						<Paginacao
 							pagina={pagina}
 							setPagina={setPagina}
