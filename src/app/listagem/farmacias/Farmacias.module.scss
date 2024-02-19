@@ -14,13 +14,6 @@
 	width: 100%;
 }
 
-.farmacias {
-	display: flex;
-	flex-direction: column;
-
-	gap: 8px;
-}
-
 @media screen and (min-width: 480px) {
 	.main {
 		padding: 72px 48px;
@@ -28,13 +21,6 @@
 
 	.input_container {
 		width: 400px;
-	}
-
-	.farmacias {
-		display: grid;
-		grid-template-columns: auto auto;
-
-		margin: auto;
 	}
 }
 
@@ -46,27 +32,11 @@
 	.input_container {
 		width: 600px;
 	}
-
-	.farmacias {
-		grid-template-columns: auto auto auto;
-
-		gap: 24px;
-	}
 }
 
 @media screen and (min-width: 1020px) {
 	.input_container {
 		width: 800px;
-	}
-
-	.farmacias {
-		grid-template-columns: auto auto auto auto;
-	}
-}
-
-@media screen and (min-width: 1220px) {
-	.farmacias {
-		grid-template-columns: auto auto auto auto auto;
 	}
 }
 

@@ -10,7 +10,7 @@ import Botao from "@/components/Botao";
 import FarmaciaItem from "@/components/FarmaciaItem";
 import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
-import Farmacia, { Escala } from "@/types/Farmacia";
+import Farmacia, { Escala, FarmaciaAberta } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
 import Map from "@/components/Map";
 import Carregando from "@/components/Carregando";
@@ -27,10 +27,6 @@ interface Localizacao {
 	lat: number;
 }
 
-interface FarmaciaEscala extends Farmacia {
-	dia_semana: string;
-}
-
 export default function Home() {
 	const fFarmacias = new FarmaciaFetch();
 
@@ -45,8 +41,8 @@ export default function Home() {
 	const [farmaciasProximasF, setFarmaciasProximasF] = useState<Farmacia[]>([]);
 	const [erroFarmaciasProximas, setErroFarmaciasProximas] = useState("");
 
-	const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaEscala[]>([]);
-	const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<FarmaciaEscala[]>(
+	const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaAberta[]>([]);
+	const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<FarmaciaAberta[]>(
 		[]
 	);
 	const [erroFarmaciasEscala, setErroFarmaciasEscala] = useState("");
@@ -146,7 +142,7 @@ export default function Home() {
 					const resposta = res.data as GetManyRequest<Escala>;
 					const escala = resposta.dados;
 
-					const farmacias: FarmaciaEscala[] = [];
+					const farmacias: FarmaciaAberta[] = [];
 
 					Object.keys(escala).map((e) => {
 						escala[e].map((f) => {
