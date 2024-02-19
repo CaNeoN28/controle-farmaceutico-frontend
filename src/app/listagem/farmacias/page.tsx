@@ -16,8 +16,6 @@ import CardFarmacia from "@/components/CardFarmacia";
 import InputPesquisa from "@/components/InputPesquisa";
 import Paginacao from "@/components/Paginacao";
 import { getDayFromNum } from "@/types/DiasSemana";
-import { fromLatLng } from "react-geocode";
-import { getEstadoFromSigla } from "@/utils/estadosParaSigla";
 import Carregando from "@/components/Carregando";
 import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
@@ -37,26 +35,26 @@ export default function Farmacias() {
 	const [pesquisa, setPesquisa] = useState("");
 	const [pagina, setPagina] = useState(1);
 	const [paginaMax, setPaginaMax] = useState(5);
-	const [limite, setLimite] = useState(10);
+	const [limite, setLimite] = useState<number>();
 
 	const [farmacias, setFarmacias] = useState<FarmaciaEHorario[]>([]);
 	const [erro, setErro] = useState("");
 
 	const getFarmacias = async () => {
-		if (position) {
-			const { lat, lng } = position;
-
+		if (limite) {
 			const filtros: { [key: string]: string | number } = {
 				pagina,
 				limite,
 			};
 
-			const { erro, estado, municipio } = await getMunicipioEstado(position);
+			if (position) {
+				const { erro, estado, municipio } = await getMunicipioEstado(position);
 
-			if (erro) setErro(erro);
+				if (erro) setErro(erro);
 
-			if (municipio) filtros.municipio = municipio;
-			if (estado) filtros.estado = estado;
+				if (municipio) filtros.municipio = municipio;
+				if (estado) filtros.estado = estado;
+			}
 
 			if (pesquisa) {
 				filtros.nome_fantasia = pesquisa;
@@ -115,11 +113,11 @@ export default function Farmacias() {
 					});
 				},
 				(error) => {
-					setErro("Não foi possível encontrar sua localização");
+					setErro("Não foi possível determinar sua localização");
 				}
 			);
 		} else {
-			setErro("Seu navegador não suporta geolocalização");
+			setErro("Localização não é permitida pelo seu navegador");
 		}
 	};
 
