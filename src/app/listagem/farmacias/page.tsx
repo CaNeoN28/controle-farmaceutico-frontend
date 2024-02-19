@@ -19,6 +19,7 @@ import { getDayFromNum } from "@/types/DiasSemana";
 import Carregando from "@/components/Carregando";
 import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
+import Listagem from "@/components/Listagem";
 
 interface FarmaciaEHorario extends Farmacia {
 	aberto_hoje: boolean;
@@ -174,7 +175,7 @@ export default function Farmacias() {
 				</div>
 				{farmacias.length > 0 ? (
 					<>
-						<div className={styles.farmacias}>
+						<Listagem>
 							{farmacias.map((f) => (
 								<CardFarmacia
 									key={f._id}
@@ -185,7 +186,7 @@ export default function Farmacias() {
 									link_farmacia={`/farmacias/${f._id}`}
 								/>
 							))}
-						</div>
+						</Listagem>
 						<Paginacao
 							pagina={pagina}
 							paginaMax={paginaMax}
