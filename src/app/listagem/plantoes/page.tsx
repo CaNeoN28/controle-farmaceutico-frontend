@@ -13,6 +13,7 @@ import Secao from "@/components/Secao";
 import { FiltrosPlantoes } from "@/types/fetchFarmacias";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
 import Carregando from "@/components/Carregando";
+import converterData from "@/utils/converterData";
 
 export default function Plantoes() {
 	const fFarmacias = new FarmaciaFetch();
@@ -96,7 +97,7 @@ export default function Plantoes() {
 							{Object.keys(escala).map((v: keyof Escala, i) => {
 								return (
 									<div className={styles.secao}>
-										<Secao titulo={String(v)} key={i}>
+										<Secao titulo={converterData(v)} key={i}>
 											<div className={styles.farmacias}>
 												<Listagem>
 													{escala[v].map((f, i) => {
