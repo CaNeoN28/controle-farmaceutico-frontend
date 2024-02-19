@@ -11,22 +11,62 @@ import CardFarmacia from "@/components/CardFarmacia";
 import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import Secao from "@/components/Secao";
+import { FiltrosPlantoes } from "@/types/fetchFarmacias";
+import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
+import Carregando from "@/components/Carregando";
 
 export default function Plantoes() {
 	const fFarmacias = new FarmaciaFetch();
 
 	const [date] = useState(new Date());
 
+	const [position, setPosition] = useState<Localizacao>();
+	const [erroPosition, setErroPosition] = useState("");
+
 	const [pesquisa, setPesquisa] = useState("");
 	const [pagina, setPagina] = useState(1);
 	const [limite, setLimite] = useState(5);
 	const [paginaMax, setPaginaMax] = useState(5);
+	const [erroEscala, setErroEscala] = useState("");
 
 	const [escala, setEscala] = useState<Escala>({});
 
-	const getFarmacias = () => {
+	const getLocation = () => {
+		if (navigator.geolocation) {
+			navigator.geolocation.watchPosition(
+				(position) => {
+					const { latitude, longitude } = position.coords;
+
+					setErroPosition("");
+					setPosition({
+						lat: latitude,
+						lng: longitude,
+					});
+				},
+				(err) => {
+					console.log(err);
+					setErroPosition("Não foi possível determinar sua localização");
+				}
+			);
+		} else {
+			setErroPosition("Localização não é permitida pelo seu navegador");
+		}
+	};
+
+	const getFarmacias = async () => {
+		const filtros: FiltrosPlantoes = { pagina, limite, tempo: date };
+
+		if (position) {
+			console.log("aqui");
+
+			const { erro, estado, municipio } = await getMunicipioEstado(position);
+
+			if (estado) filtros.estado = estado;
+			if (municipio) filtros.municipio = municipio;
+		}
+
 		fFarmacias
-			.getFarmaciasPlantoes({ pagina, limite, tempo: date })
+			.getFarmaciasPlantoes(filtros)
 			.then((res) => {
 				const resposta = res.data as GetManyRequest<Escala>;
 				const { paginas_totais, dados: escala } = resposta;
@@ -38,6 +78,14 @@ export default function Plantoes() {
 				console.log(err);
 			});
 	};
+
+	useEffect(() => {
+		getLocation();
+	});
+
+	useEffect(() => {
+		getFarmacias();
+	}, [position]);
 
 	useEffect(() => {
 		getFarmacias();
@@ -75,8 +123,10 @@ export default function Plantoes() {
 							paginaMax={paginaMax}
 						/>
 					</>
+				) : erroEscala ? (
+					<div className={styles.erro}>{erroEscala}</div>
 				) : (
-					<></>
+					<Carregando />
 				)}
 			</main>
 		</>
