@@ -29,9 +29,10 @@ export default function Plantoes() {
 			.getFarmaciasPlantoes({ pagina, limite, tempo: date })
 			.then((res) => {
 				const resposta = res.data as GetManyRequest<Escala>;
-				const escala = resposta.dados;
+				const { paginas_totais, dados: escala } = resposta;
 
 				setEscala(escala);
+				setPaginaMax(paginas_totais);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -40,11 +41,7 @@ export default function Plantoes() {
 
 	useEffect(() => {
 		getFarmacias();
-	}, []);
-
-	useEffect(() => {
-		console.log(escala);
-	}, []);
+	}, [pagina]);
 
 	return (
 		<>
@@ -57,10 +54,10 @@ export default function Plantoes() {
 								<Secao titulo={String(v)} key={i}>
 									<div className={styles.farmacias}>
 										<Listagem>
-											{escala[v].map((f) => {
+											{escala[v].map((f, i) => {
 												return (
 													<CardFarmacia
-														key={f._id}
+														key={i}
 														nome={f.nome_fantasia}
 														imagem_url={f.imagem_url || ""}
 														link_farmacia={`/farmacias/${f._id}`}
