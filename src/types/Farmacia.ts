@@ -1,11 +1,15 @@
 import DiaSemana from "./DiasSemana";
 
 export interface Escala {
-	[dia: string]: Farmacia[]
+	[dia: string]: Farmacia[];
 }
 
-export interface FarmaciaEscala extends Farmacia {
+export interface FarmaciaAberta extends Farmacia {
 	dia_semana: string;
+}
+
+export interface FarmaciaPlantao extends Farmacia {
+	data: string;
 }
 
 export default interface Farmacia {
@@ -31,5 +35,6 @@ export default interface Farmacia {
 			horario_saida: string;
 		};
 	};
+	imagem_url?: string;
 	__v: 0;
 }

@@ -6,7 +6,7 @@ import styles from "./CardFarmacia.module.scss";
 interface Props {
 	link_farmacia: string;
 	nome: string;
-	informacao: string;
+	informacao?: string;
 	imagem_url?: string;
 }
 
