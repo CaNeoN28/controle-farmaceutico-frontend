@@ -3,6 +3,11 @@ import DiaSemana from "./DiasSemana";
 export interface Escala {
 	[dia: string]: Farmacia[]
 }
+
+export interface FarmaciaEscala extends Farmacia {
+	dia_semana: string;
+}
+
 export default interface Farmacia {
 	_id: string;
 	cnpj: string;

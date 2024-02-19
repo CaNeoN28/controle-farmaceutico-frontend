@@ -10,7 +10,7 @@ import Botao from "@/components/Botao";
 import FarmaciaItem from "@/components/FarmaciaItem";
 import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
-import Farmacia, { Escala } from "@/types/Farmacia";
+import Farmacia, { Escala, FarmaciaEscala } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
 import Map from "@/components/Map";
 import Carregando from "@/components/Carregando";
@@ -25,10 +25,6 @@ import LinkButton from "@/components/LinkButton";
 interface Localizacao {
 	lng: number;
 	lat: number;
-}
-
-interface FarmaciaEscala extends Farmacia {
-	dia_semana: string;
 }
 
 export default function Home() {
