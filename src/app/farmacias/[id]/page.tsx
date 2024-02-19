@@ -14,6 +14,7 @@ import HorarioServicoView from "@/components/HorarioServicoView";
 import farmaciaEstaAberta from "@/utils/farmaciaEstaAberta";
 import DiaPlantao from "@/components/DiaPlantao";
 import Carregando from "@/components/Carregando";
+import LinkButton from "@/components/LinkButton";
 
 interface Params {
 	id: string;
@@ -36,15 +37,58 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	const [date, setDate] = useState(new Date());
 	const [farmacia, setFarmacia] = useState<Farmacia>();
-	const [localizacaoFarmacia, setLocalizacaoFarmacia] = useState({
-		lat: 0,
-		lng: 0,
-	});
+	const [localizacaoUsuario, setLocalizacaoUsuario] = useState<Localizacao>();
+
 	const [horarios, setHorarios] = useState<Horario[]>([]);
 	const [plantoes, setPlantoes] = useState<Plantoes>({});
 	const [aberto, setAberto] = useState<boolean>(false);
 
+	const [rota, setRota] = useState("");
+
 	const [erroFarmacia, setErroFarmacia] = useState("");
+	const [erroLocalizacao, setErroLocalizacao] = useState("");
+
+	const getRota = () => {
+		if (farmacia) {
+			const { x, y } = farmacia.endereco.localizacao;
+
+			let rota = "";
+
+			if (localizacaoUsuario) {
+				const { lat, lng } = localizacaoUsuario;
+
+				rota = `https://www.google.com/maps/dir/${lat},${lng}/${x},${y}`;
+			} else {
+				rota = `https://www.google.com/maps/dir//${x},${y}`;
+
+				console.log(rota);
+			}
+
+			setRota(rota);
+		}
+	};
+
+	const getPosition = () => {
+		if (navigator.geolocation) {
+			navigator.geolocation.watchPosition(
+				(position) => {
+					const { latitude, longitude } = position.coords;
+
+					setLocalizacaoUsuario({
+						lat: latitude,
+						lng: longitude,
+					});
+					setErroLocalizacao("");
+				},
+				(err) => {
+					console.log(err);
+					setErroLocalizacao("Não foi possível determinar sua localização");
+				}
+			);
+		} else {
+			setErroLocalizacao("Localização não é permitida pelo seu navegador");
+		}
+	};
 
 	const getFarmacia = () => {
 		fFarmacias
@@ -77,18 +121,14 @@ export default function Farmacia({ params }: { params: Params }) {
 	};
 
 	useEffect(() => {
+		getPosition();
 		getFarmacia();
 	}, []);
 
 	useEffect(() => {
 		if (farmacia) {
-			const { x, y } = farmacia.endereco.localizacao;
-
-			setLocalizacaoFarmacia({
-				lat: Number(x),
-				lng: Number(y),
-			});
-
+			getRota()
+			
 			const horarios: Horario[] = Object.keys(farmacia.horarios_servico).map(
 				(v: string) => {
 					const dia = v as DiaSemana;
@@ -124,6 +164,14 @@ export default function Farmacia({ params }: { params: Params }) {
 		}
 	}, [farmacia]);
 
+	useEffect(() => {
+		console.log(rota)
+	}, [rota])
+
+	useEffect(() => {
+		getRota()
+	}, [localizacaoUsuario])
+
 	return (
 		<>
 			<Menu />
@@ -132,7 +180,12 @@ export default function Farmacia({ params }: { params: Params }) {
 					<div className={styles.farmacia}>
 						<div className={styles.informacao_principal}>
 							<div className={styles.map}>
-								<Map map_center={localizacaoFarmacia} />
+								<Map
+									map_center={{
+										lat: Number(farmacia.endereco.localizacao.x),
+										lng: Number(farmacia.endereco.localizacao.y),
+									}}
+								/>
 							</div>
 							<TituloFarmacia>
 								<div className={styles.titulo}>
@@ -141,7 +194,10 @@ export default function Farmacia({ params }: { params: Params }) {
 								</div>
 							</TituloFarmacia>
 						</div>
-						<Botao fullWidth>Traçar rota</Botao>
+						{erroLocalizacao && (
+							<span className={styles.erro_localizacao}>{erroLocalizacao}</span>
+						)}
+						<LinkButton link={rota}>Traçar rota</LinkButton>
 					</div>
 					<div className={styles.informacoes}>
 						<div className={styles.secao}>
