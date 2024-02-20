@@ -71,6 +71,14 @@ export default function Login() {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (erro) {
+			setTimeout(() => {
+				setErro("");
+			}, 5000);
+		}
+	}, [erro]);
+
 	return (
 		<>
 			<Menu />
