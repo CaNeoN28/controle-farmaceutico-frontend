@@ -11,11 +11,8 @@ import { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { RequestErro } from "@/types/Requests";
-
-interface ILogin {
-	nome_usuario: string;
-	senha: string;
-}
+import { ILogin, ILoginResponse } from "@/types/Autenticacao";
+import { setCookie } from "cookies-next";
 
 export default function Login() {
 	const fetchLogin = new FetchAutenticacao().postLogin;
@@ -40,7 +37,12 @@ export default function Login() {
 
 		fetchLogin({ nome_usuario, senha })
 			.then((res) => {
-				console.log(res);
+				const response = res.data as ILoginResponse;
+				const { token } = response;
+
+				console.log(token)
+
+				setCookie("authentication", token);
 			})
 			.catch((err: RequestErro<string>) => {
 				const mensagem = err.response.data;
