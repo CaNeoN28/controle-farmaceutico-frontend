@@ -40,7 +40,33 @@ export default function AutoCadastro() {
 	const [opcoesEntidades, setOpcoes] = useState<Opcao[]>([]);
 
 	const onSubmit: SubmitHandler<IUsuarioPost> = (data) => {
-		console.log(data);
+		const {
+			cpf,
+			email,
+			entidade_relacionada,
+			funcao,
+			imagem_url,
+			nome_completo,
+			nome_usuario,
+			numero_registro,
+			senha,
+		} = data;
+
+		const usuario = {
+			cpf,
+			email,
+			dados_administrativos: {
+				entidade_relacionada,
+			},
+			funcao,
+			imagem_url,
+			nome_completo,
+			nome_usuario,
+			numero_registro,
+			senha,
+		};
+
+		console.log(usuario);
 	};
 
 	const sendImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -94,18 +120,33 @@ export default function AutoCadastro() {
 				<form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
 					<div className={styles.cadastro}>
 						<div className={styles.form_inputs}>
-							<InputContainer
-								id="entidade_relacionada"
-								label="Entidade relacionada"
-							>
-								<Select
-									name="entidade_relacionada"
-									filtro={pesquisaEntidade}
-									opcoes={opcoesEntidades}
-									setFiltro={setPesquisaEntidade}
-									setValue={setValue}
-								/>
-							</InputContainer>
+							<Controller
+								name="entidade_relacionada"
+								control={control}
+								rules={{
+									required: {
+										message: "Entidade relacionada é obrigatório",
+										value: true,
+									},
+								}}
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="entidade_relacionada"
+											label="Entidade relacionada"
+											error={formState.errors.entidade_relacionada}
+										>
+											<Select
+												filtro={pesquisaEntidade}
+												opcoes={opcoesEntidades}
+												setFiltro={setPesquisaEntidade}
+												setValue={setValue}
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
 							<Controller
 								name="numero_registro"
 								control={control}
