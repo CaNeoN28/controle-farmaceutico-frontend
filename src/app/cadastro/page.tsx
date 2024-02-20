@@ -5,12 +5,27 @@ import styles from "./AutoCadastro.module.scss";
 import InputImagem from "@/components/InputImagem";
 import { ChangeEvent, useState } from "react";
 import { FaUser } from "react-icons/fa";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { IUsuarioPost } from "@/types/Usuario";
 import Botao from "@/components/Botao";
+import InputContainer from "@/components/InputContainer";
+import Input from "@/components/Input";
+import InputSenha from "@/components/InputSenha";
 
 export default function AutoCadastro() {
-	const { control, formState, handleSubmit } = useForm<IUsuarioPost>();
+	const { control, formState, handleSubmit } = useForm<IUsuarioPost>({
+		defaultValues: {
+			cpf: "",
+			email: "",
+			imagem_url: "",
+			nome_completo: "",
+			nome_usuario: "",
+			numero_registro: "",
+			senha: "",
+		},
+	});
+
+	const [senha, setSenha] = useState("");
 
 	const [imagemUrl, setImagemUrl] = useState<string>();
 
@@ -37,7 +52,89 @@ export default function AutoCadastro() {
 			<Menu />
 			<main>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<div className={styles.form_inputs}></div>
+					<div className={styles.form_inputs}>
+						<Controller
+							name="numero_registro"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="numero_registro"
+										label="Número de registro"
+									>
+										<Input id="numero_registro" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="nome_completo"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer id="nome_completo" label="Nome completo">
+										<Input id="nome_completo" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="nome_usuario"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer id="nome_usuario" label="Nome de usuário">
+										<Input id="nome_usuario" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="email"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer id="email" label="Email">
+										<Input id="email" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="cpf"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer id="cpf" label="CPF">
+										<Input id="cpf" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
+						<InputContainer id="senha" label="Senha">
+							<InputSenha
+								id="senha"
+								value={senha}
+								onChange={(e) => {
+									setSenha(e.target.value);
+								}}
+							/>
+						</InputContainer>
+						<Controller
+							name="senha"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer id="confirmarSenha" label="Confirmar senha">
+										<InputSenha
+											id="confirmarSenha"
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+					</div>
 					<div className={styles.imagem_form}>
 						<div className={styles.imagem}>
 							{imagemUrl ? (
@@ -55,8 +152,12 @@ export default function AutoCadastro() {
 						/>
 					</div>
 					<div className={styles.form_buttons}>
-						<Botao fullWidth>Enviar</Botao>
-						<Botao fullWidth secundario>Cancelar</Botao>
+						<Botao type="submit" fullWidth>
+							Enviar
+						</Botao>
+						<Botao fullWidth secundario>
+							Cancelar
+						</Botao>
 					</div>
 				</form>
 			</main>
