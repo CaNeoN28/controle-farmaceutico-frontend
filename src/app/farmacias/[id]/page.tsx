@@ -40,67 +40,15 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	const fFarmacias = new FarmaciaFetch();
 
-<<<<<<< HEAD
-  const [date, setDate] = useState(new Date());
-  const [farmacia, setFarmacia] = useState<Farmacia>();
-  const [localizacao, setLocalizacao] = useState({ lat: 0, lng: 0 });
-  const [erroLocalizacao, setErroLocalizacao] = useState<string>();
-  const [localizacaoFarmacia, setLocalizacaoFarmacia] = useState<Localizacao>();
-  const [horarios, setHorarios] = useState<Horario[]>([]);
-  const [plantoes, setPlantoes] = useState<Plantoes>({});
-  const [aberto, setAberto] = useState<boolean>(false);
-=======
 	const [date, setDate] = useState(new Date());
 	const [farmacia, setFarmacia] = useState<Farmacia>();
 	const [localizacaoUsuario, setLocalizacaoUsuario] = useState<Localizacao>();
->>>>>>> 8705ca8f57150bf13f68094d22d9d1d633db9bdf
 
 	const [horarios, setHorarios] = useState<Horario[]>([]);
 	const [plantoes, setPlantoes] = useState<Plantoes>({});
 	const [aberto, setAberto] = useState<boolean>(false);
 
-<<<<<<< HEAD
-  const tracarRota = () => {
-    if (localizacao && localizacaoFarmacia) {
-      const url = `https://www.google.com/maps/dir/${localizacao.lat},${localizacao.lng}/${localizacaoFarmacia.lat},${localizacaoFarmacia.lng}`;
-
-      window.open(url, "_blank");
-    }
-  };
-
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-
-          setLocalizacao({
-            lat: latitude,
-            lng: longitude,
-          });
-        },
-        (error) => {
-          setErroLocalizacao("Não foi possível rastrear sua localização");
-
-          setLocalizacao({
-            lat: 0,
-            lng: 0,
-          });
-        }
-      );
-    } else {
-      setErroLocalizacao("Geolocalização não permitida no navegador");
-    }
-  };
-
-  const getFarmacia = () => {
-    fFarmacias
-      .getFarmacia(farmaciaId)
-      .then((res) => {
-        const resposta = res.data as Farmacia;
-=======
 	const [rota, setRota] = useState("");
->>>>>>> 8705ca8f57150bf13f68094d22d9d1d633db9bdf
 
 	const [erroFarmacia, setErroFarmacia] = useState("");
 	const [erroLocalizacao, setErroLocalizacao] = useState("");
@@ -121,16 +69,9 @@ export default function Farmacia({ params }: { params: Params }) {
 				console.log(rota);
 			}
 
-<<<<<<< HEAD
-  useEffect(() => {
-    getLocation();
-    getFarmacia();
-  }, []);
-=======
 			setRota(rota);
 		}
 	};
->>>>>>> 8705ca8f57150bf13f68094d22d9d1d633db9bdf
 
 	const getPosition = () => {
 		if (navigator.geolocation) {
