@@ -23,8 +23,8 @@ export default function Login() {
             </InputContainer>
           </form>
           <div className={styles.botoes}>
-            <Botao fullWidth secundario>Esqueci a senha</Botao>
             <Botao fullWidth>Login</Botao>
+            <Botao fullWidth secundario>Esqueci a senha</Botao>
           </div>
         </div>
       </main>
