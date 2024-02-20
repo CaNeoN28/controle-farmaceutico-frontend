@@ -1,0 +1,94 @@
+.main {
+	display: flex;
+	justify-content: center;
+
+	padding: 64px 20px;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	gap: 40px;
+
+	width: 100%;
+}
+
+.titulo {
+	color: var(--primary-color);
+
+	font-size: 20px;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+
+	width: 100%;
+
+	gap: 24px;
+}
+
+.botoes {
+	display: flex;
+	flex-direction: column;
+
+	gap: 16px;
+
+	width: 100%;
+}
+
+@media screen and (min-width: 480px) {
+	.main {
+		padding: 64px 92px;
+	}
+
+	.container {
+		position: fixed;
+
+		top: 50%;
+		left: 50%;
+
+		transform: translate(-50%, -50%);
+
+		padding: 40px 40px;
+
+		max-width: 360px;
+
+		border: 1px solid var(--primary-color);
+		border-radius: 8px;
+	}
+
+	.botoes {
+		flex-direction: row-reverse;
+	}
+}
+
+@media screen and (min-width: 580px) {
+	.container {
+		max-width: 480px;
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.container {
+		padding: 40px 140px;
+
+		max-width: 640px;
+	}
+}
+
+@keyframes fading {
+	from {
+		opacity: 100%;
+	}
+	to {
+		opacity: 0%;
+	}
+}
+
+.erro {
+	color: var(--red);
+	animation: fading 5s 2s;
+}

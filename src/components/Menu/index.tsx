@@ -3,6 +3,8 @@ import { MdMedication, MdOutlineMenu, MdOutlineClose } from "react-icons/md";
 import styles from "./Menu.module.scss";
 import BotaoMenu from "../BotaoMenu";
 import classNames from "classnames";
+import { getCookie } from "cookies-next";
+import { FaUserCircle } from "react-icons/fa";
 
 interface Props {}
 
@@ -13,10 +15,21 @@ const getWidth = () => {
 };
 
 export default function Menu({}: Props) {
+	const [autenticado, setAutenticado] = useState(false);
 	const [ativo, setAtivo] = useState(false);
 	const [width, setWidth] = useState(getWidth());
 
+	const getAuthToken = () => {
+		const token = getCookie("authentication");
+
+		if (token) {
+			setAutenticado(true);
+		}
+	};
+
 	useLayoutEffect(() => {
+		getAuthToken();
+
 		window.addEventListener("resize", () => {
 			setWidth(getWidth());
 		});
@@ -37,10 +50,19 @@ export default function Menu({}: Props) {
 					</BotaoMenu>
 					<BotaoMenu link="/listagem/farmacias">Farmácias</BotaoMenu>
 					<BotaoMenu link="/listagem/plantoes">Plantões</BotaoMenu>
-					<BotaoMenu link="/administracao">Administração</BotaoMenu>
+					{autenticado && (
+						<BotaoMenu link="/administracao">Administração</BotaoMenu>
+					)}
 				</div>
 				<div>
-					<BotaoMenu link="/login">Entrar</BotaoMenu>
+					{autenticado ? (
+						<BotaoMenu link="/perfil">
+							<span>Perfil</span>
+							<FaUserCircle />
+						</BotaoMenu>
+					) : (
+						<BotaoMenu link="/login">Entrar</BotaoMenu>
+					)}
 				</div>
 			</div>
 		);
@@ -48,8 +70,8 @@ export default function Menu({}: Props) {
 
 	const classesBackground = classNames({
 		[styles.background]: true,
-		[styles.ativo]: ativo
-	})
+		[styles.ativo]: ativo,
+	});
 
 	const classesContent = classNames({
 		[styles.content]: true,
@@ -71,22 +93,33 @@ export default function Menu({}: Props) {
 						setAtivo(true);
 					}}
 				/>
-				<div className={classesBackground} onClick={() => {setAtivo(false)}}/>
+				<div
+					className={classesBackground}
+					onClick={() => {
+						setAtivo(false);
+					}}
+				/>
 				<div className={classesContent}>
-						<span className={styles.fechar}>
-							<MdOutlineClose
-								className={classesBotao}
-								onClick={() => {
-									setAtivo(false);
-								}}
-							/>
-						</span>
-						<BotaoMenu link="/">Início</BotaoMenu>
-						<BotaoMenu link="/listagem/farmacias">Listagem de farmácia</BotaoMenu>
-						<BotaoMenu link="/listagem/plantoes">Listagem de plantões</BotaoMenu>
+					<span className={styles.fechar}>
+						<MdOutlineClose
+							className={classesBotao}
+							onClick={() => {
+								setAtivo(false);
+							}}
+						/>
+					</span>
+					<BotaoMenu link="/">Início</BotaoMenu>
+					<BotaoMenu link="/listagem/farmacias">Listagem de farmácia</BotaoMenu>
+					<BotaoMenu link="/listagem/plantoes">Listagem de plantões</BotaoMenu>
+					{autenticado && (
 						<BotaoMenu link="/administracao">Administracao</BotaoMenu>
+					)}
+					{autenticado ? (
+						<BotaoMenu link="/perfil">Perfil</BotaoMenu>
+					) : (
 						<BotaoMenu link="/login">Entrar</BotaoMenu>
-					</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);
