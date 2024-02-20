@@ -3,7 +3,8 @@
 import Menu from "@/components/Menu";
 import styles from "./AutoCadastro.module.scss";
 import InputImagem from "@/components/InputImagem";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { FaUser } from "react-icons/fa";
 
 export default function AutoCadastro() {
 	const [imagemUrl, setImagemUrl] = useState<string>();
@@ -28,8 +29,16 @@ export default function AutoCadastro() {
 			<main>
 				<div>
 					<form>{/*Formulário*/}</form>
-					<div>
-						{imagemUrl && <img src={imagemUrl} />}
+					<div className={styles.imagem_form}>
+						<div className={styles.imagem}>
+							{imagemUrl ? (
+								<img src={imagemUrl} />
+							) : (
+								<div className={styles.placeholder} >
+									<FaUser/>
+								</div>
+							)}
+						</div>
 						<InputImagem
 							id="foto_perfil_input"
 							titulo="Enviar imagem"

@@ -1,0 +1,40 @@
+.imagem_form {
+	display: flex;
+	flex-direction: column;
+
+	gap: 16px;
+
+	width: 100%;
+}
+
+.imagem{
+	display: flex;
+	justify-content: center;
+	overflow: hidden;
+
+  border: 1px solid var(--black);
+	border-radius: 8px;
+
+	width: 120px;
+	max-width: 120px;
+
+	margin: auto;
+
+	aspect-ratio: calc(1/1);
+
+	img{
+		height: 100%;
+
+		object-fit: cover;
+	}
+}
+
+.placeholder{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	font-size: 64px;
+
+	aspect-ratio: calc(1/1);
+}
