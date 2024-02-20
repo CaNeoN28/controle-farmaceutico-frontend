@@ -4,38 +4,36 @@ import { FieldError } from "react-hook-form";
 import classNames from "classnames";
 
 interface Props {
-  label: string;
-  id: string;
-  tamanho?: number | string;
-  fullWidth?: boolean,
-  error?: FieldError;
-  children: ReactNode;
+	label: string;
+	id: string;
+	tamanho?: number | string;
+	fullWidth?: boolean;
+	error?: FieldError;
+	children: ReactNode;
 }
 
 export default function InputContainer({
-  label,
-  id,
-  tamanho,
-  fullWidth,
-  error,
-  children,
+	label,
+	id,
+	tamanho,
+	fullWidth,
+	error,
+	children,
 }: Props) {
-  const classes = classNames({
-    [styles.container]: true,
-    "full-width": fullWidth
-  })
-  return (
-    <div className={classes} style={tamanho ? { width: tamanho } : {}}>
-      <div className={styles.head}>
-        {label && (
-          <label className={styles.label} htmlFor={id}>
-            {label}
-          </label>
-        )}
-        {error && <span className={styles.erro}>*{error.message}</span>}
-      </div>
+	const classes = classNames({
+		[styles.container]: true,
+		"full-width": fullWidth,
+	});
+	return (
+		<div className={classes} style={tamanho ? { width: tamanho } : {}}>
+			{label && (
+				<label className={styles.label} htmlFor={id}>
+					{label}
+				</label>
+			)}
 
-      {children}
-    </div>
-  );
+			{children}
+			{error && <span className={styles.erro}>*{error.message}</span>}
+		</div>
+	);
 }
