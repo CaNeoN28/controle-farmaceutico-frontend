@@ -13,9 +13,11 @@ import FetchAutenticacao from "@/fetch/autenticacao";
 import { RequestErro } from "@/types/Requests";
 import { ILogin, ILoginResponse } from "@/types/Autenticacao";
 import { setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
 	const fetchLogin = new FetchAutenticacao().postLogin;
+	const router = useRouter();
 
 	const { control, handleSubmit } = useForm<ILogin>({
 		defaultValues: {
@@ -40,9 +42,9 @@ export default function Login() {
 				const response = res.data as ILoginResponse;
 				const { token } = response;
 
-				console.log(token)
-
 				setCookie("authentication", token);
+
+				router.push("/administracao");
 			})
 			.catch((err: RequestErro<string>) => {
 				const mensagem = err.response.data;
@@ -75,6 +77,7 @@ export default function Login() {
 						<Controller
 							name="nome_usuario"
 							control={control}
+							rules={{ required: true }}
 							render={({ field }) => (
 								<InputContainer id="nome_usuario" label="Nome de usuário:">
 									<Input {...{ ...field, ref: null }} id="nome_usuario" />
@@ -84,6 +87,7 @@ export default function Login() {
 						<Controller
 							name="senha"
 							control={control}
+							rules={{ required: true }}
 							render={({ field }) => (
 								<InputContainer id="senha" label="Senha:">
 									<InputSenha {...{ ...field, ref: null }} id="senha" />
