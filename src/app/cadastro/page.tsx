@@ -164,11 +164,13 @@ export default function AutoCadastro() {
 										</div>
 									)}
 								</div>
-								<InputImagem
-									id="foto_perfil_input"
-									titulo="Enviar imagem"
-									onChange={sendImage}
-								/>
+								<div className={styles.input_imagem}>
+									<InputImagem
+										id="foto_perfil_input"
+										titulo="Enviar imagem"
+										onChange={sendImage}
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
