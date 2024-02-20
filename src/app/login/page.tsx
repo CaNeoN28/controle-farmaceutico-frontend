@@ -9,7 +9,8 @@ import Botao from "@/components/Botao";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { register } from "module";
+import FetchAutenticacao from "@/fetch/autenticacao";
+import { RequestErro } from "@/types/Requests";
 
 interface ILogin {
 	nome_usuario: string;
@@ -17,14 +18,17 @@ interface ILogin {
 }
 
 export default function Login() {
+	const fetchLogin = new FetchAutenticacao().postLogin;
+
 	const { control, handleSubmit } = useForm<ILogin>({
 		defaultValues: {
 			nome_usuario: "",
-			senha: ""
-		}
+			senha: "",
+		},
 	});
 
 	const [width, setWidth] = useState(window.innerWidth);
+	const [erro, setErro] = useState("");
 
 	const classesContainer = classNames({
 		[styles.container]: true,
@@ -32,7 +36,17 @@ export default function Login() {
 	});
 
 	const onSubmit: SubmitHandler<ILogin> = (data) => {
-		console.log(data);
+		const { nome_usuario, senha } = data;
+
+		fetchLogin({ nome_usuario, senha })
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err: RequestErro<string>) => {
+				const mensagem = err.response.data;
+
+				setErro(mensagem);
+			});
 	};
 
 	useEffect(() => {
@@ -75,6 +89,7 @@ export default function Login() {
 							)}
 						/>
 					</div>
+					{erro && <span className={styles.erro}>{erro}</span>}
 					<div className={styles.botoes}>
 						<Botao fullWidth>Login</Botao>
 						<Botao fullWidth secundario>
