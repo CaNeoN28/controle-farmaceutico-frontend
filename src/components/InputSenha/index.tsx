@@ -31,7 +31,7 @@ export default function InputSenha({ ...props }: Props) {
 
   return (
     <div className={styles.container}>
-      <input className={styles.input} type={ativo ? "password" : "text"} />
+      <input className={styles.input} type={ativo ? "password" : "text"} {...props}/>
       <button className={styles.button} onClick={alterarAtivo}>
         <FaEye className={classAtivo} />
         <FaEyeSlash className={classInativo} />
