@@ -44,8 +44,9 @@ export default function Select({
 			const opcoes = document.querySelector(`#opcoes_${name}`);
 			const icone = document.querySelector(`#icone_${name}`);
 
-			opcoes!.classList.toggle(styles.aberto);
-			icone!.classList.toggle(styles.aberto);
+			if (opcoes) opcoes.classList.toggle(styles.aberto);
+
+			if (icone) icone.classList.toggle(styles.aberto);
 		}
 	}, [ativo]);
 

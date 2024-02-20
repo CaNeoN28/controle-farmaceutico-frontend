@@ -1,8 +1,6 @@
 export default interface IUsuario {
-	dados_administrativos: {
-		entidade_relacionada: string;
-		funcao: "ADMINISTRADOR" | "GERENTE" | "USUARIO" | "INATIVO";
-	};
+	funcao: "ADMINISTRADOR" | "GERENTE" | "USUARIO" | "INATIVO";
+	entidade_relacionada: string;
 	cpf: string;
 	email: string;
 	imagem_url: string;

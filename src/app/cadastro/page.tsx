@@ -3,7 +3,7 @@
 import Menu from "@/components/Menu";
 import styles from "./AutoCadastro.module.scss";
 import InputImagem from "@/components/InputImagem";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { IUsuarioCadastro, IUsuarioPost } from "@/types/Usuario";
@@ -11,10 +11,16 @@ import Botao from "@/components/Botao";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputSenha from "@/components/InputSenha";
+import IEntidade from "@/types/Entidades";
+import FetchEntidades from "@/fetch/entidades";
+import { FiltrosEntidade } from "@/types/fetchEntidades";
+import { GetManyRequest } from "@/types/Requests";
+import Select, { Opcao } from "@/components/Select";
 
 export default function AutoCadastro() {
-	const { control, formState, handleSubmit, watch } = useForm<IUsuarioCadastro>(
-		{
+	const fetchEntidades = new FetchEntidades().getEntidades;
+	const { control, formState, handleSubmit, watch, setValue } =
+		useForm<IUsuarioCadastro>({
 			defaultValues: {
 				cpf: "",
 				email: "",
@@ -24,11 +30,14 @@ export default function AutoCadastro() {
 				numero_registro: "",
 				senha: "",
 				confirmacao_senha: "",
+				entidade_relacionada: "",
 			},
-		}
-	);
+		});
 
 	const [imagemUrl, setImagemUrl] = useState<string>();
+
+	const [pesquisaEntidade, setPesquisaEntidade] = useState("");
+	const [opcoesEntidades, setOpcoes] = useState<Opcao[]>([]);
 
 	const onSubmit: SubmitHandler<IUsuarioPost> = (data) => {
 		console.log(data);
@@ -48,6 +57,36 @@ export default function AutoCadastro() {
 		}
 	};
 
+	const getEntidades = () => {
+		const filtros: FiltrosEntidade = {
+			nome_entidade: pesquisaEntidade,
+		};
+
+		fetchEntidades(filtros).then((res) => {
+			const resposta = res.data as GetManyRequest<IEntidade[]>;
+			const entidades = resposta.dados;
+
+			const opcoes: Opcao[] = [];
+
+			entidades.map((e) => {
+				opcoes.push({
+					label: e.nome_entidade,
+					valor: e._id,
+				});
+			});
+
+			setOpcoes(opcoes);
+		});
+	};
+
+	useEffect(() => {
+		getEntidades();
+	}, []);
+
+	useEffect(() => {
+		getEntidades();
+	}, [pesquisaEntidade]);
+
 	return (
 		<>
 			<Menu />
@@ -55,6 +94,18 @@ export default function AutoCadastro() {
 				<form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
 					<div className={styles.cadastro}>
 						<div className={styles.form_inputs}>
+							<InputContainer
+								id="entidade_relacionada"
+								label="Entidade relacionada"
+							>
+								<Select
+									name="entidade_relacionada"
+									filtro={pesquisaEntidade}
+									opcoes={opcoesEntidades}
+									setFiltro={setPesquisaEntidade}
+									setValue={setValue}
+								/>
+							</InputContainer>
 							<Controller
 								name="numero_registro"
 								control={control}
