@@ -6,24 +6,27 @@ import InputImagem from "@/components/InputImagem";
 import { ChangeEvent, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { IUsuarioPost } from "@/types/Usuario";
+import { IUsuarioCadastro, IUsuarioPost } from "@/types/Usuario";
 import Botao from "@/components/Botao";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputSenha from "@/components/InputSenha";
 
 export default function AutoCadastro() {
-	const { control, formState, handleSubmit } = useForm<IUsuarioPost>({
-		defaultValues: {
-			cpf: "",
-			email: "",
-			imagem_url: "",
-			nome_completo: "",
-			nome_usuario: "",
-			numero_registro: "",
-			senha: "",
-		},
-	});
+	const { control, formState, handleSubmit, watch } = useForm<IUsuarioCadastro>(
+		{
+			defaultValues: {
+				cpf: "",
+				email: "",
+				imagem_url: "",
+				nome_completo: "",
+				nome_usuario: "",
+				numero_registro: "",
+				senha: "",
+				confirmacao_senha: "",
+			},
+		}
+	);
 
 	const [senha, setSenha] = useState("");
 
@@ -111,23 +114,36 @@ export default function AutoCadastro() {
 								);
 							}}
 						/>
-						<InputContainer id="senha" label="Senha">
-							<InputSenha
-								id="senha"
-								value={senha}
-								onChange={(e) => {
-									setSenha(e.target.value);
-								}}
-							/>
-						</InputContainer>
 						<Controller
 							name="senha"
 							control={control}
 							render={({ field }) => {
 								return (
-									<InputContainer id="confirmarSenha" label="Confirmar senha">
+									<InputContainer id="senha" label="Senha">
+										<InputSenha id="senha" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="confirmacao_senha"
+							control={control}
+							rules={{
+								validate: (v: string) => {
+									if (watch("senha") !== v) {
+										return "As senhas não correspondem";
+									}
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="confirmacao_senha"
+										label="Confirmar senha"
+										error={formState.errors.confirmacao_senha}
+									>
 										<InputSenha
-											id="confirmarSenha"
+											id="confirmacao_senha"
 											{...{ ...field, ref: null }}
 										/>
 									</InputContainer>

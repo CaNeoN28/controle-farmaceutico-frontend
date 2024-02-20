@@ -14,3 +14,7 @@ export default interface IUsuario {
 export interface IUsuarioPost extends IUsuario {
 	senha: string;
 }
+
+export interface IUsuarioCadastro extends IUsuarioPost {
+	confirmacao_senha: string;
+}
