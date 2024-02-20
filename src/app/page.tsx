@@ -3,241 +3,333 @@
 import Menu from "@/components/Menu";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import "./globals.css";
+import { fromLatLng } from "react-geocode";
 import styles from "./Home.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
 import Botao from "@/components/Botao";
 import FarmaciaItem from "@/components/FarmaciaItem";
 import FarmaciaFetch from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
-import Farmacia, { Escala } from "@/types/Farmacia";
+import Farmacia, { Escala, FarmaciaAberta } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
 import Map from "@/components/Map";
+import Carregando from "@/components/Carregando";
+import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
+import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
+import {
+	FiltrosFarmaciasProximas,
+	FiltrosPlantoes,
+} from "@/types/fetchFarmacias";
+import LinkButton from "@/components/LinkButton";
 
 interface Localizacao {
-  lng: number;
-  lat: number;
+	lng: number;
+	lat: number;
 }
 
-type FarmaciaEscala = Array<Farmacia & { dia_semana: string }>;
-
 export default function Home() {
-  const fFarmacias = new FarmaciaFetch();
+	const fFarmacias = new FarmaciaFetch();
 
-  const [date, setDate] = useState(new Date());
+	const [date] = useState(new Date(2024, 0, 1, 12));
 
-  const [localizacao, setLocalizacao] = useState<Localizacao>();
-  const [erroLocalizacao, setErroLocalizacao] = useState<string>();
+	const [localizacao, setLocalizacao] = useState<Localizacao>();
+	const [erroLocalizacao, setErroLocalizacao] = useState<string>();
+	const [rota, setRota] = useState<string>("");
 
-  const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<Farmacia>();
-  const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
-  const [farmaciasProximasF, setFarmaciasProximasF] = useState<Farmacia[]>([]);
-  const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaEscala>([]);
-  const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<FarmaciaEscala>([]);
+	const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<Farmacia>();
+	const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
+	const [farmaciasProximasF, setFarmaciasProximasF] = useState<Farmacia[]>([]);
+	const [erroFarmaciasProximas, setErroFarmaciasProximas] = useState("");
 
-  const [numFarmacias, setNumFarmacias] = useState<number>(5);
+	const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaAberta[]>([]);
+	const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<FarmaciaAberta[]>(
+		[]
+	);
+	const [erroFarmaciasEscala, setErroFarmaciasEscala] = useState("");
 
-  const getFarmacias = () => {
-    if (localizacao) {
-      const { lat, lng } = localizacao;
+	const [numFarmacias, setNumFarmacias] = useState<number>(5);
 
-      fFarmacias
-        .getFarmaciasProximas({
-          limite: 6,
-          tempo: date,
-          latitude: lat,
-          longitude: lng,
-        })
-        .then((res) => {
-          const resposta = res.data as GetManyRequest<Farmacia[]>;
-          const farmacias = resposta.dados;
+	const getLocation = async () => {
+		let localizacao: Localizacao | undefined = undefined;
 
-          setFarmaciaMaisProxima(farmacias[0]);
-          setFarmaciasProximas(farmacias);
-        });
+		if (navigator.geolocation) {
+			navigator.geolocation.watchPosition(
+				(position) => {
+					const { latitude, longitude } = position.coords;
 
-      fFarmacias
-        .getFarmaciasPlantoes({
-          limite: numFarmacias,
-          tempo: date,
-        })
-        .then((res) => {
-          const resposta = res.data as GetManyRequest<Escala>;
-          const escala = resposta.dados;
+					localizacao = {
+						lat: latitude,
+						lng: longitude,
+					};
 
-          const farmacias: Array<Farmacia & { dia_semana: string }> = [];
+					setLocalizacao(localizacao);
+				},
+				(error) => {
+					setLocalizacao({
+						lat: 0,
+						lng: 0,
+					});
+					setErroLocalizacao(
+						"Não foi possível determinar sua localização"
+					);
+				}
+			);
+		} else {
+			setErroLocalizacao("Localização não é permitida pelo seu navegador");
+		}
+	};
 
-          Object.keys(escala).map((e) => {
-            escala[e].map((f) => {
-              const dia = new Date(e);
+	const getRota = () => {
+		if (localizacao && farmaciaMaisProxima) {
+			const { lat, lng } = localizacao;
+			let url = "";
 
-              const { d, m, y } = {
-                d: String(dia.getDate()),
-                m: String(dia.getMonth() + 1),
-                y: String(dia.getFullYear()),
-              };
+			if (lat != 0 && lng != 0) {
+				url = `https://www.google.com/maps/dir/${lat},${lng}/${farmaciaMaisProxima.endereco.localizacao.x},${farmaciaMaisProxima.endereco.localizacao.y}`;
+			} else {
+				url = `https://www.google.com/maps/dir//${farmaciaMaisProxima.endereco.localizacao.x},${farmaciaMaisProxima.endereco.localizacao.y}`;
+			}
 
-              const dia_semana = `${d.padStart(2, "0")}/${m.padStart(
-                2,
-                "0"
-              )}/${y.padStart(4, "0")}`;
+			setRota(url);
+		}
+	};
 
-              farmacias.push({
-                ...f,
-                dia_semana,
-              });
-            });
-          });
+	const getFarmacias = async () => {
+		if (localizacao) {
+			const { lat, lng } = localizacao;
+			const filtrosProximas: FiltrosFarmaciasProximas = {
+				limite: 6,
+				tempo: date,
+				latitude: lat,
+				longitude: lng,
+			};
+			const filtrosPlantoes: FiltrosPlantoes = {
+				limite: numFarmacias,
+				tempo: date,
+			};
 
-          setFarmaciasEscala(farmacias);
-        });
-    }
-  };
+			const { erro, estado, municipio } = await getMunicipioEstado(localizacao);
 
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
+			if (erro) setErroLocalizacao(erro);
 
-          setLocalizacao({
-            lat: latitude,
-            lng: longitude,
-          });
-        },
-        (error) => {
-          setErroLocalizacao("Não foi possível rastrear sua localização");
+			if (estado) {
+				filtrosProximas.estado = estado;
+				filtrosPlantoes.estado = estado;
+			}
+			if (municipio) {
+				filtrosProximas.municipio = municipio;
+				filtrosPlantoes.municipio = municipio;
+			}
 
-          setLocalizacao({
-            lat: 0,
-            lng: 0,
-          });
-        }
-      );
-    } else {
-      setErroLocalizacao("Geolocalização não permitida no navegador");
-    }
-  };
+			fFarmacias
+				.getFarmaciasProximas(filtrosProximas)
+				.then((res) => {
+					const resposta = res.data as GetManyRequest<Farmacia[]>;
+					const farmacias = resposta.dados;
 
-  const tracarRota = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
+					setFarmaciaMaisProxima(farmacias[0]);
+					setFarmaciasProximas(farmacias);
+				})
+				.catch((err) => {
+					console.log(err);
 
-    if (localizacao && farmaciaMaisProxima) {
-      const url = `https://www.google.com/maps/dir/${localizacao.lat},${localizacao.lng}/${farmaciaMaisProxima.endereco.localizacao.x},${farmaciaMaisProxima.endereco.localizacao.y}`;
+					setErroFarmaciasProximas(err.response.data);
+				});
 
-      window.open(url, "_blank");
-    }
-  };
+			fFarmacias
+				.getFarmaciasPlantoes(filtrosPlantoes)
+				.then((res) => {
+					const resposta = res.data as GetManyRequest<Escala>;
+					const escala = resposta.dados;
 
-  useEffect(() => {
-    getLocation();
+					const farmacias: FarmaciaAberta[] = [];
 
-    const getMaxFarmacias = () => {
-      const width = window.innerWidth;
+					Object.keys(escala).map((e) => {
+						escala[e].map((f) => {
+							const dia = new Date(e);
 
-      if (width > 1680) {
-        setNumFarmacias(5);
-      } else if (width > 1280) {
-        setNumFarmacias(4);
-      } else {
-        setNumFarmacias(3);
-      }
-    };
+							const { d, m, y } = {
+								d: String(dia.getDate()),
+								m: String(dia.getMonth() + 1),
+								y: String(dia.getFullYear()),
+							};
 
-    getMaxFarmacias();
+							const dia_semana = `${d.padStart(2, "0")}/${m.padStart(
+								2,
+								"0"
+							)}/${y.padStart(4, "0")}`;
 
-    window.addEventListener("resize", getMaxFarmacias);
-    return () => window.removeEventListener("resize", getMaxFarmacias);
-  }, []);
+							farmacias.push({
+								...f,
+								dia_semana,
+							});
+						});
+					});
 
-  useEffect(() => {
-    getFarmacias();
-  }, [localizacao]);
+					if (farmacias.length == 0) {
+						setErroFarmaciasEscala(
+							"Não há plantões definidos para os próximos dias"
+						);
+					}
 
-  useEffect(() => {
-    setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));
-  }, [farmaciasProximas]);
+					setFarmaciasEscala(farmacias);
+				})
+				.catch((err) => {
+					console.log(err);
 
-  useEffect(() => {
-    setFarmaciasEscalaF(farmaciasEscala.slice(0, numFarmacias));
-  }, [farmaciasEscala]);
+					setErroFarmaciasEscala("Não foi possível recuperar escala");
+				});
+		}
+	};
 
-  useLayoutEffect(() => {
-    setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));
-    setFarmaciasEscalaF(farmaciasEscala.slice(0, numFarmacias));
-  }, [numFarmacias]);
+	useEffect(() => {
+		geocodeSetDefaults();
 
-  return (
-    <>
-      <Menu />
-      <main className={styles.main}>
-        {farmaciaMaisProxima && (
-          <div className={styles.farmacia_proxima}>
-            <div className={styles.farmacia}>
-              <div className={styles.map}>
-                {erroLocalizacao ? (
-                  <span className={styles.erro}>{erroLocalizacao}</span>
-                ) : (
-                  <Map
-                    map_center={{
-                      lat: Number(farmaciaMaisProxima.endereco.localizacao.x),
-                      lng: Number(farmaciaMaisProxima.endereco.localizacao.y),
-                    }}
-                  />
-                )}
-              </div>
-              <TituloFarmacia>
-                <div className={styles.info}>
-                  <span>{farmaciaMaisProxima.nome_fantasia}</span>
-                  <span>Farmácia aberta mais próxima</span>
-                </div>
-              </TituloFarmacia>
-            </div>
-            <Botao fullWidth onClick={tracarRota}>
-              Traçar Rota
-            </Botao>
-          </div>
-        )}
-        {farmaciasProximasF.length > 0 && (
-          <div className={styles.listagem}>
-            <span className={styles.title}>Outras farmácias abertas</span>
-            <div className={styles.items}>
-              {farmaciasProximasF.map((f, i) => {
-                const dia = f.horarios_servico[getDayFromNum(date.getDay())];
+		const getMaxFarmacias = () => {
+			const width = window.innerWidth;
 
-                return (
-                  <FarmaciaItem
-                    key={i}
-                    informacao={`${dia.horario_entrada} - ${dia.horario_saida}`}
-                    nome={f.nome_fantasia}
-                    para={`/farmacias/${f._id}`}
-                  />
-                );
-              })}
-            </div>
-            <Botao secundario fullWidth>
-              Ver mais
-            </Botao>
-          </div>
-        )}
-        {farmaciasEscalaF.length > 0 && (
-          <div className={styles.listagem}>
-            <span className={styles.title}>Plantões nos próximos dias</span>
-            <div className={styles.items}>
-              {farmaciasEscalaF.map((f, i) => (
-                <FarmaciaItem
-                  key={i}
-                  informacao={f.dia_semana}
-                  nome={f.nome_fantasia}
-                  para={`/farmacias/${f._id}`}
-                />
-              ))}
-            </div>
-            <Botao secundario fullWidth>
-              Ver mais
-            </Botao>
-          </div>
-        )}
-      </main>
-    </>
-  );
+			if (width > 1680) {
+				setNumFarmacias(5);
+			} else if (width > 1280) {
+				setNumFarmacias(4);
+			} else {
+				setNumFarmacias(3);
+			}
+		};
+
+		getMaxFarmacias();
+		getLocation();
+
+		window.addEventListener("resize", getMaxFarmacias);
+		return () => window.removeEventListener("resize", getMaxFarmacias);
+	}, []);
+
+	useEffect(() => {
+		getFarmacias();
+	}, [localizacao]);
+
+	useEffect(() => {
+		getRota();
+		setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));
+	}, [farmaciasProximas]);
+
+	useEffect(() => {
+		setFarmaciasEscalaF(farmaciasEscala.slice(0, numFarmacias));
+	}, [farmaciasEscala]);
+
+	useLayoutEffect(() => {
+		setFarmaciasProximasF(farmaciasProximas.slice(1, numFarmacias + 1));
+		setFarmaciasEscalaF(farmaciasEscala.slice(0, numFarmacias));
+	}, [numFarmacias]);
+
+	return (
+		<>
+			<Menu />
+			<main className={styles.main}>
+				{farmaciasProximas.length > 0 || farmaciasEscala.length > 0 ? (
+					<>
+						{farmaciaMaisProxima ? (
+							<>
+								<div className={styles.farmacia_proxima}>
+									<div className={styles.farmacia}>
+										<div className={styles.map}>
+											<Map
+												map_center={{
+													lat: Number(
+														farmaciaMaisProxima.endereco.localizacao.x
+													),
+													lng: Number(
+														farmaciaMaisProxima.endereco.localizacao.y
+													),
+												}}
+											/>
+										</div>
+										<TituloFarmacia>
+											<div className={styles.info}>
+												<span>{farmaciaMaisProxima.nome_fantasia}</span>
+												<span>Farmácia aberta mais próxima</span>
+											</div>
+										</TituloFarmacia>
+									</div>
+									{erroLocalizacao && (
+										<span className={styles.erro}>{erroLocalizacao}</span>
+									)}
+									<LinkButton link={rota}>Traçar Rota</LinkButton>
+								</div>
+								{farmaciasProximasF.length > 0 ? (
+									<div className={styles.listagem}>
+										<span className={styles.title}>
+											Outras farmácias abertas
+										</span>
+										<div className={styles.items}>
+											{farmaciasProximasF.map((f, i) => {
+												const dia =
+													f.horarios_servico[getDayFromNum(date.getDay())];
+
+												return (
+													<FarmaciaItem
+														key={i}
+														informacao={
+															dia
+																? `${dia.horario_entrada} - ${dia.horario_saida}`
+																: "Aberta no sistema de plantão"
+														}
+														nome={f.nome_fantasia}
+														para={`/farmacias/${f._id}`}
+													/>
+												);
+											})}
+										</div>
+										<LinkButton link="/listagem/farmacias" secundario>
+											Ver mais
+										</LinkButton>
+									</div>
+								) : (
+									erroFarmaciasProximas && <span className={styles.erro} />
+								)}
+							</>
+						) : (
+							<div className={styles.listagem}>
+								<span className={styles.erro_listagem}>
+									{erroFarmaciasProximas}
+								</span>
+							</div>
+						)}
+						{farmaciasEscalaF.length > 0 && (
+							<div className={styles.listagem}>
+								<>
+									<span className={styles.title}>
+										Plantões nos próximos dias
+									</span>
+									<div className={styles.items}>
+										{farmaciasEscalaF.map((f, i) => (
+											<FarmaciaItem
+												key={i}
+												informacao={f.dia_semana}
+												nome={f.nome_fantasia}
+												para={`/farmacias/${f._id}`}
+											/>
+										))}
+									</div>
+									<LinkButton link="/listagem/plantoes" secundario>
+										Ver mais
+									</LinkButton>
+								</>
+							</div>
+						)}
+					</>
+				) : (
+					<>
+						{erroFarmaciasEscala && erroFarmaciasProximas ? (
+							<span className={styles.erro_listagem}>
+								Não há farmácias para serem listadas aqui
+							</span>
+						) : (
+							<Carregando />
+						)}
+					</>
+				)}
+			</main>
+		</>
+	);
 }

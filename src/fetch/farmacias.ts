@@ -1,22 +1,16 @@
+import { FiltrosFarmaciasProximas, FiltrosPlantoes } from "@/types/fetchFarmacias";
 import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const url = `${API_URL}/farmacias`;
 
-interface ParamsProximas {
-	pagina?: number;
-	limite?: number;
-	latitude: number;
-	longitude: number;
-	tempo?: Date;
-}
-
-interface ParamsPlantoes {
-	pagina?: number;
-	limite?: number;
-	municipio?: string;
+interface FiltrosFarmacias {
+	bairro?: string;
 	estado?: string;
-	tempo?: Date;
+	municipio?: string;
+	nome_fantasia?: string;
+	pagina?: number;
+	limite?: number;
 }
 
 export default class FarmaciaFetch {
@@ -25,7 +19,7 @@ export default class FarmaciaFetch {
 
 		return response;
 	}
-	getFarmacias(params: any) {
+	getFarmacias(params: FiltrosFarmacias) {
 		const response = axios.get(url, {
 			params,
 		});
@@ -33,7 +27,7 @@ export default class FarmaciaFetch {
 		return response;
 	}
 
-	getFarmaciasPlantoes(params: ParamsPlantoes) {
+	getFarmaciasPlantoes(params: FiltrosPlantoes) {
 		const response = axios.get(`${url}/plantao`, {
 			params,
 		});
@@ -41,7 +35,7 @@ export default class FarmaciaFetch {
 		return response;
 	}
 
-	getFarmaciasProximas(params: ParamsProximas) {
+	getFarmaciasProximas(params: FiltrosFarmaciasProximas) {
 		const response = axios.get(`${url}/proximas`, {
 			params,
 		});

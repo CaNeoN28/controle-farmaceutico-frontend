@@ -4,7 +4,7 @@ import styles from "./Secao.module.scss";
 import classNames from "classnames";
 
 interface Props {
-  titulo: string;
+  titulo: string | number;
   children?: ReactNode;
 }
 

@@ -1,0 +1,44 @@
+.main {
+	display: flex;
+	flex-direction: column;
+
+	justify-content: center;
+
+	padding: 40px 20px;
+	gap: 40px;
+}
+
+.secoes{
+	display: flex;
+	flex-direction: column;
+
+	gap: 20px;
+}
+
+.secao{
+	border: 1px solid var(--gray);
+	border-radius: 8px;
+}
+
+.farmacias {
+	display: flex;
+	justify-content: center;
+
+	padding-bottom: 8px;
+}
+
+@media screen and (min-width: 480px) {
+	.main {
+		padding: 72px 48px;
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.main {
+		padding: 92px 64px;
+	}
+
+	.farmacias {
+		padding-bottom: 16px;
+	}
+}
