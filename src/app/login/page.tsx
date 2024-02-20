@@ -19,7 +19,11 @@ export default function Login() {
 	const fetchLogin = new FetchAutenticacao().postLogin;
 	const router = useRouter();
 
-	const { control, handleSubmit } = useForm<ILogin>({
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<ILogin>({
 		defaultValues: {
 			nome_usuario: "",
 			senha: "",
@@ -77,9 +81,18 @@ export default function Login() {
 						<Controller
 							name="nome_usuario"
 							control={control}
-							rules={{ required: true }}
+							rules={{
+								required: {
+									message: "Nome de usuário é obrigatório",
+									value: true,
+								},
+							}}
 							render={({ field }) => (
-								<InputContainer id="nome_usuario" label="Nome de usuário:">
+								<InputContainer
+									id="nome_usuario"
+									label="Nome de usuário:"
+									error={errors.nome_usuario}
+								>
 									<Input {...{ ...field, ref: null }} id="nome_usuario" />
 								</InputContainer>
 							)}
@@ -87,9 +100,14 @@ export default function Login() {
 						<Controller
 							name="senha"
 							control={control}
-							rules={{ required: true }}
+							rules={{
+								required: {
+									message: "Senha é obrigatório",
+									value: true,
+								},
+							}}
 							render={({ field }) => (
-								<InputContainer id="senha" label="Senha:">
+								<InputContainer id="senha" label="Senha:" error={errors.senha}>
 									<InputSenha {...{ ...field, ref: null }} id="senha" />
 								</InputContainer>
 							)}
