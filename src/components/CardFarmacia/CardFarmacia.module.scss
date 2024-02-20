@@ -4,6 +4,7 @@
 	overflow: hidden;
 
 	gap: 16px;
+  padding: 8px;
 
 	border: 1px solid var(--primary-color);
 	border-radius: 8px;
@@ -27,8 +28,6 @@
 .imagem {
 	display: flex;
 	align-items: center;
-
-	padding: 8px;
 
 	img {
 		object-fit: cover;
