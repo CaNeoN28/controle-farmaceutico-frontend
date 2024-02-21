@@ -14,11 +14,14 @@ import InputSenha from "@/components/InputSenha";
 import IEntidade from "@/types/Entidades";
 import FetchEntidades from "@/fetch/entidades";
 import { FiltrosEntidade } from "@/types/fetchEntidades";
-import { GetManyRequest } from "@/types/Requests";
+import { GetManyRequest, RequestErro } from "@/types/Requests";
 import Select, { Opcao } from "@/components/Select";
+import FetchAutenticacao from "@/fetch/autenticacao";
 
 export default function AutoCadastro() {
 	const fetchEntidades = new FetchEntidades().getEntidades;
+	const fetchCadastro = new FetchAutenticacao().postCadastro;
+
 	const { control, formState, handleSubmit, watch, setValue } =
 		useForm<IUsuarioCadastro>({
 			defaultValues: {
@@ -39,7 +42,7 @@ export default function AutoCadastro() {
 	const [pesquisaEntidade, setPesquisaEntidade] = useState("");
 	const [opcoesEntidades, setOpcoes] = useState<Opcao[]>([]);
 
-	const onSubmit: SubmitHandler<IUsuarioPost> = (data) => {
+	const onSubmit: SubmitHandler<IUsuarioPost> = async (data) => {
 		const {
 			cpf,
 			email,
@@ -66,7 +69,19 @@ export default function AutoCadastro() {
 			senha,
 		};
 
-		console.log(usuario);
+		await fetchCadastro(usuario)
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err: RequestErro<{ [key: string]: string }>) => {
+				const resposta = err.response;
+
+				if (resposta) {
+					const erro = resposta.data;
+
+					console.log(erro)
+				}
+			});
 	};
 
 	const sendImage = (e: ChangeEvent<HTMLInputElement>) => {
