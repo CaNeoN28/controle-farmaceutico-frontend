@@ -22,20 +22,26 @@ export default function AutoCadastro() {
 	const fetchEntidades = new FetchEntidades().getEntidades;
 	const fetchCadastro = new FetchAutenticacao().postCadastro;
 
-	const { control, formState, handleSubmit, watch, setValue } =
-		useForm<IUsuarioCadastro>({
-			defaultValues: {
-				cpf: "",
-				email: "",
-				imagem_url: "",
-				nome_completo: "",
-				nome_usuario: "",
-				numero_registro: "",
-				senha: "",
-				confirmacao_senha: "",
-				entidade_relacionada: "",
-			},
-		});
+	const {
+		control,
+		formState: { errors: validationErros },
+		handleSubmit,
+		watch,
+		setValue,
+		setError,
+	} = useForm<IUsuarioCadastro>({
+		defaultValues: {
+			cpf: "",
+			email: "",
+			imagem_url: "",
+			nome_completo: "",
+			nome_usuario: "",
+			numero_registro: "",
+			senha: "",
+			confirmacao_senha: "",
+			entidade_relacionada: "",
+		},
+	});
 
 	const [imagemUrl, setImagemUrl] = useState<string>();
 
@@ -79,7 +85,11 @@ export default function AutoCadastro() {
 				if (resposta) {
 					const erro = resposta.data;
 
-					console.log(erro)
+					Object.keys(erro).map((k) => {
+						const key = k as keyof IUsuarioCadastro;
+
+						setError(key, { message: erro[key], type: "server" });
+					});
 				}
 			});
 	};
@@ -149,7 +159,7 @@ export default function AutoCadastro() {
 										<InputContainer
 											id="entidade_relacionada"
 											label="Entidade relacionada"
-											error={formState.errors.entidade_relacionada}
+											error={validationErros.entidade_relacionada}
 										>
 											<Select
 												filtro={pesquisaEntidade}
@@ -170,6 +180,7 @@ export default function AutoCadastro() {
 										<InputContainer
 											id="numero_registro"
 											label="Número de registro"
+											error={validationErros.numero_registro}
 										>
 											<Input
 												id="numero_registro"
@@ -184,7 +195,11 @@ export default function AutoCadastro() {
 								control={control}
 								render={({ field }) => {
 									return (
-										<InputContainer id="nome_completo" label="Nome completo">
+										<InputContainer
+											id="nome_completo"
+											label="Nome completo"
+											error={validationErros.nome_completo}
+										>
 											<Input id="nome_completo" {...{ ...field, ref: null }} />
 										</InputContainer>
 									);
@@ -195,7 +210,11 @@ export default function AutoCadastro() {
 								control={control}
 								render={({ field }) => {
 									return (
-										<InputContainer id="nome_usuario" label="Nome de usuário">
+										<InputContainer
+											id="nome_usuario"
+											label="Nome de usuário"
+											error={validationErros.nome_usuario}
+										>
 											<Input id="nome_usuario" {...{ ...field, ref: null }} />
 										</InputContainer>
 									);
@@ -206,7 +225,11 @@ export default function AutoCadastro() {
 								control={control}
 								render={({ field }) => {
 									return (
-										<InputContainer id="email" label="Email">
+										<InputContainer
+											id="email"
+											label="Email"
+											error={validationErros.email}
+										>
 											<Input id="email" {...{ ...field, ref: null }} />
 										</InputContainer>
 									);
@@ -217,7 +240,11 @@ export default function AutoCadastro() {
 								control={control}
 								render={({ field }) => {
 									return (
-										<InputContainer id="cpf" label="CPF">
+										<InputContainer
+											id="cpf"
+											label="CPF"
+											error={validationErros.cpf}
+										>
 											<Input id="cpf" {...{ ...field, ref: null }} />
 										</InputContainer>
 									);
@@ -228,7 +255,11 @@ export default function AutoCadastro() {
 								control={control}
 								render={({ field }) => {
 									return (
-										<InputContainer id="senha" label="Senha">
+										<InputContainer
+											id="senha"
+											label="Senha"
+											error={validationErros.senha}
+										>
 											<InputSenha id="senha" {...{ ...field, ref: null }} />
 										</InputContainer>
 									);
@@ -249,7 +280,7 @@ export default function AutoCadastro() {
 										<InputContainer
 											id="confirmacao_senha"
 											label="Confirmar senha"
-											error={formState.errors.confirmacao_senha}
+											error={validationErros.confirmacao_senha}
 										>
 											<InputSenha
 												id="confirmacao_senha"
