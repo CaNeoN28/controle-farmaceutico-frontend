@@ -11,6 +11,11 @@
 	flex-direction: column;
 }
 
+.link_farmacia {
+  text-decoration: none;
+  color: var(--black);
+}
+
 .farmacia {
 	display: flex;
 	flex-direction: column-reverse;
