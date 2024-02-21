@@ -17,6 +17,8 @@ import { FiltrosEntidade } from "@/types/fetchEntidades";
 import { GetManyRequest, RequestErro } from "@/types/Requests";
 import Select, { Opcao } from "@/components/Select";
 import FetchAutenticacao from "@/fetch/autenticacao";
+import { validarCPF } from "@/utils/validation";
+import regexValidation from "@/utils/regexValidation";
 
 export default function AutoCadastro() {
 	const fetchEntidades = new FetchEntidades().getEntidades;
@@ -175,6 +177,17 @@ export default function AutoCadastro() {
 							<Controller
 								name="numero_registro"
 								control={control}
+								rules={{
+									validate: (v: string) => {
+										const isNumber = !isNaN(Number(v));
+
+										if (!isNumber) return "Deve ser um atríbuto numérico";
+									},
+									required: {
+										message: "Número de registro é obrigatório",
+										value: true,
+									},
+								}}
 								render={({ field }) => {
 									return (
 										<InputContainer
@@ -193,6 +206,16 @@ export default function AutoCadastro() {
 							<Controller
 								name="nome_completo"
 								control={control}
+								rules={{
+									required: {
+										value: true,
+										message: "Nome completo é obrigatório",
+									},
+									minLength: {
+										message: "Nome deve possuir pelo menos 3 caractéres",
+										value: 3,
+									},
+								}}
 								render={({ field }) => {
 									return (
 										<InputContainer
@@ -208,6 +231,16 @@ export default function AutoCadastro() {
 							<Controller
 								name="nome_usuario"
 								control={control}
+								rules={{
+									required: {
+										message: "Nome de usuário é obrigatório",
+										value: true,
+									},
+									pattern: {
+										value: regexValidation.NOME_USUARIO,
+										message: "Nome de usuário inválido",
+									},
+								}}
 								render={({ field }) => {
 									return (
 										<InputContainer
@@ -223,6 +256,16 @@ export default function AutoCadastro() {
 							<Controller
 								name="email"
 								control={control}
+								rules={{
+									required: {
+										message: "Email é obrigatório",
+										value: true,
+									},
+									pattern: {
+										value: regexValidation.EMAIL,
+										message: "Email inválido",
+									},
+								}}
 								render={({ field }) => {
 									return (
 										<InputContainer
@@ -238,6 +281,19 @@ export default function AutoCadastro() {
 							<Controller
 								name="cpf"
 								control={control}
+								rules={{
+									required: {
+										value: true,
+										message: "CPF é obrigatório",
+									},
+									validate: (v: string) => {
+										const cpfValido = validarCPF(v);
+
+										if (!cpfValido) {
+											return "CPF inválido";
+										}
+									},
+								}}
 								render={({ field }) => {
 									return (
 										<InputContainer
@@ -253,6 +309,16 @@ export default function AutoCadastro() {
 							<Controller
 								name="senha"
 								control={control}
+								rules={{
+									required: {
+										message: "Senha é obrigatório",
+										value: true,
+									},
+									pattern: {
+										message: "Senha inválida",
+										value: regexValidation.SENHA,
+									},
+								}}
 								render={({ field }) => {
 									return (
 										<InputContainer
@@ -269,6 +335,14 @@ export default function AutoCadastro() {
 								name="confirmacao_senha"
 								control={control}
 								rules={{
+									required: {
+										message: "Senha de confirmação é obrigatório",
+										value: true,
+									},
+									pattern: {
+										message: "Senha de confirmação inválida",
+										value: regexValidation.SENHA,
+									},
 									validate: (v: string) => {
 										if (watch("senha") !== v) {
 											return "As senhas não correspondem";
