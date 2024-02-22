@@ -21,6 +21,7 @@ import { validarCPF } from "@/utils/validation";
 import regexValidation from "@/utils/regexValidation";
 import FetchImagem from "@/fetch/imagens";
 import { useRouter } from "next/navigation";
+import InputMascara from "@/components/InputMascara/indext";
 
 export default function AutoCadastro() {
 	const router = useRouter();
@@ -58,7 +59,7 @@ export default function AutoCadastro() {
 	const [opcoesEntidades, setOpcoes] = useState<Opcao[]>([]);
 
 	const onSubmit: SubmitHandler<IUsuarioPost> = async (data) => {
-		const {
+		let {
 			cpf,
 			email,
 			entidade_relacionada,
@@ -69,6 +70,8 @@ export default function AutoCadastro() {
 			numero_registro,
 			senha,
 		} = data;
+
+		cpf = cpf.replaceAll(".", "").replaceAll("-", "");
 
 		const usuario = {
 			cpf,
@@ -340,7 +343,8 @@ export default function AutoCadastro() {
 										message: "CPF é obrigatório",
 									},
 									validate: (v: string) => {
-										const cpfValido = validarCPF(v);
+										const cpf = v.replaceAll(".", "").replaceAll("-", "");
+										const cpfValido = validarCPF(cpf);
 
 										if (!cpfValido) {
 											return "CPF inválido";
@@ -355,7 +359,11 @@ export default function AutoCadastro() {
 											error={validationErros.cpf}
 											fullWidth
 										>
-											<Input id="cpf" {...{ ...field, ref: null }} />
+											<InputMascara
+												mask="999.999.999-99"
+												id="cpf"
+												{...{ ...field, ref: null }}
+											/>
 										</InputContainer>
 									);
 								}}
