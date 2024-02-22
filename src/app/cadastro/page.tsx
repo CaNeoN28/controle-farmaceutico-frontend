@@ -6,7 +6,7 @@ import InputImagem from "@/components/InputImagem";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { IUsuarioCadastro, IUsuarioPost } from "@/types/Usuario";
+import IUsuario, { IUsuarioCadastro, IUsuarioPost } from "@/types/Usuario";
 import Botao from "@/components/Botao";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
@@ -20,8 +20,11 @@ import FetchAutenticacao from "@/fetch/autenticacao";
 import { validarCPF } from "@/utils/validation";
 import regexValidation from "@/utils/regexValidation";
 import FetchImagem from "@/fetch/imagens";
+import { useRouter } from "next/navigation";
 
 export default function AutoCadastro() {
+	const router = useRouter()
+
 	const fetchEntidades = new FetchEntidades().getEntidades;
 	const fetchCadastro = new FetchAutenticacao().postCadastro;
 	const fetchImagem = new FetchImagem();
@@ -114,7 +117,9 @@ export default function AutoCadastro() {
 		if (!erroImagem) {
 			await fetchCadastro(usuario)
 				.then((res) => {
-					console.log(res);
+					const usuario = res.data as IUsuario;
+
+					router.push(`/cadastro-finalizado/${usuario._id}`);
 				})
 				.catch((err: RequestErro<{ [key: string]: string }>) => {
 					const resposta = err.response;
@@ -129,14 +134,7 @@ export default function AutoCadastro() {
 						});
 					}
 
-					fetchImagem
-						.removeImagem(usuario.imagem_url)
-						.then((res) => {
-							console.log(res);
-						})
-						.catch((err) => {
-							console.log(err);
-						});
+					if (usuario.imagem_url) fetchImagem.removeImagem(usuario.imagem_url);
 				});
 		}
 	};
