@@ -48,6 +48,7 @@ export default function AutoCadastro() {
 	});
 
 	const [imagem, setImagem] = useState<File>();
+	const [erroImagem, setErroImagem] = useState<string>("");
 	const [imagemUrl, setImagemUrl] = useState<string>();
 
 	const [pesquisaEntidade, setPesquisaEntidade] = useState("");
@@ -80,6 +81,8 @@ export default function AutoCadastro() {
 			senha,
 		};
 
+		let erroImagem = "";
+
 		if (imagem) {
 			await fetchImagem
 				.postImagem(imagem)
@@ -93,29 +96,40 @@ export default function AutoCadastro() {
 					});
 
 					usuario.imagem_url = imagensArray[0];
+					setErroImagem("")
 				})
 				.catch((err) => {
-					console.log(err);
+					const { response: resposta } = err as RequestErro<{
+						mensagem: string;
+						erros: {
+							[k: string]: string;
+						};
+					}>;
+
+					erroImagem = "Extensão inválida de arquivo";
+					setErroImagem(erroImagem);
 				});
 		}
 
-		/* await fetchCadastro(usuario)
-			.then((res) => {
-				console.log(res);
-			})
-			.catch((err: RequestErro<{ [key: string]: string }>) => {
-				const resposta = err.response;
+		if (!erroImagem) {
+			await fetchCadastro(usuario)
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err: RequestErro<{ [key: string]: string }>) => {
+					const resposta = err.response;
 
-				if (resposta) {
-					const erro = resposta.data;
+					if (resposta) {
+						const erro = resposta.data;
 
-					Object.keys(erro).map((k) => {
-						const key = k as keyof IUsuarioCadastro;
+						Object.keys(erro).map((k) => {
+							const key = k as keyof IUsuarioCadastro;
 
-						setError(key, { message: erro[key], type: "server" });
-					});
-				}
-			}); */
+							setError(key, { message: erro[key], type: "server" });
+						});
+					}
+				});
+		}
 	};
 
 	const sendImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -406,6 +420,9 @@ export default function AutoCadastro() {
 										titulo="Enviar imagem"
 										onChange={sendImage}
 									/>
+									{erroImagem && (
+										<span className={styles.erro_imagem}>{erroImagem}</span>
+									)}
 								</div>
 							</div>
 						</div>
