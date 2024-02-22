@@ -1,0 +1,29 @@
+.container{
+	display: flex;
+	flex-direction: column;
+
+	gap: 32px;
+
+	position: fixed;
+
+	left: 50%;
+	top: 50%;
+
+	transform: translate(-50%, -50%);
+}
+
+.text {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	gap: 24px;
+
+	font-size: 16px;
+}
+
+.title{
+	font-size: 24px;
+
+	color: var(--primary-color);
+}
