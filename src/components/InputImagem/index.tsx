@@ -27,7 +27,7 @@ export default function InputImagem({ titulo, onChange, ...props }: Props) {
       <label className={styles.label} htmlFor={id}>
         {titulo}
       </label>
-      {legenda && <span className={styles.legenda}>{legenda}</span>}
+      <span className={styles.legenda}>{legenda}</span>
       <input
         className={styles.input}
         type="file"

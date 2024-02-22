@@ -141,7 +141,7 @@ export default function AutoCadastro() {
 
 	const sendImage = (e: ChangeEvent<HTMLInputElement>) => {
 		const { files } = e.target;
-		
+
 		if (files && files.length && FileReader) {
 			const reader = new FileReader();
 
@@ -152,9 +152,9 @@ export default function AutoCadastro() {
 			reader.readAsDataURL(files[0]);
 
 			setImagem(files[0]);
-		} else if(!files || !files.length) {
+		} else if (!files || !files.length) {
 			setImagem(undefined);
-			setImagemUrl("")
+			setImagemUrl("");
 		}
 	};
 
@@ -210,6 +210,7 @@ export default function AutoCadastro() {
 											id="entidade_relacionada"
 											label="Entidade relacionada"
 											error={validationErros.entidade_relacionada}
+											fullWidth
 										>
 											<Select
 												filtro={pesquisaEntidade}
@@ -242,6 +243,7 @@ export default function AutoCadastro() {
 											id="numero_registro"
 											label="Número de registro"
 											error={validationErros.numero_registro}
+											fullWidth
 										>
 											<Input
 												id="numero_registro"
@@ -270,6 +272,7 @@ export default function AutoCadastro() {
 											id="nome_completo"
 											label="Nome completo"
 											error={validationErros.nome_completo}
+											fullWidth
 										>
 											<Input id="nome_completo" {...{ ...field, ref: null }} />
 										</InputContainer>
@@ -295,6 +298,7 @@ export default function AutoCadastro() {
 											id="nome_usuario"
 											label="Nome de usuário"
 											error={validationErros.nome_usuario}
+											fullWidth
 										>
 											<Input id="nome_usuario" {...{ ...field, ref: null }} />
 										</InputContainer>
@@ -320,6 +324,7 @@ export default function AutoCadastro() {
 											id="email"
 											label="Email"
 											error={validationErros.email}
+											fullWidth
 										>
 											<Input id="email" {...{ ...field, ref: null }} />
 										</InputContainer>
@@ -348,6 +353,7 @@ export default function AutoCadastro() {
 											id="cpf"
 											label="CPF"
 											error={validationErros.cpf}
+											fullWidth
 										>
 											<Input id="cpf" {...{ ...field, ref: null }} />
 										</InputContainer>
@@ -373,6 +379,7 @@ export default function AutoCadastro() {
 											id="senha"
 											label="Senha"
 											error={validationErros.senha}
+											fullWidth
 										>
 											<InputSenha id="senha" {...{ ...field, ref: null }} />
 										</InputContainer>
@@ -403,6 +410,7 @@ export default function AutoCadastro() {
 											id="confirmacao_senha"
 											label="Confirmar senha"
 											error={validationErros.confirmacao_senha}
+											fullWidth
 										>
 											<InputSenha
 												id="confirmacao_senha"
