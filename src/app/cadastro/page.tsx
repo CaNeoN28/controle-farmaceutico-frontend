@@ -220,6 +220,7 @@ export default function AutoCadastro() {
 												opcoes={opcoesEntidades}
 												setFiltro={setPesquisaEntidade}
 												setValue={setValue}
+												placeholder="Selecione a entidade que você está vinculado"
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
@@ -250,6 +251,7 @@ export default function AutoCadastro() {
 										>
 											<Input
 												id="numero_registro"
+												placeholder="Informe seu número de registro na entidade"
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
@@ -277,7 +279,11 @@ export default function AutoCadastro() {
 											error={validationErros.nome_completo}
 											fullWidth
 										>
-											<Input id="nome_completo" {...{ ...field, ref: null }} />
+											<Input
+												id="nome_completo"
+												placeholder="Nome completo com pelo menos 3 letras"
+												{...{ ...field, ref: null }}
+											/>
 										</InputContainer>
 									);
 								}}
@@ -303,7 +309,11 @@ export default function AutoCadastro() {
 											error={validationErros.nome_usuario}
 											fullWidth
 										>
-											<Input id="nome_usuario" {...{ ...field, ref: null }} />
+											<Input
+												id="nome_usuario"
+												placeholder="Nome a ser utilizado na plataforma"
+												{...{ ...field, ref: null }}
+											/>
 										</InputContainer>
 									);
 								}}
@@ -329,7 +339,11 @@ export default function AutoCadastro() {
 											error={validationErros.email}
 											fullWidth
 										>
-											<Input id="email" {...{ ...field, ref: null }} />
+											<Input
+												id="email"
+												placeholder="Email pessoal ou de serviço"
+												{...{ ...field, ref: null }}
+											/>
 										</InputContainer>
 									);
 								}}
@@ -362,6 +376,7 @@ export default function AutoCadastro() {
 											<InputMascara
 												mask="999.999.999-99"
 												id="cpf"
+												placeholder="Ex: 000.000.000-00"
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
@@ -389,7 +404,11 @@ export default function AutoCadastro() {
 											error={validationErros.senha}
 											fullWidth
 										>
-											<InputSenha id="senha" {...{ ...field, ref: null }} />
+											<InputSenha
+												id="senha"
+												placeholder="Senha a ser utilizada na plataforma"
+												{...{ ...field, ref: null }}
+											/>
 										</InputContainer>
 									);
 								}}
@@ -422,6 +441,7 @@ export default function AutoCadastro() {
 										>
 											<InputSenha
 												id="confirmacao_senha"
+												placeholder="Confirme a senha digitada anteriormente"
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>

@@ -18,6 +18,7 @@ export interface Opcao {
 
 interface Props extends ComponentPropsWithoutRef<"input"> {
 	filtro: string;
+	placeholder: string;
 	setFiltro: Dispatch<SetStateAction<string>>;
 	setValue: UseFormSetValue<any>;
 	opcoes: Opcao[];
@@ -27,6 +28,7 @@ export default function Select({
 	filtro,
 	opcoes,
 	name,
+	placeholder,
 	setFiltro,
 	setValue,
 	...props
@@ -59,6 +61,7 @@ export default function Select({
 					className={styles.input}
 					type="text"
 					value={filtro}
+					placeholder={placeholder}
 					onChange={(e) => {
 						const value = e.target.value;
 
@@ -74,7 +77,7 @@ export default function Select({
 						<span
 							className={styles.icone_remover}
 							onClick={() => {
-								setFiltro("")
+								setFiltro("");
 								name && setValue(name, "");
 							}}
 						>
