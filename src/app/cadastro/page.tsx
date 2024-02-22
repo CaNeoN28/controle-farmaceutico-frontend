@@ -120,9 +120,7 @@ export default function AutoCadastro() {
 		if (!erroImagem) {
 			await fetchCadastro(usuario)
 				.then((res) => {
-					const usuario = res.data as IUsuario;
-
-					router.push(`/cadastro-finalizado/${usuario._id}`);
+					router.push(`/cadastro-finalizado`);
 				})
 				.catch((err: RequestErro<{ [key: string]: string }>) => {
 					const resposta = err.response;
