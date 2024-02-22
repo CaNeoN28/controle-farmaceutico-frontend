@@ -1,4 +1,6 @@
 .main {
+	display: flex;
+	justify-content: center;
 	margin: 64px 20px;
 }
 
@@ -46,6 +48,7 @@
 
 @media screen and (min-width: 1080px) {
 	.opcoes {
+		max-width: 840px;
 		flex-direction: row;
 	}
 }

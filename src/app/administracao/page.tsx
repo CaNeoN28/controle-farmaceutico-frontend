@@ -3,12 +3,18 @@
 import Menu from "@/components/Menu";
 import styles from "./Administracao.module.scss";
 import OpcaoAdministrativa from "@/components/OpcaoAdministrativa";
+import classNames from "classnames";
 
 export default function Administracao() {
+	const classesMain = classNames({
+		[styles.main]: true,
+		["box-shadow"]: true,
+	});
+
 	return (
 		<>
 			<Menu />
-			<main className={styles.main}>
+			<main className={classesMain}>
 				<div className={styles.opcoes}>
 					<div className={styles.conjunto}>
 						<OpcaoAdministrativa tipo="farmacia" url_destino="farmacias">
