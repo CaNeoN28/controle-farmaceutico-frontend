@@ -6,6 +6,7 @@ import {
 	useState,
 } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { MdOutlineClose } from "react-icons/md";
 import styles from "./Select.module.scss";
 import classNames from "classnames";
 import { UseFormSetValue } from "react-hook-form";
@@ -31,6 +32,7 @@ export default function Select({
 	...props
 }: Props) {
 	const [ativo, setAtivo] = useState<boolean>();
+	const { value } = props;
 
 	const inputBoxClasses = classNames({
 		[styles.input_box]: true,
@@ -67,13 +69,26 @@ export default function Select({
 						setFiltro(value);
 					}}
 				/>
-				<span
-					id={`icone_${name}`}
-					className={styles.icone}
-					onClick={() => setAtivo(!ativo)}
-				>
-					<FaChevronDown />
-				</span>
+				<div className={styles.icones}>
+					{value && (
+						<span
+							className={styles.icone_remover}
+							onClick={() => {
+								setFiltro("")
+								name && setValue(name, "");
+							}}
+						>
+							<MdOutlineClose />
+						</span>
+					)}
+					<span
+						id={`icone_${name}`}
+						className={styles.icone_abrir}
+						onClick={() => setAtivo(!ativo)}
+					>
+						<FaChevronDown />
+					</span>
+				</div>
 			</div>
 			<div id={`opcoes_${name}`} className={styles.opcoes}>
 				{opcoes.length > 0 ? (
@@ -94,7 +109,13 @@ export default function Select({
 					<span className={styles.erro}>Não encontrado</span>
 				)}
 			</div>
-			<input className={styles.hidden} {...props} type="text" disabled />
+			<input
+				className={styles.hidden}
+				value={value}
+				{...props}
+				type="text"
+				disabled
+			/>
 		</div>
 	);
 }

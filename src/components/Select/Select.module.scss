@@ -28,7 +28,23 @@
 	width: 100%;
 }
 
-.icone {
+.icones {
+	display: flex;
+}
+
+.icone_remover {
+	display: flex;
+	align-items: center;
+
+	padding: 8px;
+	font-size: 20px;
+}
+
+.icone_remover:hover {
+	cursor: pointer;
+}
+
+.icone_abrir {
 	display: flex;
 	align-items: center;
 
@@ -39,12 +55,12 @@
 	padding: 8px;
 }
 
-.icone:hover {
+.icone_abrir:hover {
 	cursor: pointer;
 }
 
-.icone.aberto{
-	transform: rotateX(180deg)
+.icone_abrir.aberto {
+	transform: rotateX(180deg);
 }
 
 .hidden {
@@ -90,12 +106,12 @@
 
 .opcoes.aberto {
 	max-height: 192px;
-	
+
 	border: 1px solid var(--gray);
 	border-radius: 0 0 8px 8px;
 }
 
-.erro{
+.erro {
 	width: 100%;
 	padding: 8px;
 }
