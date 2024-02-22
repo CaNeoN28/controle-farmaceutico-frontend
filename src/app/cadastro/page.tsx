@@ -19,10 +19,12 @@ import Select, { Opcao } from "@/components/Select";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { validarCPF } from "@/utils/validation";
 import regexValidation from "@/utils/regexValidation";
+import FetchImagem from "@/fetch/imagens";
 
 export default function AutoCadastro() {
 	const fetchEntidades = new FetchEntidades().getEntidades;
 	const fetchCadastro = new FetchAutenticacao().postCadastro;
+	const fetchImagem = new FetchImagem();
 
 	const {
 		control,
@@ -45,6 +47,7 @@ export default function AutoCadastro() {
 		},
 	});
 
+	const [imagem, setImagem] = useState<File>();
 	const [imagemUrl, setImagemUrl] = useState<string>();
 
 	const [pesquisaEntidade, setPesquisaEntidade] = useState("");
@@ -77,7 +80,26 @@ export default function AutoCadastro() {
 			senha,
 		};
 
-		await fetchCadastro(usuario)
+		if (imagem) {
+			await fetchImagem
+				.postImagem(imagem)
+				.then((res) => {
+					const imagens = res.data as { [key: string]: string };
+
+					const imagensArray: string[] = [];
+
+					Object.keys(imagens).map((k: string) => {
+						imagensArray.push(imagens[k]);
+					});
+
+					usuario.imagem_url = imagensArray[0];
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+
+		/* await fetchCadastro(usuario)
 			.then((res) => {
 				console.log(res);
 			})
@@ -93,7 +115,7 @@ export default function AutoCadastro() {
 						setError(key, { message: erro[key], type: "server" });
 					});
 				}
-			});
+			}); */
 	};
 
 	const sendImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -107,6 +129,8 @@ export default function AutoCadastro() {
 			};
 
 			reader.readAsDataURL(files[0]);
+
+			setImagem(files[0]);
 		}
 	};
 
