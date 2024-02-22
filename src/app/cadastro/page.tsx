@@ -96,7 +96,7 @@ export default function AutoCadastro() {
 					});
 
 					usuario.imagem_url = imagensArray[0];
-					setErroImagem("")
+					setErroImagem("");
 				})
 				.catch((err) => {
 					const { response: resposta } = err as RequestErro<{
@@ -128,6 +128,15 @@ export default function AutoCadastro() {
 							setError(key, { message: erro[key], type: "server" });
 						});
 					}
+
+					fetchImagem
+						.removeImagem(usuario.imagem_url)
+						.then((res) => {
+							console.log(res);
+						})
+						.catch((err) => {
+							console.log(err);
+						});
 				});
 		}
 	};

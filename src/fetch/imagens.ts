@@ -13,4 +13,10 @@ export default class FetchImagem {
 
 		return resposta;
 	}
+
+	removeImagem(path: string) {
+		const resposta = axios.delete(`${API_URL}${path}`);
+
+		return resposta;
+	}
 }
