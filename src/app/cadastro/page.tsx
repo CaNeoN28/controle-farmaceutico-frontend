@@ -23,7 +23,7 @@ import FetchImagem from "@/fetch/imagens";
 import { useRouter } from "next/navigation";
 
 export default function AutoCadastro() {
-	const router = useRouter()
+	const router = useRouter();
 
 	const fetchEntidades = new FetchEntidades().getEntidades;
 	const fetchCadastro = new FetchAutenticacao().postCadastro;
@@ -141,7 +141,7 @@ export default function AutoCadastro() {
 
 	const sendImage = (e: ChangeEvent<HTMLInputElement>) => {
 		const { files } = e.target;
-
+		
 		if (files && files.length && FileReader) {
 			const reader = new FileReader();
 
@@ -152,6 +152,9 @@ export default function AutoCadastro() {
 			reader.readAsDataURL(files[0]);
 
 			setImagem(files[0]);
+		} else if(!files || !files.length) {
+			setImagem(undefined);
+			setImagemUrl("")
 		}
 	};
 
