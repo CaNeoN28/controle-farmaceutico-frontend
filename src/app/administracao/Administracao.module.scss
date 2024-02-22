@@ -1,26 +1,51 @@
 .main {
-	border: 1px solid var(--primary-color);
-	border-radius: 8px;
-
-	margin: 64px 96px;
-
-	height: 80vh;
+	margin: 64px 20px;
 }
 
-.opcoes{
+.opcoes {
 	display: flex;
+	flex-direction: column;
+
 	justify-content: center;
 	align-items: center;
 
 	height: 100%;
 
 	gap: 24px;
-	padding: 20px;
 }
 
-.conjunto{
+.conjunto {
 	display: flex;
 	flex-direction: column;
 
 	gap: 24px;
+
+	width: 100%;
+}
+
+@media screen and (min-width: 672px) {
+	.main {
+		height: 80vh;
+
+		border: 1px solid var(--primary-color);
+		border-radius: 8px;
+
+		margin: 64px 96px;
+	}
+
+	.opcoes {
+		padding: 20px;
+	}
+}
+
+@media screen and (min-width: 840px) {
+	.conjunto {
+		width: 50%;
+	}
+}
+
+@media screen and (min-width: 1080px) {
+	.opcoes {
+		flex-direction: row;
+	}
 }
