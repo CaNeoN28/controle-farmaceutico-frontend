@@ -17,32 +17,44 @@ export default function Administracao() {
 			<main className={classesMain}>
 				<div className={styles.opcoes}>
 					<div className={styles.conjunto}>
-						<OpcaoAdministrativa tipo="farmacia" url_destino="farmacias">
+						<OpcaoAdministrativa
+							tipo="farmacia"
+							url_destino="/administracao/farmacias"
+						>
 							Listagem de Farmácias
 						</OpcaoAdministrativa>
 						<OpcaoAdministrativa
 							tipo="farmacia"
-							url_destino="farmacias/cadastro"
+							url_destino="/administracao/farmacias/cadastro"
 						>
 							Cadastro de Farmácia
 						</OpcaoAdministrativa>
 					</div>
 					<div className={styles.conjunto}>
-						<OpcaoAdministrativa tipo="usuario" url_destino="usuarios">
+						<OpcaoAdministrativa
+							tipo="usuario"
+							url_destino="/administracao/usuarios"
+						>
 							Listagem de Usuários
 						</OpcaoAdministrativa>
-						<OpcaoAdministrativa tipo="usuario" url_destino="usuarios/cadastro">
+						<OpcaoAdministrativa
+							tipo="usuario"
+							url_destino="/administracao/usuarios/cadastro"
+						>
 							Cadastro de Usuários
 						</OpcaoAdministrativa>
 					</div>
 					<div className={styles.conjunto}>
 						<OpcaoAdministrativa
 							tipo="entidade"
-							url_destino="entidades/cadastro"
+							url_destino="/administracao/entidades"
 						>
 							Listagem de Entidades
 						</OpcaoAdministrativa>
-						<OpcaoAdministrativa tipo="entidade" url_destino="entidades">
+						<OpcaoAdministrativa
+							tipo="entidade"
+							url_destino="/administracao/entidades/cadastro"
+						>
 							Cadastro de Entidades
 						</OpcaoAdministrativa>
 					</div>
