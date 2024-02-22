@@ -1,0 +1,26 @@
+.main {
+	border: 1px solid var(--primary-color);
+	border-radius: 8px;
+
+	margin: 64px 96px;
+
+	height: 80vh;
+}
+
+.opcoes{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	height: 100%;
+
+	gap: 24px;
+	padding: 20px;
+}
+
+.conjunto{
+	display: flex;
+	flex-direction: column;
+
+	gap: 24px;
+}
