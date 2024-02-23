@@ -1,0 +1,15 @@
+.map_container{
+	display: flex;
+	flex-direction: column;
+
+	gap: 8px;
+}
+
+.map_title {
+	padding-left: 8px;
+}
+
+.map{
+	width: 40%;
+	aspect-ratio: calc(480/270);
+}

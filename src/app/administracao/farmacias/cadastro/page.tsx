@@ -28,6 +28,8 @@ import {
 } from "@/fetch/localizacao";
 import Select, { Opcao } from "@/components/Select";
 import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
+import Map from "@/components/Map";
+import { Coordenadas } from "@/types/Localizacao";
 
 export default function CadastroFarmacia() {
 	const {
@@ -58,6 +60,11 @@ export default function CadastroFarmacia() {
 
 	const [pesquisaMunicipio, setPesquisaMunicipio] = useState("");
 	const [municipios, setMunicipios] = useState<Opcao[]>([]);
+
+	const [localizacao, setLocalizacao] = useState<Coordenadas>({
+		lat: 0,
+		lng: 0,
+	});
 
 	redirecionarAutenticacao();
 
@@ -136,6 +143,10 @@ export default function CadastroFarmacia() {
 		console.log(data);
 	};
 
+	useLayoutEffect(() => {
+		getEstados();
+	}, []);
+
 	useEffect(() => {
 		onChangeCep(watch("endereco.cep"));
 	}, [watch("endereco.cep")]);
@@ -156,15 +167,15 @@ export default function CadastroFarmacia() {
 
 	useLayoutEffect(() => {
 		getEstados();
-	}, []);
-
-	useLayoutEffect(() => {
-		getEstados();
 	}, [pesquisaEstado]);
 
 	useLayoutEffect(() => {
 		getMunicipios();
 	}, [pesquisaMunicipio]);
+
+	useEffect(() => {
+		console.log(localizacao);
+	}, [localizacao]);
 
 	return (
 		<>
@@ -423,6 +434,14 @@ export default function CadastroFarmacia() {
 								}}
 							/>
 						</CadastroInputs>
+						<div className={styles.map_container}>
+							<span className={styles.map_title}>
+								Selecione a posição no mapa
+							</span>
+							<div className={styles.map}>
+								<Map setLocalizacao={setLocalizacao} map_center={localizacao} />
+							</div>
+						</div>
 					</CadastroEtapa>
 					<CadastroBotoes>
 						<Botao fullWidth type="submit">
