@@ -85,7 +85,7 @@ export default function Select({
 					}}
 				/>
 				<div className={styles.icones}>
-					{value && (
+					{!disabled && value && (
 						<span
 							className={styles.icone_remover}
 							onClick={() => {

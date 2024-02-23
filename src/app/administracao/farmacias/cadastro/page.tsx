@@ -393,6 +393,35 @@ export default function CadastroFarmacia() {
 									);
 								}}
 							/>
+							<Controller
+								name="endereco.numero"
+								control={control}
+								rules={{
+									required: {
+										value: true,
+										message: "Número é obrigatório",
+									},
+									pattern: {
+										value: /^[0-9]*$/,
+										message: "Número inválido",
+									},
+								}}
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="numero"
+											label="Numero"
+											error={errors.endereco && errors.endereco.numero}
+										>
+											<Input
+												id="numero"
+												placeholder="0000"
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
 						</CadastroInputs>
 					</CadastroEtapa>
 					<CadastroBotoes>
