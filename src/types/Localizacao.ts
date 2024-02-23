@@ -13,3 +13,14 @@ export interface DadosCep {
 	ibge: string;
 	erro?: boolean;
 }
+
+export interface Estado {
+	id: number;
+	sigla: string;
+	nome: string;
+	regiao: {
+		id: string;
+		sigla: string;
+		nome: string;
+	};
+}

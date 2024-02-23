@@ -5,12 +5,7 @@ import styles from "./CadastroFarmacia.module.scss";
 import Menu from "@/components/Menu";
 import TituloSecao from "@/components/TituloSecao";
 import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
-import {
-	Controller,
-	ControllerRenderProps,
-	SubmitHandler,
-	useForm,
-} from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import IFarmacia from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
@@ -24,8 +19,13 @@ import {
 	CadastroBotoes,
 } from "@/components/Cadastro";
 import { validarCNPJ } from "@/utils/validation";
-import { ChangeEvent, useEffect } from "react";
-import { getDadosCep } from "@/fetch/localizacao";
+import { useEffect, useLayoutEffect, useState } from "react";
+import {
+	fetchEstados,
+	getDadosCep,
+	getEstadoFromSigla,
+} from "@/fetch/localizacao";
+import Select, { Opcao } from "@/components/Select";
 
 export default function CadastroFarmacia() {
 	const {
@@ -35,7 +35,7 @@ export default function CadastroFarmacia() {
 		watch,
 		setError,
 		setValue,
-		clearErrors
+		clearErrors,
 	} = useForm<IFarmacia>({
 		defaultValues: {
 			cnpj: "",
@@ -46,22 +46,50 @@ export default function CadastroFarmacia() {
 		},
 	});
 
+	const [pesquisaEstado, setPesquisaEstado] = useState("");
+	const [estados, setEstados] = useState<Opcao[]>([]);
+
 	redirecionarAutenticacao();
 
+	const getEstados = async () => {
+		await fetchEstados().then((res) => {
+			const estados = res.data;
+
+			const opcoesEstados: Opcao[] = [];
+			estados
+				.filter((e) => RegExp(pesquisaEstado).test(e.nome))
+				.map((e) => {
+					opcoesEstados.push({
+						label: e.nome,
+						valor: e.nome,
+					});
+				});
+
+			setEstados(opcoesEstados);
+		});
+	};
+
 	const onChangeCep = async (cep: string) => {
-		clearErrors("endereco.cep")
+		clearErrors("endereco.cep");
 		cep = cep.replaceAll(/([_-])+/g, "");
 
 		if (cep.length == 8) {
-			await getDadosCep(cep).then((res) => {
+			await getDadosCep(cep).then(async (res) => {
 				if (res.data.erro) {
 					setError("endereco.cep", { message: "CEP inválido", type: "server" });
 				} else {
-					const {uf, bairro, localidade, logradouro} = res.data
+					const { uf, bairro, localidade, logradouro } = res.data;
 
-					setValue("endereco.bairro", bairro)
-					setValue("endereco.municipio", localidade)
-					setValue("endereco.logradouro", logradouro)
+					let estado = "";
+
+					await getEstadoFromSigla(uf).then((res) => {
+						estado = res.data.nome;
+					});
+
+					setValue("endereco.bairro", bairro);
+					setValue("endereco.municipio", localidade);
+					setValue("endereco.logradouro", logradouro);
+					setValue("endereco.estado", estado);
 				}
 			});
 		}
@@ -74,6 +102,18 @@ export default function CadastroFarmacia() {
 	useEffect(() => {
 		onChangeCep(watch("endereco.cep"));
 	}, [watch("endereco.cep")]);
+
+	useEffect(() => {
+		setPesquisaEstado(watch("endereco.estado"));
+	}, [watch("endereco.estado")]);
+
+	useLayoutEffect(() => {
+		getEstados();
+	}, []);
+
+	useEffect(() => {
+		console.log(estados);
+	}, [estados]);
 
 	return (
 		<>
@@ -185,7 +225,7 @@ export default function CadastroFarmacia() {
 									);
 								}}
 							/>
-							{/* <Controller
+							<Controller
 								name="endereco.estado"
 								control={control}
 								rules={{
@@ -204,14 +244,16 @@ export default function CadastroFarmacia() {
 											<Select
 												id="estado"
 												placeholder="Rondônia"
-												opcoes={OPCOES_ESTADOS}
-												filtro=""
+												opcoes={estados}
+												filtro={pesquisaEstado}
+												setFiltro={setPesquisaEstado}
+												setValue={setValue}
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
 									);
 								}}
-							/> */}
+							/>
 						</CadastroInputs>
 					</CadastroEtapa>
 					<CadastroBotoes>
