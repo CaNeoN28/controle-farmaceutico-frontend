@@ -1,7 +1,7 @@
 import { getDayFromNum } from "@/types/DiasSemana";
-import Farmacia from "@/types/Farmacia";
+import IFarmacia from "@/types/Farmacia";
 
-export default function farmaciaEstaAberta(farmacia: Farmacia, horario: Date) {
+export default function farmaciaEstaAberta(farmacia: IFarmacia, horario: Date) {
 	const horarios = farmacia.horarios_servico;
 	const plantoes = farmacia.plantoes;
 

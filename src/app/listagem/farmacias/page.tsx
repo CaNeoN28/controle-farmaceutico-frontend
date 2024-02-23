@@ -9,7 +9,7 @@ import {
 	useLayoutEffect,
 	useState,
 } from "react";
-import Farmacia from "@/types/Farmacia";
+import IFarmacia from "@/types/Farmacia";
 import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import CardFarmacia from "@/components/CardFarmacia";
@@ -21,7 +21,7 @@ import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
 import Listagem from "@/components/Listagem";
 
-interface FarmaciaEHorario extends Farmacia {
+interface FarmaciaEHorario extends IFarmacia {
 	aberto_hoje: boolean;
 	entrada?: string;
 	saida?: string;
@@ -64,7 +64,7 @@ export default function Farmacias() {
 			farmaciaFetch
 				.getFarmacias(filtros)
 				.then((res) => {
-					const response = res.data as GetManyRequest<Farmacia[]>;
+					const response = res.data as GetManyRequest<IFarmacia[]>;
 					const farmacias = response.dados.map((f) => {
 						const dia_semana = getDayFromNum(data.getDay());
 

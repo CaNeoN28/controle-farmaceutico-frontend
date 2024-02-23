@@ -5,8 +5,13 @@ import styles from "./CadastroFarmacia.module.scss";
 import Menu from "@/components/Menu";
 import TituloSecao from "@/components/TituloSecao";
 import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import Farmacia from "@/types/Farmacia";
+import {
+	Controller,
+	ControllerRenderProps,
+	SubmitHandler,
+	useForm,
+} from "react-hook-form";
+import IFarmacia from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
@@ -19,19 +24,56 @@ import {
 	CadastroBotoes,
 } from "@/components/Cadastro";
 import { validarCNPJ } from "@/utils/validation";
+import { ChangeEvent, useEffect } from "react";
+import { getDadosCep } from "@/fetch/localizacao";
 
 export default function CadastroFarmacia() {
 	const {
-		handleSubmit,
 		formState: { errors },
 		control,
-	} = useForm<Farmacia>();
+		handleSubmit,
+		watch,
+		setError,
+		setValue,
+		clearErrors
+	} = useForm<IFarmacia>({
+		defaultValues: {
+			cnpj: "",
+			nome_fantasia: "",
+			endereco: {
+				cep: "",
+			},
+		},
+	});
 
 	redirecionarAutenticacao();
 
-	const onSubmit: SubmitHandler<Farmacia> = (data) => {
+	const onChangeCep = async (cep: string) => {
+		clearErrors("endereco.cep")
+		cep = cep.replaceAll(/([_-])+/g, "");
+
+		if (cep.length == 8) {
+			await getDadosCep(cep).then((res) => {
+				if (res.data.erro) {
+					setError("endereco.cep", { message: "CEP inválido", type: "server" });
+				} else {
+					const {uf, bairro, localidade, logradouro} = res.data
+
+					setValue("endereco.bairro", bairro)
+					setValue("endereco.municipio", localidade)
+					setValue("endereco.logradouro", logradouro)
+				}
+			});
+		}
+	};
+
+	const onSubmit: SubmitHandler<IFarmacia> = (data) => {
 		console.log(data);
 	};
+
+	useEffect(() => {
+		onChangeCep(watch("endereco.cep"));
+	}, [watch("endereco.cep")]);
 
 	return (
 		<>
@@ -106,6 +148,70 @@ export default function CadastroFarmacia() {
 									titulo="Enviar imagem"
 								/>
 							</InputContainer>
+						</CadastroInputs>
+					</CadastroEtapa>
+					<CadastroEtapa titulo="Endereço">
+						<CadastroInputs>
+							<Controller
+								name="endereco.cep"
+								control={control}
+								rules={{
+									required: {
+										message: "CEP é obrigatório",
+										value: true,
+									},
+									minLength: {
+										message: "CEP deve ter 8 digitos",
+										value: 9,
+									},
+								}}
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="cep"
+											label="CEP"
+											error={errors.endereco && errors.endereco.cep}
+										>
+											<InputMascara
+												mask="99999-999"
+												id="cep"
+												placeholder="00000-00"
+												{...{
+													...field,
+													ref: null,
+												}}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							{/* <Controller
+								name="endereco.estado"
+								control={control}
+								rules={{
+									required: {
+										message: "Estado é obrigatório",
+										value: true,
+									},
+								}}
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="estado"
+											label="Estado"
+											error={errors.endereco && errors.endereco.estado}
+										>
+											<Select
+												id="estado"
+												placeholder="Rondônia"
+												opcoes={OPCOES_ESTADOS}
+												filtro=""
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/> */}
 						</CadastroInputs>
 					</CadastroEtapa>
 					<CadastroBotoes>

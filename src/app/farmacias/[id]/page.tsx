@@ -2,7 +2,7 @@
 
 import Menu from "@/components/Menu";
 import FetchFarmacia from "@/fetch/farmacias";
-import Farmacia from "@/types/Farmacia";
+import IFarmacia from "@/types/Farmacia";
 import { useEffect, useState } from "react";
 import styles from "./Farmacia.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
@@ -42,7 +42,7 @@ export default function Farmacia({ params }: { params: Params }) {
 	const fFarmacias = new FetchFarmacia();
 
 	const [date, setDate] = useState(new Date());
-	const [farmacia, setFarmacia] = useState<Farmacia>();
+	const [farmacia, setFarmacia] = useState<IFarmacia>();
 	const [localizacaoUsuario, setLocalizacaoUsuario] = useState<Localizacao>();
 
 	const [horarios, setHorarios] = useState<Horario[]>([]);
@@ -105,7 +105,7 @@ export default function Farmacia({ params }: { params: Params }) {
 		fFarmacias
 			.getFarmacia(farmaciaId)
 			.then((res) => {
-				const resposta = res.data as Farmacia;
+				const resposta = res.data as IFarmacia;
 
 				resposta.plantoes = resposta.plantoes.filter((p) => {
 					const dataP = new Date(p);
