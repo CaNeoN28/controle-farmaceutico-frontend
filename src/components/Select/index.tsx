@@ -2,6 +2,7 @@ import {
 	ComponentPropsWithoutRef,
 	Dispatch,
 	SetStateAction,
+	useEffect,
 	useLayoutEffect,
 	useState,
 } from "react";
@@ -29,6 +30,7 @@ export default function Select({
 	opcoes,
 	name,
 	placeholder,
+	disabled,
 	setFiltro,
 	setValue,
 	...props
@@ -39,11 +41,12 @@ export default function Select({
 	const inputBoxClasses = classNames({
 		[styles.input_box]: true,
 		[styles.input_ativo]: ativo,
+		[styles.input_disabled]: disabled,
 	});
 
 	!name && console.error("Name é obrigatório");
 
-	const nome_formatado = name?.replaceAll(".", "_")
+	const nome_formatado = name?.replaceAll(".", "_");
 
 	useLayoutEffect(() => {
 		if (ativo !== undefined) {
@@ -56,6 +59,12 @@ export default function Select({
 		}
 	}, [ativo]);
 
+	useEffect(() => {
+		if (disabled && ativo) {
+			setAtivo(false);
+		}
+	}, [disabled]);
+
 	return (
 		<div className={styles.container}>
 			<div className={inputBoxClasses}>
@@ -64,6 +73,7 @@ export default function Select({
 					type="text"
 					value={filtro}
 					placeholder={placeholder}
+					disabled={disabled}
 					onChange={(e) => {
 						const value = e.target.value;
 
@@ -89,7 +99,7 @@ export default function Select({
 					<span
 						id={`icone_${nome_formatado}`}
 						className={styles.icone_abrir}
-						onClick={() => setAtivo(!ativo)}
+						onClick={() => !disabled && setAtivo(!ativo)}
 					>
 						<FaChevronDown />
 					</span>

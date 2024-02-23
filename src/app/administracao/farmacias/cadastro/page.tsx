@@ -49,6 +49,9 @@ export default function CadastroFarmacia() {
 	const [pesquisaEstado, setPesquisaEstado] = useState("");
 	const [estados, setEstados] = useState<Opcao[]>([]);
 
+	const [pesquisaMunicipio, setPesquisaMunicipio] = useState("");
+	const [municipios, setMunicipios] = useState<Opcao[]>([]);
+
 	redirecionarAutenticacao();
 
 	const getEstados = async () => {
@@ -247,6 +250,36 @@ export default function CadastroFarmacia() {
 												opcoes={estados}
 												filtro={pesquisaEstado}
 												setFiltro={setPesquisaEstado}
+												setValue={setValue}
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								name="endereco.municipio"
+								control={control}
+								rules={{
+									required: {
+										message: "Municipio é obrigatório",
+										value: true,
+									},
+								}}
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="municipio"
+											label="Estado"
+											error={errors.endereco && errors.endereco.municipio}
+										>
+											<Select
+												id="municipio"
+												placeholder="Vilhena"
+												opcoes={municipios}
+												filtro={pesquisaMunicipio}
+												disabled={!watch("endereco.estado")}
+												setFiltro={setPesquisaMunicipio}
 												setValue={setValue}
 												{...{ ...field, ref: null }}
 											/>
