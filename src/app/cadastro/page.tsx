@@ -211,7 +211,6 @@ export default function AutoCadastro() {
 											id="entidade_relacionada"
 											label="Entidade relacionada"
 											error={validationErros.entidade_relacionada}
-											fullWidth
 										>
 											<Select
 												filtro={pesquisaEntidade}
@@ -245,7 +244,6 @@ export default function AutoCadastro() {
 											id="numero_registro"
 											label="Número de registro"
 											error={validationErros.numero_registro}
-											fullWidth
 										>
 											<Input
 												id="numero_registro"
@@ -275,7 +273,6 @@ export default function AutoCadastro() {
 											id="nome_completo"
 											label="Nome completo"
 											error={validationErros.nome_completo}
-											fullWidth
 										>
 											<Input
 												id="nome_completo"
@@ -305,7 +302,6 @@ export default function AutoCadastro() {
 											id="nome_usuario"
 											label="Nome de usuário"
 											error={validationErros.nome_usuario}
-											fullWidth
 										>
 											<Input
 												id="nome_usuario"
@@ -335,7 +331,6 @@ export default function AutoCadastro() {
 											id="email"
 											label="Email"
 											error={validationErros.email}
-											fullWidth
 										>
 											<Input
 												id="email"
@@ -369,7 +364,6 @@ export default function AutoCadastro() {
 											id="cpf"
 											label="CPF"
 											error={validationErros.cpf}
-											fullWidth
 										>
 											<InputMascara
 												mask="999.999.999-99"
@@ -400,7 +394,6 @@ export default function AutoCadastro() {
 											id="senha"
 											label="Senha"
 											error={validationErros.senha}
-											fullWidth
 										>
 											<InputSenha
 												id="senha"
@@ -435,7 +428,6 @@ export default function AutoCadastro() {
 											id="confirmacao_senha"
 											label="Confirmar senha"
 											error={validationErros.confirmacao_senha}
-											fullWidth
 										>
 											<InputSenha
 												id="confirmacao_senha"
