@@ -4,8 +4,12 @@ import Menu from "@/components/Menu";
 import styles from "./Administracao.module.scss";
 import OpcaoAdministrativa from "@/components/OpcaoAdministrativa";
 import classNames from "classnames";
+import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
+import { useEffect } from "react";
 
 export default function Administracao() {
+	redirecionarAutenticacao();
+
 	const classesMain = classNames({
 		[styles.main]: true,
 		["box-shadow"]: true,
