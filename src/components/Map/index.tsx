@@ -5,15 +5,17 @@ import styles from "./Map.module.scss";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Coordenadas } from "@/types/Localizacao";
 import { Dispatch, SetStateAction } from "react";
+import Endereco from "@/types/Endereco";
 
 interface Props {
 	map_center?: Coordenadas;
 	map_options?: google.maps.MapOptions;
+	endereco_pesquisa?: Endereco & { nome_farmacia: string };
 	setLocalizacao?: Dispatch<SetStateAction<Coordenadas>>;
 }
 
 export default function Map(props: Props) {
-	const { map_center, setLocalizacao } = props;
+	const { map_center, endereco_pesquisa, setLocalizacao } = props;
 
 	const loader = new Loader({
 		apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
@@ -28,6 +30,7 @@ export default function Map(props: Props) {
 		const { AdvancedMarkerElement } = (await google.maps.importLibrary(
 			"marker"
 		)) as google.maps.MarkerLibrary;
+		const geocoder = new google.maps.Geocoder();
 
 		map = new Map(document.getElementById("google_map")!, {
 			zoom: 18,
@@ -51,20 +54,27 @@ export default function Map(props: Props) {
 
 			if (setLocalizacao && e.latLng) setLocalizacao(e.latLng.toJSON());
 		});
+
+		if (endereco_pesquisa) {
+			const { cep, estado, municipio, bairro, logradouro } = endereco_pesquisa;
+			const pesquisa = [cep, estado, municipio, bairro, logradouro].join(" ");
+
+			geocoder
+				.geocode({ address: pesquisa })
+				.then((res) => {
+					const resultado = res.results[0].geometry.location.toJSON();
+
+					if (
+						setLocalizacao &&
+						resultado.lat != map_center?.lat &&
+						resultado.lng != map_center?.lng
+					) {
+						setLocalizacao(resultado);
+					}
+				})
+				.catch(() => {});
+		}
 	});
-
-	/* if (!isLoaded) {
-		return <span>Carregando...</span>;
-	}
-
-	return (
-		<GoogleMap
-			options={mapOptions}
-			center={mapCenter}
-			zoom={14}
-			mapContainerClassName={styles.map}
-		></GoogleMap>
-	); */
 
 	return <div id="google_map" className={styles.map} />;
 }

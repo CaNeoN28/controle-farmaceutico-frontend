@@ -65,6 +65,7 @@ export default function CadastroFarmacia() {
 		lat: 0,
 		lng: 0,
 	});
+	const [pesquisaMapa, setPesquisaMapa] = useState<string>("");
 
 	redirecionarAutenticacao();
 
@@ -152,7 +153,10 @@ export default function CadastroFarmacia() {
 	}, [watch("endereco.cep")]);
 
 	useEffect(() => {
-		setPesquisaEstado(watch("endereco.estado"));
+		const estado = watch("endereco.estado");
+
+		setPesquisaMapa(estado);
+
 		getMunicipios();
 
 		if (!watch("endereco.cep")) {
@@ -162,7 +166,10 @@ export default function CadastroFarmacia() {
 	}, [watch("endereco.estado")]);
 
 	useEffect(() => {
-		setPesquisaMunicipio(watch("endereco.municipio"));
+		const municipio = watch("endereco.municipio");
+
+		setPesquisaMunicipio(municipio);
+		setPesquisaMapa(municipio);
 	}, [watch("endereco.municipio")]);
 
 	useLayoutEffect(() => {
@@ -172,10 +179,6 @@ export default function CadastroFarmacia() {
 	useLayoutEffect(() => {
 		getMunicipios();
 	}, [pesquisaMunicipio]);
-
-	useEffect(() => {
-		console.log(localizacao);
-	}, [localizacao]);
 
 	return (
 		<>
@@ -439,7 +442,14 @@ export default function CadastroFarmacia() {
 								Selecione a posição no mapa
 							</span>
 							<div className={styles.map}>
-								<Map setLocalizacao={setLocalizacao} map_center={localizacao} />
+								<Map
+									setLocalizacao={setLocalizacao}
+									endereco_pesquisa={{
+										...watch("endereco"),
+										nome_farmacia: watch("nome_fantasia"),
+									}}
+									map_center={localizacao}
+								/>
 							</div>
 						</div>
 					</CadastroEtapa>

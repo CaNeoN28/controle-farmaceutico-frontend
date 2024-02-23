@@ -1,4 +1,5 @@
 import DiaSemana from "./DiasSemana";
+import Endereco from "./Endereco";
 
 export interface Escala {
 	[dia: string]: IFarmacia[];
@@ -16,18 +17,7 @@ export default interface IFarmacia {
 	_id: string;
 	cnpj: string;
 	nome_fantasia: string;
-	endereco: {
-		cep: string;
-		estado: string;
-		municipio: string;
-		bairro: string;
-		logradouro: string;
-		numero: string;
-		localizacao: {
-			x: number;
-			y: number;
-		};
-	};
+	endereco: Endereco;
 	plantoes: string[];
 	horarios_servico: {
 		[dia_semana in DiaSemana]: {
