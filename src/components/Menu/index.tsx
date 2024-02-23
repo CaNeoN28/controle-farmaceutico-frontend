@@ -5,6 +5,8 @@ import BotaoMenu from "../BotaoMenu";
 import classNames from "classnames";
 import { getCookie } from "cookies-next";
 import { FaUserCircle } from "react-icons/fa";
+import FetchAutenticacao from "@/fetch/autenticacao";
+import { IUsuarioAPI } from "@/types/Usuario";
 
 interface Props {}
 
@@ -15,15 +17,23 @@ const getWidth = () => {
 };
 
 export default function Menu({}: Props) {
-	const [autenticado, setAutenticado] = useState(false);
+	const fAuth = new FetchAutenticacao().getPerfil;
+
+	const [userId, setUserId] = useState<string>();
 	const [ativo, setAtivo] = useState(false);
 	const [width, setWidth] = useState(getWidth());
 
-	const getAuthToken = () => {
+	const getAuthToken = async () => {
 		const token = getCookie("authentication");
 
 		if (token) {
-			setAutenticado(true);
+			await fAuth(token)
+				.then((res) => {
+					const { _id } = res.data as IUsuarioAPI;
+
+					setUserId(_id);
+				})
+				.catch((_) => {});
 		}
 	};
 
@@ -50,12 +60,10 @@ export default function Menu({}: Props) {
 					</BotaoMenu>
 					<BotaoMenu link="/listagem/farmacias">Farmácias</BotaoMenu>
 					<BotaoMenu link="/listagem/plantoes">Plantões</BotaoMenu>
-					{autenticado && (
-						<BotaoMenu link="/administracao">Administração</BotaoMenu>
-					)}
+					{userId && <BotaoMenu link="/administracao">Administração</BotaoMenu>}
 				</div>
 				<div>
-					{autenticado ? (
+					{userId ? (
 						<BotaoMenu link="/perfil">
 							<span>Perfil</span>
 							<FaUserCircle />
@@ -111,10 +119,8 @@ export default function Menu({}: Props) {
 					<BotaoMenu link="/">Início</BotaoMenu>
 					<BotaoMenu link="/listagem/farmacias">Listagem de farmácia</BotaoMenu>
 					<BotaoMenu link="/listagem/plantoes">Listagem de plantões</BotaoMenu>
-					{autenticado && (
-						<BotaoMenu link="/administracao">Administracao</BotaoMenu>
-					)}
-					{autenticado ? (
+					{userId && <BotaoMenu link="/administracao">Administracao</BotaoMenu>}
+					{userId ? (
 						<BotaoMenu link="/perfil">Perfil</BotaoMenu>
 					) : (
 						<BotaoMenu link="/login">Entrar</BotaoMenu>
