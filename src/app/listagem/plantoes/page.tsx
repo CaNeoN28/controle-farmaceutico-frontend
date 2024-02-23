@@ -7,7 +7,7 @@ import { Escala } from "@/types/Farmacia";
 import Listagem from "@/components/Listagem";
 import Paginacao from "@/components/Paginacao";
 import CardFarmacia from "@/components/CardFarmacia";
-import FarmaciaFetch from "@/fetch/farmacias";
+import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import Secao from "@/components/Secao";
 import { FiltrosPlantoes } from "@/types/fetchFarmacias";
@@ -16,7 +16,7 @@ import Carregando from "@/components/Carregando";
 import converterData from "@/utils/converterData";
 
 export default function Plantoes() {
-	const fFarmacias = new FarmaciaFetch();
+	const fFarmacias = new FetchFarmacia();
 
 	const [date] = useState(new Date());
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Menu from "@/components/Menu";
-import FarmaciaFetch from "@/fetch/farmacias";
+import FetchFarmacia from "@/fetch/farmacias";
 import Farmacia from "@/types/Farmacia";
 import { useEffect, useState } from "react";
 import styles from "./Farmacia.module.scss";
@@ -38,7 +38,7 @@ interface Localizacao {
 export default function Farmacia({ params }: { params: Params }) {
 	const { id: farmaciaId } = params;
 
-	const fFarmacias = new FarmaciaFetch();
+	const fFarmacias = new FetchFarmacia();
 
 	const [date, setDate] = useState(new Date());
 	const [farmacia, setFarmacia] = useState<Farmacia>();

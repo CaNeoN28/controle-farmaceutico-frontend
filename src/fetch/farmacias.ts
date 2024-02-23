@@ -13,7 +13,7 @@ interface FiltrosFarmacias {
 	limite?: number;
 }
 
-export default class FarmaciaFetch {
+export default class FetchFarmacia {
 	getFarmacia(id: string) {
 		const response = axios.get(`${API_URL}/farmacia/${id}`);
 

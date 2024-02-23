@@ -8,7 +8,7 @@ import styles from "./Home.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
 import Botao from "@/components/Botao";
 import FarmaciaItem from "@/components/FarmaciaItem";
-import FarmaciaFetch from "@/fetch/farmacias";
+import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import Farmacia, { Escala, FarmaciaAberta } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
@@ -29,7 +29,7 @@ interface Localizacao {
 }
 
 export default function Home() {
-  const fFarmacias = new FarmaciaFetch();
+  const fFarmacias = new FetchFarmacia();
 
   const [date] = useState(new Date());
 

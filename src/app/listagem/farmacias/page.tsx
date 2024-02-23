@@ -10,7 +10,7 @@ import {
 	useState,
 } from "react";
 import Farmacia from "@/types/Farmacia";
-import FarmaciaFetch from "@/fetch/farmacias";
+import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import CardFarmacia from "@/components/CardFarmacia";
 import InputPesquisa from "@/components/InputPesquisa";
@@ -28,7 +28,7 @@ interface FarmaciaEHorario extends Farmacia {
 }
 
 export default function Farmacias() {
-	const farmaciaFetch = new FarmaciaFetch();
+	const farmaciaFetch = new FetchFarmacia();
 
 	const [data] = useState(new Date());
 
