@@ -15,7 +15,6 @@ import {
 	CadastroForm,
 	CadastroMain,
 	CadastroEtapa,
-	CadastroTituloEtapa,
 	CadastroInputs,
 	CadastroBotoes,
 } from "@/components/Cadastro";
@@ -40,8 +39,7 @@ export default function CadastroFarmacia() {
 			<CadastroMain>
 				<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
 				<CadastroForm onSubmit={handleSubmit(onSubmit)}>
-					<CadastroEtapa>
-						<CadastroTituloEtapa titulo="Dados da farmácia" />
+					<CadastroEtapa titulo="Dados da farmácia">
 						<CadastroInputs>
 							<Controller
 								name="cnpj"

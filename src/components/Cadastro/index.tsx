@@ -19,12 +19,19 @@ export function CadastroForm({
 	);
 }
 
-export function CadastroEtapa({ children }: { children?: ReactNode }) {
-	return <div className={styles.etapa_cadastro}>{children}</div>;
-}
-
-export function CadastroTituloEtapa({ titulo }: { titulo: string }) {
-	return <span className={styles.titulo_etapa_cadastro}>{titulo}</span>;
+export function CadastroEtapa({
+	titulo,
+	children,
+}: {
+	titulo: string;
+	children?: ReactNode;
+}) {
+	return (
+		<div className={styles.etapa_cadastro}>
+			<span className={styles.titulo_etapa_cadastro}>{titulo}</span>
+			{children}
+		</div>
+	);
 }
 
 export function CadastroInputs({ children }: { children?: ReactNode }) {
