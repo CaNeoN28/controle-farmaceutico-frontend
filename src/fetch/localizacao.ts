@@ -1,4 +1,4 @@
-import { DadosCep, Estado } from "@/types/Localizacao";
+import { DadosCep, Estado, Municipio } from "@/types/Localizacao";
 import axios, { AxiosPromise } from "axios";
 
 const API_IBGE = "https://servicodados.ibge.gov.br/api/v1";
@@ -20,4 +20,10 @@ export async function fetchEstados() {
 	const response = axios.get(`${API_IBGE}/localidades/estados`);
 
 	return response as AxiosPromise<Estado[]>;
+}
+
+export async function fetchMunicipios(siglaEstado: string) {
+	const response = axios.get(`${API_IBGE}/localidades/estados/${siglaEstado}/municipios`);
+
+	return response as AxiosPromise<Municipio[]>;
 }

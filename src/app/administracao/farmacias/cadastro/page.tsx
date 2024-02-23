@@ -22,10 +22,12 @@ import { validarCNPJ } from "@/utils/validation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
 	fetchEstados,
+	fetchMunicipios,
 	getDadosCep,
 	getEstadoFromSigla,
 } from "@/fetch/localizacao";
 import Select, { Opcao } from "@/components/Select";
+import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
 
 export default function CadastroFarmacia() {
 	const {
@@ -42,6 +44,8 @@ export default function CadastroFarmacia() {
 			nome_fantasia: "",
 			endereco: {
 				cep: "",
+				estado: "",
+				municipio: "",
 			},
 		},
 	});
@@ -60,7 +64,8 @@ export default function CadastroFarmacia() {
 
 			const opcoesEstados: Opcao[] = [];
 			estados
-				.filter((e) => RegExp(pesquisaEstado).test(e.nome))
+				.filter((e) => RegExp(pesquisaEstado, "i").test(e.nome))
+				.sort((a,b) => a.nome > b.nome ? 1: -1)
 				.map((e) => {
 					opcoesEstados.push({
 						label: e.nome,
@@ -70,6 +75,32 @@ export default function CadastroFarmacia() {
 
 			setEstados(opcoesEstados);
 		});
+	};
+
+	const getMunicipios = async () => {
+		const estado = watch("endereco.estado");
+
+		if (estado) {
+			const sigla = getSiglaFromEstado(estado);
+
+			await fetchMunicipios(sigla).then((res) => {
+				const municipios = res.data;
+
+				const opcoesMunicipios: Opcao[] = [];
+
+				municipios
+					.filter((m) => RegExp(pesquisaMunicipio, "i").test(m.nome))
+					.sort((a,b) => a.nome > b.nome ? 1: -1)
+					.map((m) => {
+						opcoesMunicipios.push({
+							label: m.nome,
+							valor: m.nome,
+						});
+					});
+
+				setMunicipios(opcoesMunicipios);
+			});
+		}
 	};
 
 	const onChangeCep = async (cep: string) => {
@@ -108,15 +139,24 @@ export default function CadastroFarmacia() {
 
 	useEffect(() => {
 		setPesquisaEstado(watch("endereco.estado"));
+		getMunicipios();
 	}, [watch("endereco.estado")]);
+
+	useEffect(() => {
+		setPesquisaMunicipio(watch("endereco.municipio"));
+	}, [watch("endereco.municipio")]);
 
 	useLayoutEffect(() => {
 		getEstados();
 	}, []);
 
-	useEffect(() => {
-		console.log(estados);
-	}, [estados]);
+	useLayoutEffect(() => {
+		getEstados();
+	}, [pesquisaEstado]);
+
+	useLayoutEffect(() => {
+		getMunicipios();
+	}, [pesquisaMunicipio]);
 
 	return (
 		<>
@@ -270,7 +310,7 @@ export default function CadastroFarmacia() {
 									return (
 										<InputContainer
 											id="municipio"
-											label="Estado"
+											label="Municipio"
 											error={errors.endereco && errors.endereco.municipio}
 										>
 											<Select
