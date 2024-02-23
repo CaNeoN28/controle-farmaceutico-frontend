@@ -10,6 +10,7 @@ import Farmacia from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
+import InputImagem from "@/components/InputImagem";
 
 export default function CadastroFarmacia() {
 	const { handleSubmit, control } = useForm<Farmacia>();
@@ -45,6 +46,28 @@ export default function CadastroFarmacia() {
 									);
 								}}
 							/>
+							<Controller
+								name="nome_fantasia"
+								control={control}
+								render={({ field }) => {
+									return (
+										<InputContainer id="nome_fantasia" label="Nome fantasia">
+											<Input
+												id="nome_fantasia"
+												placeholder="Nome de exibição da farmácia"
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<InputContainer id="imagem" label="Imagem">
+								<InputImagem
+									id="imagem"
+									onChange={() => {}}
+									titulo="Enviar imagem"
+								/>
+							</InputContainer>
 						</div>
 					</div>
 					<div className={styles.botoes}>

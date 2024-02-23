@@ -29,6 +29,13 @@
 	font-size: 16px;
 }
 
+.inputs_secao {
+	display: grid;
+	grid-template-columns: auto auto auto;
+
+	gap: 24px;
+}
+
 .botoes {
 	display: flex;
 	flex-direction: row-reverse;
