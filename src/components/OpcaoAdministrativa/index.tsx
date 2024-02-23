@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { MdLocalPharmacy, MdLocationCity, MdPerson } from "react-icons/md";
 import styles from "./OpcaoAdministrativa.module.scss";
+import classNames from "classnames";
 
 interface Props {
 	url_destino: string;
@@ -23,8 +24,13 @@ export default function OpcaoAdministrativa({
 			<MdPerson />
 		);
 
+	const classesOpcao = classNames({
+		[styles.opcao_administrativa]: true,
+		["box-shadow"]: true,
+	});
+
 	return (
-		<Link href={url_destino} className={styles.opcao_administrativa}>
+		<Link href={url_destino} className={classesOpcao}>
 			<div className={styles.icone}>{icone}</div>
 			<div className={styles.content}>{children}</div>
 		</Link>

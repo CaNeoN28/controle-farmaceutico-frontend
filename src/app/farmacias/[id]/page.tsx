@@ -15,6 +15,7 @@ import farmaciaEstaAberta from "@/utils/farmaciaEstaAberta";
 import DiaPlantao from "@/components/DiaPlantao";
 import Carregando from "@/components/Carregando";
 import LinkButton from "@/components/LinkButton";
+import classNames from "classnames";
 
 interface Params {
 	id: string;
@@ -52,6 +53,11 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	const [erroFarmacia, setErroFarmacia] = useState("");
 	const [erroLocalizacao, setErroLocalizacao] = useState("");
+
+	const classesContainer = classNames({
+		[styles.container]: true,
+		["box-shadow"]: true
+	})
 
 	const getRota = () => {
 		if (farmacia) {
@@ -207,7 +213,7 @@ export default function Farmacia({ params }: { params: Params }) {
 					<div className={styles.informacoes}>
 						<div className={styles.secao}>
 							<span>Horário de funcionamento:</span>
-							<div className={styles.container}>
+							<div className={classesContainer}>
 								<div className={styles.horarios}>
 									{horarios.map((h) => (
 										<HorarioServicoView key={h.dia_semana} {...h} />
@@ -217,7 +223,7 @@ export default function Farmacia({ params }: { params: Params }) {
 						</div>
 						<div className={styles.secao}>
 							<span>Escala de plantão:</span>
-							<div className={styles.container}>
+							<div className={classesContainer}>
 								{Object.keys(plantoes).map((p) => (
 									<div className={styles.plantoes} key={p}>
 										<span>{p}</span>
