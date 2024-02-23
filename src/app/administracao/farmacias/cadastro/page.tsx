@@ -19,9 +19,14 @@ import {
 	CadastroInputs,
 	CadastroBotoes,
 } from "@/components/Cadastro";
+import { validarCNPJ } from "@/utils/validation";
 
 export default function CadastroFarmacia() {
-	const { handleSubmit, control } = useForm<Farmacia>();
+	const {
+		handleSubmit,
+		formState: { errors },
+		control,
+	} = useForm<Farmacia>();
 
 	redirecionarAutenticacao();
 
@@ -41,13 +46,26 @@ export default function CadastroFarmacia() {
 							<Controller
 								name="cnpj"
 								control={control}
+								rules={{
+									required: {
+										message: "CNPJ é obrigatório",
+										value: true,
+									},
+									validate: (v: string) => {
+										const cnpj = v.replaceAll(/([/.-])+/g, "");
+
+										if (!validarCNPJ(cnpj)) {
+											return "CNPJ inválido";
+										}
+									},
+								}}
 								render={({ field }) => {
 									return (
-										<InputContainer id="cnpj" label="CNPJ">
+										<InputContainer id="cnpj" label="CNPJ" error={errors.cnpj}>
 											<InputMascara
 												id="cnpj"
 												mask="99.999.999/9999-99"
-												placeholder="00.000.000/0000.00"
+												placeholder="00.000.000/0000-00"
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
