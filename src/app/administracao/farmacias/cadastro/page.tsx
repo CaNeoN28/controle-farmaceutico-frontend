@@ -46,6 +46,9 @@ export default function CadastroFarmacia() {
 				cep: "",
 				estado: "",
 				municipio: "",
+				bairro: "",
+				logradouro: "",
+				numero: "",
 			},
 		},
 	});
@@ -65,7 +68,7 @@ export default function CadastroFarmacia() {
 			const opcoesEstados: Opcao[] = [];
 			estados
 				.filter((e) => RegExp(pesquisaEstado, "i").test(e.nome))
-				.sort((a,b) => a.nome > b.nome ? 1: -1)
+				.sort((a, b) => (a.nome > b.nome ? 1 : -1))
 				.map((e) => {
 					opcoesEstados.push({
 						label: e.nome,
@@ -90,7 +93,7 @@ export default function CadastroFarmacia() {
 
 				municipios
 					.filter((m) => RegExp(pesquisaMunicipio, "i").test(m.nome))
-					.sort((a,b) => a.nome > b.nome ? 1: -1)
+					.sort((a, b) => (a.nome > b.nome ? 1 : -1))
 					.map((m) => {
 						opcoesMunicipios.push({
 							label: m.nome,
@@ -139,6 +142,8 @@ export default function CadastroFarmacia() {
 
 	useEffect(() => {
 		setPesquisaEstado(watch("endereco.estado"));
+		setPesquisaMunicipio("");
+		setValue("endereco.municipio", "");
 		getMunicipios();
 	}, [watch("endereco.estado")]);
 
@@ -321,6 +326,35 @@ export default function CadastroFarmacia() {
 												disabled={!watch("endereco.estado")}
 												setFiltro={setPesquisaMunicipio}
 												setValue={setValue}
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								name="endereco.bairro"
+								control={control}
+								rules={{
+									required: {
+										message: "Bairro é obrigatório",
+										value: true,
+									},
+									minLength: {
+										message: "Bairro deve ter mais de 3 letras",
+										value: 3,
+									},
+								}}
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="bairro"
+											label="Bairro"
+											error={errors.endereco && errors.endereco.bairro}
+										>
+											<Input
+												id="bairro"
+												placeholder="Ex: Bairro das oliveiras"
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
