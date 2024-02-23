@@ -180,6 +180,11 @@ export default function CadastroFarmacia() {
 		getMunicipios();
 	}, [pesquisaMunicipio]);
 
+	useEffect(() => {
+		setValue("endereco.localizacao.x", localizacao.lat);
+		setValue("endereco.localizacao.y", localizacao.lng);
+	}, [localizacao]);
+
 	return (
 		<>
 			<Menu />
