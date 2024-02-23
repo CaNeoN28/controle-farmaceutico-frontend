@@ -43,10 +43,12 @@ export default function Select({
 
 	!name && console.error("Name é obrigatório");
 
+	const nome_formatado = name?.replaceAll(".", "_")
+
 	useLayoutEffect(() => {
 		if (ativo !== undefined) {
-			const opcoes = document.querySelector(`#opcoes_${name}`);
-			const icone = document.querySelector(`#icone_${name}`);
+			const opcoes = document.querySelector(`#opcoes_${nome_formatado}`);
+			const icone = document.querySelector(`#icone_${nome_formatado}`);
 
 			if (opcoes) opcoes.classList.toggle(styles.aberto);
 
@@ -85,7 +87,7 @@ export default function Select({
 						</span>
 					)}
 					<span
-						id={`icone_${name}`}
+						id={`icone_${nome_formatado}`}
 						className={styles.icone_abrir}
 						onClick={() => setAtivo(!ativo)}
 					>
@@ -93,7 +95,7 @@ export default function Select({
 					</span>
 				</div>
 			</div>
-			<div id={`opcoes_${name}`} className={styles.opcoes}>
+			<div id={`opcoes_${nome_formatado}`} className={styles.opcoes}>
 				{opcoes.length > 0 ? (
 					opcoes.map((o, i) => (
 						<button
