@@ -75,9 +75,23 @@ export default function CadastroFarmacia() {
 							<Controller
 								name="nome_fantasia"
 								control={control}
+								rules={{
+									required: {
+										value: true,
+										message: "Nome fantasia é obrigatório",
+									},
+									minLength: {
+										value: 3,
+										message: "Nome fantasia não é grande o suficiente",
+									},
+								}}
 								render={({ field }) => {
 									return (
-										<InputContainer id="nome_fantasia" label="Nome fantasia">
+										<InputContainer
+											id="nome_fantasia"
+											label="Nome fantasia"
+											error={errors.nome_fantasia}
+										>
 											<Input
 												id="nome_fantasia"
 												placeholder="Nome de exibição da farmácia"
