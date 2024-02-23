@@ -142,9 +142,12 @@ export default function CadastroFarmacia() {
 
 	useEffect(() => {
 		setPesquisaEstado(watch("endereco.estado"));
-		setPesquisaMunicipio("");
-		setValue("endereco.municipio", "");
 		getMunicipios();
+
+		if (!watch("endereco.cep")) {
+			setPesquisaMunicipio("");
+			setValue("endereco.municipio", "");
+		}
 	}, [watch("endereco.estado")]);
 
 	useEffect(() => {
@@ -355,6 +358,35 @@ export default function CadastroFarmacia() {
 											<Input
 												id="bairro"
 												placeholder="Ex: Bairro das oliveiras"
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								name="endereco.logradouro"
+								control={control}
+								rules={{
+									required: {
+										message: "Logradouro é obrigatório",
+										value: true,
+									},
+									minLength: {
+										message: "Logradouro deve ter mais de 3 letras",
+										value: 3,
+									},
+								}}
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="logradouro"
+											label="Logradouro"
+											error={errors.endereco && errors.endereco.logradouro}
+										>
+											<Input
+												id="logradouro"
+												placeholder="Ex: Rua palmeira"
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
