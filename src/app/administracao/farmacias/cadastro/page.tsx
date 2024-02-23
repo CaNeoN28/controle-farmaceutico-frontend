@@ -11,7 +11,7 @@ import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
 import InputImagem from "@/components/InputImagem";
-import { CadastroMain } from "@/pageComponents/cadastro";
+import { CadastroMain } from "@/components/Cadastro";
 
 export default function CadastroFarmacia() {
 	const { handleSubmit, control } = useForm<Farmacia>();
