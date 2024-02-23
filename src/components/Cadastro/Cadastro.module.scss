@@ -17,3 +17,32 @@
 	border: 1px solid var(--primary-color);
 	border-radius: 8px;
 }
+
+.etapa_cadastro {
+	display: flex;
+	flex-direction: column;
+
+	gap: 24px;
+}
+
+.titulo_etapa_cadastro {
+	font-size: 16px;
+}
+
+.inputs_cadastro {
+	display: grid;
+	grid-template-columns: auto auto auto;
+
+	gap: 24px;
+}
+
+.botoes_cadastro {
+	display: flex;
+	flex-direction: row-reverse;
+
+	gap: 24px;
+
+	button {
+		max-width: 180px;
+	}
+}

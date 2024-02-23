@@ -12,5 +12,25 @@ export function CadastroForm({
 	onSubmit: FormEventHandler<HTMLFormElement>;
 	children?: ReactNode;
 }) {
-	return <form onSubmit={onSubmit} className={styles.formulario_cadastro}>{children}</form>;
+	return (
+		<form onSubmit={onSubmit} className={styles.formulario_cadastro}>
+			{children}
+		</form>
+	);
+}
+
+export function CadastroEtapa({ children }: { children?: ReactNode }) {
+	return <div className={styles.etapa_cadastro}>{children}</div>;
+}
+
+export function CadastroTituloEtapa({ titulo }: { titulo: string }) {
+	return <span className={styles.titulo_etapa_cadastro}>{titulo}</span>;
+}
+
+export function CadastroInputs({ children }: { children?: ReactNode }) {
+	return <div className={styles.inputs_cadastro}>{children}</div>;
+}
+
+export function CadastroBotoes({ children }: { children?: ReactNode }) {
+	return <div className={styles.botoes_cadastro}>{children}</div>;
 }

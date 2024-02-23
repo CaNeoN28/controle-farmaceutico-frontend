@@ -11,7 +11,14 @@ import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
 import InputImagem from "@/components/InputImagem";
-import { CadastroForm, CadastroMain } from "@/components/Cadastro";
+import {
+	CadastroForm,
+	CadastroMain,
+	CadastroEtapa,
+	CadastroTituloEtapa,
+	CadastroInputs,
+	CadastroBotoes,
+} from "@/components/Cadastro";
 
 export default function CadastroFarmacia() {
 	const { handleSubmit, control } = useForm<Farmacia>();
@@ -28,9 +35,9 @@ export default function CadastroFarmacia() {
 			<CadastroMain>
 				<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
 				<CadastroForm onSubmit={handleSubmit(onSubmit)}>
-					<div className={styles.secao}>
-						<span className={styles.titulo_secao}>Dados da farmácia</span>
-						<div className={styles.inputs_secao}>
+					<CadastroEtapa>
+						<CadastroTituloEtapa titulo="Dados da farmácia" />
+						<CadastroInputs>
 							<Controller
 								name="cnpj"
 								control={control}
@@ -69,16 +76,16 @@ export default function CadastroFarmacia() {
 									titulo="Enviar imagem"
 								/>
 							</InputContainer>
-						</div>
-					</div>
-					<div className={styles.botoes}>
+						</CadastroInputs>
+					</CadastroEtapa>
+					<CadastroBotoes>
 						<Botao fullWidth type="submit">
 							Salvar
 						</Botao>
 						<Botao fullWidth secundario>
 							Cancelar
 						</Botao>
-					</div>
+					</CadastroBotoes>
 				</CadastroForm>
 			</CadastroMain>
 		</>
