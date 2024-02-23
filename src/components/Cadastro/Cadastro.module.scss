@@ -6,3 +6,14 @@
 
 	padding: 40px 92px;
 }
+
+.formulario_cadastro {
+	display: flex;
+	flex-direction: column;
+
+	gap: 40px;
+	padding: 40px 24px;
+
+	border: 1px solid var(--primary-color);
+	border-radius: 8px;
+}

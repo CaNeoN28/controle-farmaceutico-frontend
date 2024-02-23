@@ -11,7 +11,7 @@ import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
 import InputImagem from "@/components/InputImagem";
-import { CadastroMain } from "@/components/Cadastro";
+import { CadastroForm, CadastroMain } from "@/components/Cadastro";
 
 export default function CadastroFarmacia() {
 	const { handleSubmit, control } = useForm<Farmacia>();
@@ -27,7 +27,7 @@ export default function CadastroFarmacia() {
 			<Menu />
 			<CadastroMain>
 				<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
-				<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+				<CadastroForm onSubmit={handleSubmit(onSubmit)}>
 					<div className={styles.secao}>
 						<span className={styles.titulo_secao}>Dados da farmácia</span>
 						<div className={styles.inputs_secao}>
@@ -79,7 +79,7 @@ export default function CadastroFarmacia() {
 							Cancelar
 						</Botao>
 					</div>
-				</form>
+				</CadastroForm>
 			</CadastroMain>
 		</>
 	);
