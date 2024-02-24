@@ -14,13 +14,14 @@ import { FiltrosPlantoes } from "@/types/fetchFarmacias";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
 import Carregando from "@/components/Carregando";
 import converterData from "@/utils/converterData";
+import { Coordenadas } from "@/types/Localizacao";
 
 export default function Plantoes() {
 	const fFarmacias = new FetchFarmacia();
 
 	const [date] = useState(new Date());
 
-	const [position, setPosition] = useState<Localizacao>();
+	const [position, setPosition] = useState<Coordenadas>();
 	const [erroPosition, setErroPosition] = useState("");
 
 	const [pagina, setPagina] = useState(1);

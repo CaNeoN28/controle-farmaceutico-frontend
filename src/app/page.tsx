@@ -22,18 +22,14 @@ import {
 } from "@/types/fetchFarmacias";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
-
-interface Localizacao {
-  lng: number;
-  lat: number;
-}
+import { Coordenadas } from "@/types/Localizacao";
 
 export default function Home() {
   const fFarmacias = new FetchFarmacia();
 
   const [date] = useState(new Date());
 
-  const [localizacao, setLocalizacao] = useState<Localizacao>();
+  const [localizacao, setLocalizacao] = useState<Coordenadas>();
   const [erroLocalizacao, setErroLocalizacao] = useState<string>();
   const [rota, setRota] = useState<string>("");
 
@@ -51,7 +47,7 @@ export default function Home() {
   const [numFarmacias, setNumFarmacias] = useState<number>(5);
 
   const getLocation = async () => {
-    let localizacao: Localizacao | undefined = undefined;
+    let localizacao: Coordenadas | undefined = undefined;
 
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(

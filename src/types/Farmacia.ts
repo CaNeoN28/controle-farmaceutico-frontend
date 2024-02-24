@@ -18,7 +18,10 @@ export default interface IFarmacia {
 	cnpj: string;
 	nome_fantasia: string;
 	endereco: Endereco;
-	plantoes: string[];
+	plantoes: {
+		entrada: string;
+		saida: string;
+	}[];
 	horarios_servico: {
 		[dia_semana in DiaSemana]: {
 			horario_entrada: string;

@@ -20,6 +20,7 @@ import Carregando from "@/components/Carregando";
 import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
 import Listagem from "@/components/Listagem";
+import { Coordenadas } from "@/types/Localizacao";
 
 interface FarmaciaEHorario extends IFarmacia {
 	aberto_hoje: boolean;
@@ -32,7 +33,7 @@ export default function Farmacias() {
 
 	const [data] = useState(new Date());
 
-	const [position, setPosition] = useState<Localizacao>();
+	const [position, setPosition] = useState<Coordenadas>();
 	const [pesquisa, setPesquisa] = useState("");
 	const [pagina, setPagina] = useState(1);
 	const [paginaMax, setPaginaMax] = useState(5);
