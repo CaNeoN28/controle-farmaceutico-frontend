@@ -62,7 +62,7 @@ export default function Plantoes() {
 			if (municipio) filtros.municipio = municipio;
 		}
 
-		fFarmacias
+		await fFarmacias
 			.getFarmaciasPlantoes(filtros)
 			.then((res) => {
 				const resposta = res.data as GetManyRequest<Escala>;
@@ -92,13 +92,13 @@ export default function Plantoes() {
 		<>
 			<Menu />
 			<main className={styles.main}>
-				{Object.keys(escala).length > 0 ? (
+				{escala && Object.keys(escala).length > 0 ? (
 					<>
 						<div className={styles.secoes}>
 							{Object.keys(escala).map((v: keyof Escala, i) => {
 								return (
-									<div className={styles.secao}>
-										<Secao titulo={converterData(v)} key={i}>
+									<div className={styles.secao} key={i}>
+										<Secao titulo={converterData(v)}>
 											<div className={styles.farmacias}>
 												<Listagem>
 													{escala[v].map((f, i) => {

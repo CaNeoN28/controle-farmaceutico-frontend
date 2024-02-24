@@ -21,6 +21,7 @@ import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
 import Listagem from "@/components/Listagem";
 import { Coordenadas } from "@/types/Localizacao";
+import farmaciaEstaAberta from "@/utils/farmaciaEstaAberta";
 
 interface FarmaciaEHorario extends IFarmacia {
 	aberto_hoje: boolean;
@@ -71,12 +72,14 @@ export default function Farmacias() {
 
 						const horario = f.horarios_servico[dia_semana];
 
-						if (horario) {
+						const aberto_hoje = farmaciaEstaAberta(f, data);
+
+						if (aberto_hoje) {
 							return {
 								...f,
 								aberto_hoje: true,
-								entrada: horario.horario_entrada,
-								saida: horario.horario_saida,
+								entrada: horario && horario.horario_entrada,
+								saida: horario && horario.horario_saida,
 							};
 						}
 
@@ -163,6 +166,10 @@ export default function Farmacias() {
 		getFarmacias();
 	}, [position]);
 
+	useEffect(() => {
+		console.log(farmacias);
+	}, [farmacias]);
+
 	useLayoutEffect(() => {
 		getFarmacias();
 	}, [pagina, limite]);
@@ -182,7 +189,11 @@ export default function Farmacias() {
 									key={f._id}
 									nome={f.nome_fantasia}
 									informacao={
-										f.aberto_hoje ? `${f.entrada} - ${f.saida}` : "Fechado hoje"
+										f.aberto_hoje
+											? f.entrada && f.saida
+												? `${f.entrada} - ${f.saida}`
+												: "Aberta no sistema de plantões"
+											: "Fechado hoje"
 									}
 									link_farmacia={`/farmacias/${f._id}`}
 								/>
