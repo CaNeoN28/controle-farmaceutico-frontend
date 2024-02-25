@@ -38,7 +38,7 @@ interface Props {
 	salvarFarmacia: (farmacia: IFarmacia) => {};
 }
 
-export default function FormularioFarmcaia({
+export default function FormularioFarmacia({
 	farmacia,
 	salvarFarmacia,
 }: Props) {
