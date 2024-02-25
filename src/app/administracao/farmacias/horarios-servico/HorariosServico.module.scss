@@ -6,23 +6,12 @@
 }
 
 .form {
-	display: flex;
-	align-items: flex-end;
+	display: grid;
+	align-items: end;
+
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 
 	gap: 24px;
-}
-
-.form_inputs {
-	display: flex;
-	align-items: flex-end;
-
-	width: 75%;
-
-	gap: 24px;
-}
-
-.botao{
-	width: 25%;
 }
 
 .horarios{

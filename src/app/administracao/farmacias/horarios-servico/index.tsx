@@ -129,75 +129,71 @@ export default function HorariosServico({
 	return (
 		<div className={styles.etapa_retratil}>
 			<div className={styles.form}>
-				<div className={styles.form_inputs}>
-					<InputContainer
-						id="dia_semana"
-						label="Dia da semana"
-						error={errosHorario.dia_semana}
-					>
-						<Select
-							name="dia_semana"
-							placeholder="Segunda feira"
-							filtro={filtroDiaSemana}
-							opcoes={OpcoesDiaSemana}
-							value={diaSemana}
-							setFiltro={setFiltroDiaSemana}
-							setValueState={setDiaSemana}
-						/>
-					</InputContainer>
-					<InputContainer
+				<InputContainer
+					id="dia_semana"
+					label="Dia da semana"
+					error={errosHorario.dia_semana}
+				>
+					<Select
+						name="dia_semana"
+						placeholder="Segunda feira"
+						filtro={filtroDiaSemana}
+						opcoes={OpcoesDiaSemana}
+						value={diaSemana}
+						setFiltro={setFiltroDiaSemana}
+						setValueState={setDiaSemana}
+					/>
+				</InputContainer>
+				<InputContainer
+					id="horario_entrada"
+					label="Horário entrada"
+					error={errosHorario.horario_entrada}
+				>
+					<Input
 						id="horario_entrada"
-						label="Horário entrada"
-						error={errosHorario.horario_entrada}
-					>
-						<Input
-							id="horario_entrada"
-							type="time"
-							onChange={(e) => {
-								setHorarioEntrada(e.target.value);
-							}}
-							value={horarioEntrada}
-						/>
-					</InputContainer>
-					<InputContainer
-						id="horario_saida"
-						label="Horário saida"
-						error={errosHorario.horario_saida}
-					>
-						<Input
-							id="horario_saida"
-							type="time"
-							onChange={(e) => {
-								setHorarioSaida(e.target.value);
-							}}
-							value={horarioSaida}
-						/>
-					</InputContainer>
-				</div>
-				<span className={styles.botao}>
-					<Botao
-						type="submit"
-						fullWidth
-						onClick={(e) => {
-							e.preventDefault();
-							const sucesso = onSubmitHorario({
-								dia_semana: diaSemana,
-								horario_entrada: horarioEntrada,
-								horario_saida: horarioSaida,
-							});
-
-							if (sucesso) {
-								setHorarioEntrada("");
-								setHorarioSaida("");
-								setDiaSemana("");
-								setFiltroDiaSemana("");
-							}
+						type="time"
+						onChange={(e) => {
+							setHorarioEntrada(e.target.value);
 						}}
-					>
-						<span>Adicionar</span>
-						<FaPlus />
-					</Botao>
-				</span>
+						value={horarioEntrada}
+					/>
+				</InputContainer>
+				<InputContainer
+					id="horario_saida"
+					label="Horário saida"
+					error={errosHorario.horario_saida}
+				>
+					<Input
+						id="horario_saida"
+						type="time"
+						onChange={(e) => {
+							setHorarioSaida(e.target.value);
+						}}
+						value={horarioSaida}
+					/>
+				</InputContainer>
+				<Botao
+					type="submit"
+					fullWidth
+					onClick={(e) => {
+						e.preventDefault();
+						const sucesso = onSubmitHorario({
+							dia_semana: diaSemana,
+							horario_entrada: horarioEntrada,
+							horario_saida: horarioSaida,
+						});
+
+						if (sucesso) {
+							setHorarioEntrada("");
+							setHorarioSaida("");
+							setDiaSemana("");
+							setFiltroDiaSemana("");
+						}
+					}}
+				>
+					<span>Adicionar</span>
+					<FaPlus />
+				</Botao>
 			</div>
 			{Object.keys(horario).length > 0 && (
 				<div className={styles.horarios}>
