@@ -1,0 +1,20 @@
+.etapa_retratil {
+	display: flex;
+	flex-direction: column;
+
+	gap: 24px;
+}
+
+.form {
+	display: grid;
+	align-items: end;
+
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+
+	gap: 24px;
+}
+
+.plantoes {
+	display: flex;
+	flex-wrap: wrap;
+}

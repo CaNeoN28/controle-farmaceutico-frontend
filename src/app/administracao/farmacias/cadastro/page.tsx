@@ -12,7 +12,11 @@ import {
 	SubmitHandler,
 	useForm,
 } from "react-hook-form";
-import IFarmacia, { IHorarioDia, IHorário } from "@/types/Farmacia";
+import IFarmacia, {
+	IFarmaciaPlantao,
+	IHorarioDia,
+	IHorário,
+} from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
@@ -38,6 +42,7 @@ import Map from "@/components/Map";
 import { Coordenadas } from "@/types/Localizacao";
 import Secao from "@/components/Secao";
 import HorariosServico from "../horarios-servico";
+import Plantoes from "../plantoes";
 
 export default function CadastroFarmacia() {
 	const {
@@ -71,6 +76,10 @@ export default function CadastroFarmacia() {
 		horario_entrada?: FieldError;
 		horario_saida?: FieldError;
 	}>({});
+
+	const [plantoes, setPlantoes] = useState<
+		{ entrada: string; saida: string }[]
+	>([{ entrada: new Date().toDateString(), saida: new Date().toDateString() }]);
 
 	const [pesquisaEstado, setPesquisaEstado] = useState("");
 	const [estados, setEstados] = useState<Opcao[]>([]);
@@ -200,8 +209,8 @@ export default function CadastroFarmacia() {
 	}, [localizacao]);
 
 	useEffect(() => {
-		console.log(horario)
-	}, [horario])
+		console.log(horario);
+	}, [horario]);
 
 	return (
 		<>
@@ -505,7 +514,9 @@ export default function CadastroFarmacia() {
 							setErros={setErrosHorario}
 						/>
 					</Secao>
-					<Secao titulo="Escala de plantão"></Secao>
+					<Secao titulo="Escala de plantão">
+						<Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
+					</Secao>
 					<CadastroBotoes>
 						<Botao fullWidth type="submit">
 							Salvar
