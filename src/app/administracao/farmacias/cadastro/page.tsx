@@ -43,6 +43,7 @@ import { Coordenadas } from "@/types/Localizacao";
 import Secao from "@/components/Secao";
 import HorariosServico from "../horarios-servico";
 import Plantoes from "../plantoes";
+import DiaSemana from "@/types/DiasSemana";
 
 export default function CadastroFarmacia() {
 	const {
@@ -164,7 +165,19 @@ export default function CadastroFarmacia() {
 	};
 
 	const onSubmitFarmacia: SubmitHandler<IFarmacia> = (data) => {
-		console.log(data);
+		const horarios_servico = horario as { [key in DiaSemana]: IHorário };
+
+		const farmacia: IFarmacia = {
+			...data,
+			plantoes,
+			horarios_servico,
+		};
+
+		console.log({
+			horarios_servico,
+			plantoes,
+		});
+		console.log(farmacia);
 	};
 
 	useLayoutEffect(() => {
@@ -498,10 +511,7 @@ export default function CadastroFarmacia() {
 						</div>
 					</CadastroEtapa>
 					<Secao titulo="Horários de serviço">
-						<HorariosServico
-							horario={horario}
-							setHorario={setHorario}
-						/>
+						<HorariosServico horario={horario} setHorario={setHorario} />
 					</Secao>
 					<Secao titulo="Escala de plantão">
 						<Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
