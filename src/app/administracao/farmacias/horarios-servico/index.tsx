@@ -68,9 +68,23 @@ export default function HorariosServico({
 	useEffect(() => {
 		setErros({
 			...errosHorario,
-			dia_semana: undefined
+			dia_semana: undefined,
 		});
 	}, [diaSemana]);
+
+	useEffect(() => {
+		setErros({
+			...errosHorario,
+			horario_entrada: undefined,
+		});
+	}, [horarioEntrada]);
+
+	useEffect(() => {
+		setErros({
+			...errosHorario,
+			horario_saida: undefined,
+		});
+	}, [horarioSaida]);
 
 	return (
 		<div className={styles.etapa_retratil}>
