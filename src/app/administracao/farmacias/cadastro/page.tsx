@@ -79,7 +79,7 @@ export default function CadastroFarmacia() {
 
 	const [plantoes, setPlantoes] = useState<
 		{ entrada: string; saida: string }[]
-	>([{ entrada: new Date().toDateString(), saida: new Date().toDateString() }]);
+	>([]);
 
 	const [pesquisaEstado, setPesquisaEstado] = useState("");
 	const [estados, setEstados] = useState<Opcao[]>([]);

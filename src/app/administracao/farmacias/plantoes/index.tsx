@@ -44,17 +44,24 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 			return;
 		}
 
-		console.log({
-			entrada,
-			saida,
-		});
+		setErros({});
+		setEntrada("");
+		setSaida("");
+
+		setPlantoes([
+			...plantoes,
+			{
+				entrada,
+				saida,
+			},
+		]);
 	};
 
 	useEffect(() => {
 		if (entrada) {
 			setErros({ ...erros, entrada: undefined });
 		}
-		
+
 		if (saida && entrada) {
 			const dataEntrada = new Date(entrada);
 			const dataSaida = new Date(saida);
