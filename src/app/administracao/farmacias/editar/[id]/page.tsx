@@ -30,6 +30,7 @@ export default function EditarFarmacia({
 	const router = useRouter();
 	const fetchFarmacia = new FetchFarmacia();
 
+	const [imagem, setImagem] = useState<File>();
 	const [farmacia, setFarmacia] = useState<IFarmacia>();
 	const [showAlert, setShowAlert] = useState(false);
 	const [erro, setErro] = useState<string>();

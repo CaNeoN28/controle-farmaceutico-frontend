@@ -17,7 +17,7 @@ import {
 	CadastroBotoes,
 } from "@/components/Cadastro";
 import { validarCNPJ } from "@/utils/validation";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 import {
 	fetchEstados,
 	fetchMunicipios,
@@ -32,6 +32,7 @@ import Secao from "@/components/Secao";
 import HorariosServico from "../horarios-servico";
 import Plantoes from "../plantoes";
 import DiaSemana from "@/types/DiasSemana";
+import FetchImagem from "@/fetch/imagens";
 
 interface Props {
 	farmacia?: IFarmacia;
@@ -64,6 +65,11 @@ export default function FormularioFarmacia({
 			},
 		},
 	});
+
+	const fetchImagem = new FetchImagem().postImagem;
+
+	const [imagem, setImagem] = useState<File>();
+	const [erroImagem, setErroImagem] = useState<string>("");
 
 	const [horario, setHorario] = useState<{
 		[key: string]: IHorário;
@@ -103,6 +109,16 @@ export default function FormularioFarmacia({
 
 			setEstados(opcoesEstados);
 		});
+	};
+
+	const sendImagem = (e: ChangeEvent<HTMLInputElement>) => {
+		const { files } = e.target;
+
+		if (files && files.length) {
+			setImagem(files[0]);
+		} else {
+			setImagem(undefined);
+		}
 	};
 
 	const getMunicipios = async () => {
@@ -160,21 +176,44 @@ export default function FormularioFarmacia({
 		}
 	};
 
-	const onSubmitFarmacia: SubmitHandler<IFarmacia> = (data) => {
-		const horarios_servico = horario as { [key in DiaSemana]: IHorário };
+	const onSubmitFarmacia: SubmitHandler<IFarmacia> = async (data) => {
+		let erroImagem = "";
 
-		data.endereco.cep = data.endereco.cep.replaceAll("-", "");
-		data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "");
+		if (imagem) {
+			await fetchImagem(imagem)
+				.then((res) => {
+					const imagens = res.data as { [key: string]: string };
 
-		const farmacia: IFarmacia = {
-			...data,
-			plantoes,
-			horarios_servico,
-		};
+					const imagensArray: string[] = [];
 
-		console.log(data);
+					Object.keys(imagens).map((k: string) => {
+						imagensArray.push(imagens[k]);
+					});
 
-		salvarFarmacia(farmacia);
+					data.imagem_url = imagensArray[0];
+					erroImagem = "";
+				})
+				.catch((err) => {
+					erroImagem = "Extensão inválida de arquivo";
+				});
+
+			setErroImagem(erroImagem);
+		}
+
+		if (!erroImagem) {
+			const horarios_servico = horario as { [key in DiaSemana]: IHorário };
+
+			data.endereco.cep = data.endereco.cep.replaceAll("-", "");
+			data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "");
+
+			const farmacia: IFarmacia = {
+				...data,
+				plantoes,
+				horarios_servico,
+			};
+
+			salvarFarmacia(farmacia);
+		}
 	};
 
 	useLayoutEffect(() => {
@@ -283,9 +322,12 @@ export default function FormularioFarmacia({
 						<InputContainer id="imagem" label="Imagem">
 							<InputImagem
 								id="imagem"
-								onChange={() => {}}
+								onChange={sendImagem}
 								titulo="Enviar imagem"
 							/>
+							{erroImagem && (
+								<span className={styles.erro_imagem}>{erroImagem}</span>
+							)}
 						</InputContainer>
 					</CadastroInputs>
 				</CadastroEtapa>
