@@ -26,7 +26,7 @@ export default function CadastroFarmacia() {
 	const salvarFarmacia = async (farmacia: IFarmacia) => {
 		const token = getCookie("authentication");
 
-		await postFarmacia(farmacia, token)
+		await postFarmacia(farmacia)
 			.then((res) => {
 				setErro(undefined);
 				setMensagem("Farmácia cadastrada com sucesso");

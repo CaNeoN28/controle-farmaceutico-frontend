@@ -26,3 +26,9 @@
 
 	font-size: 24px;
 }
+
+@media screen and (max-width: 672px) {
+	.alert_opcoes{
+		flex-direction: column;
+	}
+}

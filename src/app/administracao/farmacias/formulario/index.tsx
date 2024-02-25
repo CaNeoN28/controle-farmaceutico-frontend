@@ -164,12 +164,15 @@ export default function FormularioFarmacia({
 		const horarios_servico = horario as { [key in DiaSemana]: IHorário };
 
 		data.endereco.cep = data.endereco.cep.replaceAll("-", "")
+		data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "")
 
 		const farmacia: IFarmacia = {
 			...data,
 			plantoes,
 			horarios_servico,
 		};
+
+		console.log(data)
 	
 		salvarFarmacia(farmacia)
 	};
