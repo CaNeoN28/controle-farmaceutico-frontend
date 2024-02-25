@@ -212,7 +212,6 @@ export default function FormularioFarmacia({
 
 	return (
 		<>
-			<Menu />
 			<CadastroMain>
 				<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
 				<CadastroForm onSubmit={handleSubmitFarmacia(onSubmitFarmacia)}>

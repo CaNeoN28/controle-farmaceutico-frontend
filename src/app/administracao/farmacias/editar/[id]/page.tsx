@@ -10,6 +10,9 @@ import { useEffect, useState } from "react";
 import { RequestErro } from "@/types/Requests";
 import Botao from "@/components/Botao";
 import { useRouter } from "next/navigation";
+import Carregando from "@/components/Carregando";
+import Menu from "@/components/Menu";
+import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 
 interface Params {
 	id: string;
@@ -75,55 +78,62 @@ export default function EditarFarmacia({
 		getFarmacia();
 	}, []);
 
-	if (farmacia) {
-		return (
-			<>
-				<FormularioFarmacia
-					salvarFarmacia={salvarFarmacia}
-					farmacia={farmacia}
-				/>
-				<Alert show={showAlert} setShow={setShowAlert}>
-					<div className={styles.alert}>
-						<span className={styles.alert_texto}>{erroEdicao || mensagem}</span>
-						<div className={styles.alert_opcoes}>
-							{erroEdicao ? (
-								<>
-									<Botao
-										fullWidth
-										onClick={() => {
-											setShowAlert(false);
-										}}
-									>
-										Continuar
-									</Botao>
-									<Botao
-										secundario
-										fullWidth
-										onClick={() => {
-											router.push("/administracao");
-										}}
-									>
-										Cancelar
-									</Botao>
-								</>
-							) : (
-								<>
-									<Botao
-										fullWidth
-										onClick={() => {
-											router.push("/administracao/farmacias");
-										}}
-									>
-										Confirmar
-									</Botao>
-								</>
-							)}
+	return (
+		<>
+			<Menu />
+			{farmacia ? (
+				<>
+					<FormularioFarmacia
+						salvarFarmacia={salvarFarmacia}
+						farmacia={farmacia}
+					/>
+					<Alert show={showAlert} setShow={setShowAlert}>
+						<div className={styles.alert}>
+							<span className={styles.alert_texto}>
+								{erroEdicao || mensagem}
+							</span>
+							<div className={styles.alert_opcoes}>
+								{erroEdicao ? (
+									<>
+										<Botao
+											fullWidth
+											onClick={() => {
+												setShowAlert(false);
+											}}
+										>
+											Continuar
+										</Botao>
+										<Botao
+											secundario
+											fullWidth
+											onClick={() => {
+												router.push("/administracao");
+											}}
+										>
+											Cancelar
+										</Botao>
+									</>
+								) : (
+									<>
+										<Botao
+											fullWidth
+											onClick={() => {
+												router.push("/administracao/farmacias");
+											}}
+										>
+											Confirmar
+										</Botao>
+									</>
+								)}
+							</div>
 						</div>
-					</div>
-				</Alert>
-			</>
-		);
-	}
-
-	return <></>;
+					</Alert>
+				</>
+			) : erro ? (
+				<div className={styles.erro}>{erro}</div>
+			) : (
+				<Carregando />
+			)}
+		</>
+	);
 }
