@@ -1,7 +1,8 @@
 import { fromLatLng } from "react-geocode";
 import { getEstadoFromSigla } from "./estadosParaSigla";
+import { Coordenadas } from "@/types/Localizacao";
 
-export default async function getMunicipioEstado(localizacao: Localizacao) {
+export default async function getMunicipioEstado(localizacao: Coordenadas) {
 	const { lat, lng } = localizacao;
 
 	let municipio: string | undefined = undefined;

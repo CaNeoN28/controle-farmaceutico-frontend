@@ -14,13 +14,14 @@ import { FiltrosPlantoes } from "@/types/fetchFarmacias";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
 import Carregando from "@/components/Carregando";
 import converterData from "@/utils/converterData";
+import { Coordenadas } from "@/types/Localizacao";
 
 export default function Plantoes() {
 	const fFarmacias = new FetchFarmacia();
 
 	const [date] = useState(new Date());
 
-	const [position, setPosition] = useState<Localizacao>();
+	const [position, setPosition] = useState<Coordenadas>();
 	const [erroPosition, setErroPosition] = useState("");
 
 	const [pagina, setPagina] = useState(1);
@@ -61,7 +62,7 @@ export default function Plantoes() {
 			if (municipio) filtros.municipio = municipio;
 		}
 
-		fFarmacias
+		await fFarmacias
 			.getFarmaciasPlantoes(filtros)
 			.then((res) => {
 				const resposta = res.data as GetManyRequest<Escala>;
@@ -91,13 +92,13 @@ export default function Plantoes() {
 		<>
 			<Menu />
 			<main className={styles.main}>
-				{Object.keys(escala).length > 0 ? (
+				{escala && Object.keys(escala).length > 0 ? (
 					<>
 						<div className={styles.secoes}>
 							{Object.keys(escala).map((v: keyof Escala, i) => {
 								return (
-									<div className={styles.secao}>
-										<Secao titulo={converterData(v)} key={i}>
+									<div className={styles.secao} key={i}>
+										<Secao titulo={converterData(v)}>
 											<div className={styles.farmacias}>
 												<Listagem>
 													{escala[v].map((f, i) => {

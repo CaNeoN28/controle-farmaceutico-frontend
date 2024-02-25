@@ -1,7 +1,7 @@
 import { getDayFromNum } from "@/types/DiasSemana";
-import Farmacia from "@/types/Farmacia";
+import IFarmacia from "@/types/Farmacia";
 
-export default function farmaciaEstaAberta(farmacia: Farmacia, horario: Date) {
+export default function farmaciaEstaAberta(farmacia: IFarmacia, horario: Date) {
 	const horarios = farmacia.horarios_servico;
 	const plantoes = farmacia.plantoes;
 
@@ -31,23 +31,14 @@ export default function farmaciaEstaAberta(farmacia: Farmacia, horario: Date) {
 		}
 	}
 
-	const umDia = 60 * 60 * 24 * 1000;
+	const nosPlantoes = !!plantoes.find((p) => {
+		const { entrada, saida } = {
+			entrada: Number(new Date(p.entrada)),
+			saida: Number(new Date(p.saida)),
+		};
 
-	if (hora < 7) {
-		horario = new Date(Number(horario) - umDia);
-	}
-
-	const { dia, mes, ano } = {
-		ano: horario.getFullYear(),
-		mes: horario.getMonth() + 1,
-		dia: horario.getDate(),
-	};
-
-	const data = [ano, mes, dia].join("/")
-
-	const nosPlantoes = !!plantoes.find(p => {
-		return Number(new Date(data)) === Number(new Date(p)) 
-	}) 
+		return entrada <= Number(horario) && saida >= Number(horario);
+	});
 
 	return noHorario || nosPlantoes;
 }

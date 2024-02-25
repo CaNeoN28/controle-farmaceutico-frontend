@@ -20,12 +20,29 @@
 	border-radius: 8px 8px 0 0;
 }
 
+.input_disabled {
+	background-color: var(--light-gray);
+	.input:disabled {
+		background: none;
+	}
+
+	.icone_abrir:hover {
+		cursor: default;
+	}
+}
+
+.input_disabled:hover {
+	cursor: default;
+}
+
 .input {
 	outline: none;
 	border: none;
 
 	padding: 12px 8px;
 	width: 100%;
+
+	color: var(--gray);
 }
 
 .icones {

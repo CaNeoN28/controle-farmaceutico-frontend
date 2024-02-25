@@ -2,7 +2,7 @@
 
 import Menu from "@/components/Menu";
 import FetchFarmacia from "@/fetch/farmacias";
-import Farmacia from "@/types/Farmacia";
+import IFarmacia from "@/types/Farmacia";
 import { useEffect, useState } from "react";
 import styles from "./Farmacia.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
@@ -16,6 +16,7 @@ import DiaPlantao from "@/components/DiaPlantao";
 import Carregando from "@/components/Carregando";
 import LinkButton from "@/components/LinkButton";
 import classNames from "classnames";
+import { Coordenadas } from "@/types/Localizacao";
 
 interface Params {
 	id: string;
@@ -31,19 +32,14 @@ interface Plantoes {
 	[ano: string]: string[];
 }
 
-interface Localizacao {
-  lng: number;
-  lat: number;
-}
-
 export default function Farmacia({ params }: { params: Params }) {
 	const { id: farmaciaId } = params;
 
 	const fFarmacias = new FetchFarmacia();
 
 	const [date, setDate] = useState(new Date());
-	const [farmacia, setFarmacia] = useState<Farmacia>();
-	const [localizacaoUsuario, setLocalizacaoUsuario] = useState<Localizacao>();
+	const [farmacia, setFarmacia] = useState<IFarmacia>();
+	const [localizacaoUsuario, setLocalizacaoUsuario] = useState<Coordenadas>();
 
 	const [horarios, setHorarios] = useState<Horario[]>([]);
 	const [plantoes, setPlantoes] = useState<Plantoes>({});
@@ -56,8 +52,8 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	const classesContainer = classNames({
 		[styles.container]: true,
-		["box-shadow"]: true
-	})
+		["box-shadow"]: true,
+	});
 
 	const getRota = () => {
 		if (farmacia) {
@@ -105,23 +101,7 @@ export default function Farmacia({ params }: { params: Params }) {
 		fFarmacias
 			.getFarmacia(farmaciaId)
 			.then((res) => {
-				const resposta = res.data as Farmacia;
-
-				resposta.plantoes = resposta.plantoes.filter((p) => {
-					const dataP = new Date(p);
-
-					const hora = date.getHours();
-
-					const dataAtual = new Date(
-						[date.getFullYear(), date.getMonth() + 1, date.getDate()].join("/")
-					);
-
-					if (hora < 7) {
-						return Number(dataP) + 60 * 60 * 24 * 1000 >= Number(dataAtual);
-					}
-
-					return Number(dataP) >= Number(dataAtual);
-				});
+				const resposta = res.data as IFarmacia;
 
 				setFarmacia(resposta);
 				setErroFarmacia("");
@@ -138,8 +118,8 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	useEffect(() => {
 		if (farmacia) {
-			getRota()
-			
+			getRota();
+
 			const horarios: Horario[] = Object.keys(farmacia.horarios_servico).map(
 				(v: string) => {
 					const dia = v as DiaSemana;
@@ -157,15 +137,17 @@ export default function Farmacia({ params }: { params: Params }) {
 			const plantoes: Plantoes = {};
 
 			farmacia.plantoes
-				.sort((a, b) => (Number(new Date(a)) > Number(new Date(b)) ? 1 : -1))
+				.sort((a, b) =>
+					Number(new Date(a.entrada)) > Number(new Date(b.entrada)) ? 1 : -1
+				)
 				.map((p) => {
-					const [ano] = p.split("/");
+					const ano = new Date(p.entrada).getFullYear();
 
 					if (plantoes[ano] == undefined) {
 						plantoes[ano] = [];
 					}
 
-					plantoes[ano].push(p);
+					plantoes[ano].push(p.entrada);
 				});
 
 			setPlantoes(plantoes);
@@ -176,12 +158,12 @@ export default function Farmacia({ params }: { params: Params }) {
 	}, [farmacia]);
 
 	useEffect(() => {
-		console.log(rota)
-	}, [rota])
+		console.log(rota);
+	}, [rota]);
 
 	useEffect(() => {
-		getRota()
-	}, [localizacaoUsuario])
+		getRota();
+	}, [localizacaoUsuario]);
 
 	return (
 		<>

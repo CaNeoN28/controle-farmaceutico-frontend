@@ -9,7 +9,7 @@ import {
 	useLayoutEffect,
 	useState,
 } from "react";
-import Farmacia from "@/types/Farmacia";
+import IFarmacia from "@/types/Farmacia";
 import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import CardFarmacia from "@/components/CardFarmacia";
@@ -20,8 +20,10 @@ import Carregando from "@/components/Carregando";
 import geocodeSetDefaults from "@/utils/geocodeSetDefaults";
 import getMunicipioEstado from "@/utils/getMunicipioEstadoFromLatLng";
 import Listagem from "@/components/Listagem";
+import { Coordenadas } from "@/types/Localizacao";
+import farmaciaEstaAberta from "@/utils/farmaciaEstaAberta";
 
-interface FarmaciaEHorario extends Farmacia {
+interface FarmaciaEHorario extends IFarmacia {
 	aberto_hoje: boolean;
 	entrada?: string;
 	saida?: string;
@@ -32,7 +34,7 @@ export default function Farmacias() {
 
 	const [data] = useState(new Date());
 
-	const [position, setPosition] = useState<Localizacao>();
+	const [position, setPosition] = useState<Coordenadas>();
 	const [pesquisa, setPesquisa] = useState("");
 	const [pagina, setPagina] = useState(1);
 	const [paginaMax, setPaginaMax] = useState(5);
@@ -64,18 +66,20 @@ export default function Farmacias() {
 			farmaciaFetch
 				.getFarmacias(filtros)
 				.then((res) => {
-					const response = res.data as GetManyRequest<Farmacia[]>;
+					const response = res.data as GetManyRequest<IFarmacia[]>;
 					const farmacias = response.dados.map((f) => {
 						const dia_semana = getDayFromNum(data.getDay());
 
 						const horario = f.horarios_servico[dia_semana];
 
-						if (horario) {
+						const aberto_hoje = farmaciaEstaAberta(f, data);
+
+						if (aberto_hoje) {
 							return {
 								...f,
 								aberto_hoje: true,
-								entrada: horario.horario_entrada,
-								saida: horario.horario_saida,
+								entrada: horario && horario.horario_entrada,
+								saida: horario && horario.horario_saida,
 							};
 						}
 
@@ -162,6 +166,10 @@ export default function Farmacias() {
 		getFarmacias();
 	}, [position]);
 
+	useEffect(() => {
+		console.log(farmacias);
+	}, [farmacias]);
+
 	useLayoutEffect(() => {
 		getFarmacias();
 	}, [pagina, limite]);
@@ -181,7 +189,11 @@ export default function Farmacias() {
 									key={f._id}
 									nome={f.nome_fantasia}
 									informacao={
-										f.aberto_hoje ? `${f.entrada} - ${f.saida}` : "Fechado hoje"
+										f.aberto_hoje
+											? f.entrada && f.saida
+												? `${f.entrada} - ${f.saida}`
+												: "Aberta no sistema de plantões"
+											: "Fechado hoje"
 									}
 									link_farmacia={`/farmacias/${f._id}`}
 								/>

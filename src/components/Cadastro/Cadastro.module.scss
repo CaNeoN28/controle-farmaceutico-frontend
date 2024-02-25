@@ -1,0 +1,74 @@
+.main_cadastro {
+	display: flex;
+	flex-direction: column;
+
+	gap: 40px;
+
+	padding: 40px 92px;
+}
+
+.formulario_cadastro {
+	display: flex;
+	flex-direction: column;
+
+	gap: 40px;
+	padding: 40px 24px;
+
+	border: 1px solid var(--primary-color);
+	border-radius: 8px;
+}
+
+.etapa_cadastro {
+	display: flex;
+	flex-direction: column;
+
+	gap: 24px;
+}
+
+.titulo_etapa_cadastro {
+	font-size: 16px;
+}
+
+.inputs_cadastro {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+
+	width: 100%;
+
+	gap: 24px;
+}
+
+.botoes_cadastro {
+	display: flex;
+	flex-direction: row-reverse;
+
+	gap: 24px;
+
+	button {
+		max-width: 180px;
+	}
+}
+
+@media screen and (max-width: 740px) {
+	.inputs_cadastro {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media screen and (max-width: 620px) {
+	.inputs_cadastro{
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+@media screen and (max-width: 520px) {
+	.main_cadastro{
+		padding: 64px 20px;
+	}
+
+	.formulario_cadastro{
+		padding: 0;
+		border: none;
+	}
+}

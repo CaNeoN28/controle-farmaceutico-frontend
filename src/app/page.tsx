@@ -10,7 +10,7 @@ import Botao from "@/components/Botao";
 import FarmaciaItem from "@/components/FarmaciaItem";
 import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
-import Farmacia, { Escala, FarmaciaAberta } from "@/types/Farmacia";
+import IFarmacia, { Escala, IFarmaciaAberta } from "@/types/Farmacia";
 import { getDayFromNum } from "@/types/DiasSemana";
 import Map from "@/components/Map";
 import Carregando from "@/components/Carregando";
@@ -22,28 +22,24 @@ import {
 } from "@/types/fetchFarmacias";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
-
-interface Localizacao {
-  lng: number;
-  lat: number;
-}
+import { Coordenadas } from "@/types/Localizacao";
 
 export default function Home() {
   const fFarmacias = new FetchFarmacia();
 
   const [date] = useState(new Date());
 
-  const [localizacao, setLocalizacao] = useState<Localizacao>();
+  const [localizacao, setLocalizacao] = useState<Coordenadas>();
   const [erroLocalizacao, setErroLocalizacao] = useState<string>();
   const [rota, setRota] = useState<string>("");
 
-  const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<Farmacia>();
-  const [farmaciasProximas, setFarmaciasProximas] = useState<Farmacia[]>([]);
-  const [farmaciasProximasF, setFarmaciasProximasF] = useState<Farmacia[]>([]);
+  const [farmaciaMaisProxima, setFarmaciaMaisProxima] = useState<IFarmacia>();
+  const [farmaciasProximas, setFarmaciasProximas] = useState<IFarmacia[]>([]);
+  const [farmaciasProximasF, setFarmaciasProximasF] = useState<IFarmacia[]>([]);
   const [erroFarmaciasProximas, setErroFarmaciasProximas] = useState("");
 
-  const [farmaciasEscala, setFarmaciasEscala] = useState<FarmaciaAberta[]>([]);
-  const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<FarmaciaAberta[]>(
+  const [farmaciasEscala, setFarmaciasEscala] = useState<IFarmaciaAberta[]>([]);
+  const [farmaciasEscalaF, setFarmaciasEscalaF] = useState<IFarmaciaAberta[]>(
     []
   );
   const [erroFarmaciasEscala, setErroFarmaciasEscala] = useState("");
@@ -51,7 +47,7 @@ export default function Home() {
   const [numFarmacias, setNumFarmacias] = useState<number>(5);
 
   const getLocation = async () => {
-    let localizacao: Localizacao | undefined = undefined;
+    let localizacao: Coordenadas | undefined = undefined;
 
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
@@ -123,7 +119,7 @@ export default function Home() {
       fFarmacias
         .getFarmaciasProximas(filtrosProximas)
         .then((res) => {
-          const resposta = res.data as GetManyRequest<Farmacia[]>;
+          const resposta = res.data as GetManyRequest<IFarmacia[]>;
           const farmacias = resposta.dados;
 
           setFarmaciaMaisProxima(farmacias[0]);
@@ -141,7 +137,7 @@ export default function Home() {
           const resposta = res.data as GetManyRequest<Escala>;
           const escala = resposta.dados;
 
-          const farmacias: FarmaciaAberta[] = [];
+          const farmacias: IFarmaciaAberta[] = [];
 
           Object.keys(escala).map((e) => {
             escala[e].map((f) => {

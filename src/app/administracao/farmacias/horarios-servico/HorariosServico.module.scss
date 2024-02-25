@@ -1,0 +1,59 @@
+.etapa_retratil{
+	display: flex;
+	flex-direction: column;
+
+	gap: 24px;
+}
+
+.form {
+	display: grid;
+	align-items: end;
+
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+
+	gap: 24px;
+}
+
+.form.erros{
+	align-items: center;
+}
+
+.horarios{
+	display: grid;
+
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+
+	gap: 16px 24px;
+}
+
+@media screen and (max-width: 940px) {
+	.form{
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.horarios{
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media screen and (max-width: 740px) {
+	.form {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.horarios{
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media screen and (max-width: 620px) {
+	.form{
+		display: flex;
+		flex-direction: column;
+	}
+
+	.horarios{
+		display: flex;
+		flex-direction: column;
+	}
+}

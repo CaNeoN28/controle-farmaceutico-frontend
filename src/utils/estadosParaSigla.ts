@@ -1,4 +1,4 @@
-const estados: { [key: string]: string } = {
+const ESTADOS: { [key: string]: string } = {
 	Acre: "AC",
 	Alagoas: "AL",
 	Amapá: "AP",
@@ -31,8 +31,8 @@ const estados: { [key: string]: string } = {
 export function getEstadoFromSigla(sigla: string) {
 	let estado: string | undefined = undefined;
 
-	Object.keys(estados).map((e) => {
-		if (estados[e] === sigla) {
+	Object.keys(ESTADOS).map((e) => {
+		if (ESTADOS[e] === sigla) {
 			estado = e;
 		}
 	});
@@ -41,7 +41,9 @@ export function getEstadoFromSigla(sigla: string) {
 }
 
 export function getSiglaFromEstado(estado: string) {
-	const sigla = estados[estado];
+	const sigla = ESTADOS[estado];
 
 	return sigla;
 }
+
+export {ESTADOS}

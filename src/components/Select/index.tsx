@@ -2,6 +2,7 @@ import {
 	ComponentPropsWithoutRef,
 	Dispatch,
 	SetStateAction,
+	useEffect,
 	useLayoutEffect,
 	useState,
 } from "react";
@@ -19,9 +20,10 @@ export interface Opcao {
 interface Props extends ComponentPropsWithoutRef<"input"> {
 	filtro: string;
 	placeholder: string;
-	setFiltro: Dispatch<SetStateAction<string>>;
-	setValue: UseFormSetValue<any>;
 	opcoes: Opcao[];
+	setFiltro: Dispatch<SetStateAction<string>>;
+	setValue?: UseFormSetValue<any>;
+	setValueState?: Dispatch<SetStateAction<string>>;
 }
 
 export default function Select({
@@ -29,8 +31,10 @@ export default function Select({
 	opcoes,
 	name,
 	placeholder,
+	disabled,
 	setFiltro,
 	setValue,
+	setValueState,
 	...props
 }: Props) {
 	const [ativo, setAtivo] = useState<boolean>();
@@ -39,20 +43,29 @@ export default function Select({
 	const inputBoxClasses = classNames({
 		[styles.input_box]: true,
 		[styles.input_ativo]: ativo,
+		[styles.input_disabled]: disabled,
 	});
 
 	!name && console.error("Name é obrigatório");
 
+	const nome_formatado = name?.replaceAll(".", "_");
+
 	useLayoutEffect(() => {
 		if (ativo !== undefined) {
-			const opcoes = document.querySelector(`#opcoes_${name}`);
-			const icone = document.querySelector(`#icone_${name}`);
+			const opcoes = document.querySelector(`#opcoes_${nome_formatado}`);
+			const icone = document.querySelector(`#icone_${nome_formatado}`);
 
 			if (opcoes) opcoes.classList.toggle(styles.aberto);
 
 			if (icone) icone.classList.toggle(styles.aberto);
 		}
 	}, [ativo]);
+
+	useEffect(() => {
+		if (disabled && ativo) {
+			setAtivo(false);
+		}
+	}, [disabled]);
 
 	return (
 		<div className={styles.container}>
@@ -62,6 +75,7 @@ export default function Select({
 					type="text"
 					value={filtro}
 					placeholder={placeholder}
+					disabled={disabled}
 					onChange={(e) => {
 						const value = e.target.value;
 
@@ -73,27 +87,33 @@ export default function Select({
 					}}
 				/>
 				<div className={styles.icones}>
-					{value && (
+					{!disabled && value && (
 						<span
 							className={styles.icone_remover}
 							onClick={() => {
 								setFiltro("");
-								name && setValue(name, "");
+								if (name) {
+									if (setValue) {
+										setValue(name, "");
+									} else if (setValueState) {
+										setValueState("");
+									}
+								}
 							}}
 						>
 							<MdOutlineClose />
 						</span>
 					)}
 					<span
-						id={`icone_${name}`}
+						id={`icone_${nome_formatado}`}
 						className={styles.icone_abrir}
-						onClick={() => setAtivo(!ativo)}
+						onClick={() => !disabled && setAtivo(!ativo)}
 					>
 						<FaChevronDown />
 					</span>
 				</div>
 			</div>
-			<div id={`opcoes_${name}`} className={styles.opcoes}>
+			<div id={`opcoes_${nome_formatado}`} className={styles.opcoes}>
 				{opcoes.length > 0 ? (
 					opcoes.map((o, i) => (
 						<button
@@ -102,7 +122,13 @@ export default function Select({
 								e.preventDefault();
 								setAtivo(false);
 								setFiltro(o.label);
-								name && setValue(name, o.valor);
+								if (name) {
+									if (setValue) {
+										setValue(name, o.valor);
+									} else if (setValueState) {
+										setValueState(String(o.valor));
+									}
+								}
 							}}
 						>
 							{o.label}
