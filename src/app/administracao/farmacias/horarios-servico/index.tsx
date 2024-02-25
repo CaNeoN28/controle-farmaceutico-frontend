@@ -20,11 +20,6 @@ interface Props {
 	horario: { [key: string]: IHorário };
 	setHorario: Dispatch<SetStateAction<{ [key: string]: IHorário }>>;
 	setErros: Dispatch<SetStateAction<Erros>>;
-	onSubmitHorario: ({
-		dia_semana,
-		horario_entrada,
-		horario_saida,
-	}: IHorarioDia) => boolean;
 }
 
 const OpcoesDiaSemana: Opcao[] = [
@@ -63,13 +58,54 @@ export default function HorariosServico({
 	errosHorario,
 	setHorario,
 	setErros,
-	onSubmitHorario,
 }: Props) {
 	const [diaSemana, setDiaSemana] = useState("");
 	const [filtroDiaSemana, setFiltroDiaSemana] = useState("");
 
 	const [horarioEntrada, setHorarioEntrada] = useState("");
 	const [horarioSaida, setHorarioSaida] = useState("");
+
+	const onSubmit = () => {
+		const erros: string[] = [];
+
+		if (!diaSemana) {
+			erros.push("dia_semana:Dia da semana é obrigatório");
+		}
+
+		if (!horarioEntrada) {
+			erros.push("horario_entrada:Horário de entrada é obrigatório");
+		}
+
+		if (!horarioSaida) {
+			erros.push("horario_saida:Horário de saída é obrigatório");
+		}
+
+		if (erros.length > 0) {
+			const erroObject: any = {};
+
+			erros.map((e) => {
+				const [campo, valor] = e.split(":");
+
+				erroObject[campo] = {
+					message: valor,
+				};
+			});
+
+			setErros(erroObject);
+
+			return false;
+		}
+		setHorario({
+			...horario,
+			[diaSemana]: {
+				horario_entrada: horarioEntrada,
+				horario_saida: horarioSaida,
+			},
+		});
+
+		setErros({});
+		return true;
+	};
 
 	useEffect(() => {
 		setErros({
@@ -179,11 +215,7 @@ export default function HorariosServico({
 					fullWidth
 					onClick={(e) => {
 						e.preventDefault();
-						const sucesso = onSubmitHorario({
-							dia_semana: diaSemana,
-							horario_entrada: horarioEntrada,
-							horario_saida: horarioSaida,
-						});
+						const sucesso = onSubmit();
 
 						if (sucesso) {
 							setHorarioEntrada("");
@@ -204,6 +236,7 @@ export default function HorariosServico({
 						const diaSemana = getDayName(key as DiaSemana);
 						return (
 							<HorarioServico
+								key={key}
 								dia_semana={diaSemana}
 								entrada={horario_entrada}
 								saida={horario_saida}

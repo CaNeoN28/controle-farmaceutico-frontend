@@ -163,52 +163,6 @@ export default function CadastroFarmacia() {
 		console.log(data);
 	};
 
-	const onSubmitHorario = ({
-		dia_semana,
-		horario_entrada,
-		horario_saida,
-	}: IHorarioDia) => {
-		const erros: string[] = [];
-
-		if (!dia_semana) {
-			erros.push("dia_semana:Dia da semana é obrigatório");
-		}
-
-		if (!horario_entrada) {
-			erros.push("horario_entrada:Horário de entrada é obrigatório");
-		}
-
-		if (!horario_saida) {
-			erros.push("horario_saida:Horário de saída é obrigatório");
-		}
-
-		if (erros.length > 0) {
-			const erroObject: any = {};
-
-			erros.map((e) => {
-				const [campo, valor] = e.split(":");
-
-				erroObject[campo] = {
-					message: valor,
-				};
-			});
-
-			setErrosHorario(erroObject);
-
-			return false;
-		}
-		setHorario({
-			...horario,
-			[dia_semana]: {
-				horario_entrada,
-				horario_saida,
-			},
-		});
-
-		setErrosHorario({});
-		return true;
-	};
-
 	useLayoutEffect(() => {
 		getEstados();
 	}, []);
@@ -244,6 +198,10 @@ export default function CadastroFarmacia() {
 		setValueFarmacia("endereco.localizacao.x", localizacao.lat);
 		setValueFarmacia("endereco.localizacao.y", localizacao.lng);
 	}, [localizacao]);
+
+	useEffect(() => {
+		console.log(horario)
+	}, [horario])
 
 	return (
 		<>
@@ -545,7 +503,6 @@ export default function CadastroFarmacia() {
 							errosHorario={errosHorario}
 							setHorario={setHorario}
 							setErros={setErrosHorario}
-							onSubmitHorario={onSubmitHorario}
 						/>
 					</Secao>
 					<Secao titulo="Escala de plantão"></Secao>
