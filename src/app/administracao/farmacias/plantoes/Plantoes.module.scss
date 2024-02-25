@@ -24,3 +24,28 @@
 
 	gap: 16px;
 }
+
+@media screen and (max-width: 940px) {
+	.form{
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media screen and (max-width: 740px) {
+	.form {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media screen and (max-width: 620px) {
+	.form{
+		display: flex;
+		flex-direction: column;
+	}
+
+	.plantoes{
+		display: grid;
+
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}

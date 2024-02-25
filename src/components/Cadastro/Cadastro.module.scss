@@ -31,7 +31,7 @@
 
 .inputs_cadastro {
 	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 
 	width: 100%;
 
@@ -46,5 +46,29 @@
 
 	button {
 		max-width: 180px;
+	}
+}
+
+@media screen and (max-width: 740px) {
+	.inputs_cadastro {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media screen and (max-width: 620px) {
+	.inputs_cadastro{
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+@media screen and (max-width: 520px) {
+	.main_cadastro{
+		padding: 64px 20px;
+	}
+
+	.formulario_cadastro{
+		padding: 0;
+		border: none;
 	}
 }

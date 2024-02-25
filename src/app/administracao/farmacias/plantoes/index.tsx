@@ -129,6 +129,7 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 					/>
 				</InputContainer>
 				<Botao
+					fullWidth
 					onClick={(e) => {
 						e.preventDefault();
 

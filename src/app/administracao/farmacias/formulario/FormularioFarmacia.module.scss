@@ -13,3 +13,9 @@
 	width: 40%;
 	aspect-ratio: calc(480/270);
 }
+
+@media screen and (max-width: 840px) {
+	.map{
+		width: 100%;
+	}
+}
