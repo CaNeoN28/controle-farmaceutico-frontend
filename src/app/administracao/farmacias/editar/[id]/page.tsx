@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation";
 import Carregando from "@/components/Carregando";
 import Menu from "@/components/Menu";
 import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
+import { CadastroMain } from "@/components/Cadastro";
+import TituloSecao from "@/components/TituloSecao";
 
 interface Params {
 	id: string;
@@ -23,7 +25,7 @@ export default function EditarFarmacia({
 }: {
 	params: Params;
 }) {
-	redirecionarAutenticacao()
+	redirecionarAutenticacao();
 
 	const router = useRouter();
 	const fetchFarmacia = new FetchFarmacia();
@@ -84,7 +86,8 @@ export default function EditarFarmacia({
 		<>
 			<Menu />
 			{farmacia ? (
-				<>
+				<CadastroMain>
+					<TituloSecao>EDIÇÃO DE FARMÁCIA</TituloSecao>
 					<FormularioFarmacia
 						salvarFarmacia={salvarFarmacia}
 						farmacia={farmacia}
@@ -130,7 +133,7 @@ export default function EditarFarmacia({
 							</div>
 						</div>
 					</Alert>
-				</>
+				</CadastroMain>
 			) : erro ? (
 				<div className={styles.erro}>{erro}</div>
 			) : (

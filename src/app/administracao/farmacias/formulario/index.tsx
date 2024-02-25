@@ -163,8 +163,8 @@ export default function FormularioFarmacia({
 	const onSubmitFarmacia: SubmitHandler<IFarmacia> = (data) => {
 		const horarios_servico = horario as { [key in DiaSemana]: IHorário };
 
-		data.endereco.cep = data.endereco.cep.replaceAll("-", "")
-		data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "")
+		data.endereco.cep = data.endereco.cep.replaceAll("-", "");
+		data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "");
 
 		const farmacia: IFarmacia = {
 			...data,
@@ -172,9 +172,9 @@ export default function FormularioFarmacia({
 			horarios_servico,
 		};
 
-		console.log(data)
-	
-		salvarFarmacia(farmacia)
+		console.log(data);
+
+		salvarFarmacia(farmacia);
 	};
 
 	useLayoutEffect(() => {
@@ -215,313 +215,307 @@ export default function FormularioFarmacia({
 
 	return (
 		<>
-			<CadastroMain>
-				<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
-				<CadastroForm onSubmit={handleSubmitFarmacia(onSubmitFarmacia)}>
-					<CadastroEtapa titulo="Dados da farmácia">
-						<CadastroInputs>
-							<Controller
-								name="cnpj"
-								control={controlFarmacia}
-								rules={{
-									required: {
-										message: "CNPJ é obrigatório",
-										value: true,
-									},
-									validate: (v: string) => {
-										const cnpj = v.replaceAll(/([/.-])+/g, "");
+			<CadastroForm onSubmit={handleSubmitFarmacia(onSubmitFarmacia)}>
+				<CadastroEtapa titulo="Dados da farmácia">
+					<CadastroInputs>
+						<Controller
+							name="cnpj"
+							control={controlFarmacia}
+							rules={{
+								required: {
+									message: "CNPJ é obrigatório",
+									value: true,
+								},
+								validate: (v: string) => {
+									const cnpj = v.replaceAll(/([/.-])+/g, "");
 
-										if (!validarCNPJ(cnpj)) {
-											return "CNPJ inválido";
-										}
-									},
-								}}
-								render={({ field }) => {
-									return (
-										<InputContainer
+									if (!validarCNPJ(cnpj)) {
+										return "CNPJ inválido";
+									}
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="cnpj"
+										label="CNPJ"
+										error={errorsFarmacia.cnpj}
+									>
+										<InputMascara
 											id="cnpj"
-											label="CNPJ"
-											error={errorsFarmacia.cnpj}
-										>
-											<InputMascara
-												id="cnpj"
-												mask="99.999.999/9999-99"
-												placeholder="00.000.000/0000-00"
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								name="nome_fantasia"
-								control={controlFarmacia}
-								rules={{
-									required: {
-										value: true,
-										message: "Nome fantasia é obrigatório",
-									},
-									minLength: {
-										value: 3,
-										message: "Nome fantasia não é grande o suficiente",
-									},
-								}}
-								render={({ field }) => {
-									return (
-										<InputContainer
+											mask="99.999.999/9999-99"
+											placeholder="00.000.000/0000-00"
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="nome_fantasia"
+							control={controlFarmacia}
+							rules={{
+								required: {
+									value: true,
+									message: "Nome fantasia é obrigatório",
+								},
+								minLength: {
+									value: 3,
+									message: "Nome fantasia não é grande o suficiente",
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="nome_fantasia"
+										label="Nome fantasia"
+										error={errorsFarmacia.nome_fantasia}
+									>
+										<Input
 											id="nome_fantasia"
-											label="Nome fantasia"
-											error={errorsFarmacia.nome_fantasia}
-										>
-											<Input
-												id="nome_fantasia"
-												placeholder="Nome de exibição da farmácia"
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
-								}}
+											placeholder="Nome de exibição da farmácia"
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+						<InputContainer id="imagem" label="Imagem">
+							<InputImagem
+								id="imagem"
+								onChange={() => {}}
+								titulo="Enviar imagem"
 							/>
-							<InputContainer id="imagem" label="Imagem">
-								<InputImagem
-									id="imagem"
-									onChange={() => {}}
-									titulo="Enviar imagem"
-								/>
-							</InputContainer>
-						</CadastroInputs>
-					</CadastroEtapa>
-					<CadastroEtapa titulo="Endereço">
-						<CadastroInputs>
-							<Controller
-								name="endereco.cep"
-								control={controlFarmacia}
-								rules={{
-									required: {
-										message: "CEP é obrigatório",
-										value: true,
-									},
-									minLength: {
-										message: "CEP deve ter 8 digitos",
-										value: 9,
-									},
-								}}
-								render={({ field }) => {
-									return (
-										<InputContainer
+						</InputContainer>
+					</CadastroInputs>
+				</CadastroEtapa>
+				<CadastroEtapa titulo="Endereço">
+					<CadastroInputs>
+						<Controller
+							name="endereco.cep"
+							control={controlFarmacia}
+							rules={{
+								required: {
+									message: "CEP é obrigatório",
+									value: true,
+								},
+								minLength: {
+									message: "CEP deve ter 8 digitos",
+									value: 9,
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="cep"
+										label="CEP"
+										error={
+											errorsFarmacia.endereco && errorsFarmacia.endereco.cep
+										}
+									>
+										<InputMascara
+											mask="99999-999"
 											id="cep"
-											label="CEP"
-											error={
-												errorsFarmacia.endereco && errorsFarmacia.endereco.cep
-											}
-										>
-											<InputMascara
-												mask="99999-999"
-												id="cep"
-												placeholder="00000-00"
-												{...{
-													...field,
-													ref: null,
-												}}
-											/>
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								name="endereco.estado"
-								control={controlFarmacia}
-								rules={{
-									required: {
-										message: "Estado é obrigatório",
-										value: true,
-									},
-								}}
-								render={({ field }) => {
-									return (
-										<InputContainer
+											placeholder="00000-00"
+											{...{
+												...field,
+												ref: null,
+											}}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="endereco.estado"
+							control={controlFarmacia}
+							rules={{
+								required: {
+									message: "Estado é obrigatório",
+									value: true,
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="estado"
+										label="Estado"
+										error={
+											errorsFarmacia.endereco && errorsFarmacia.endereco.estado
+										}
+									>
+										<Select
 											id="estado"
-											label="Estado"
-											error={
-												errorsFarmacia.endereco &&
-												errorsFarmacia.endereco.estado
-											}
-										>
-											<Select
-												id="estado"
-												placeholder="Rondônia"
-												opcoes={estados}
-												filtro={pesquisaEstado}
-												setFiltro={setPesquisaEstado}
-												setValue={setValueFarmacia}
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								name="endereco.municipio"
-								control={controlFarmacia}
-								rules={{
-									required: {
-										message: "Municipio é obrigatório",
-										value: true,
-									},
-								}}
-								render={({ field }) => {
-									return (
-										<InputContainer
+											placeholder="Rondônia"
+											opcoes={estados}
+											filtro={pesquisaEstado}
+											setFiltro={setPesquisaEstado}
+											setValue={setValueFarmacia}
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="endereco.municipio"
+							control={controlFarmacia}
+							rules={{
+								required: {
+									message: "Municipio é obrigatório",
+									value: true,
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="municipio"
+										label="Municipio"
+										error={
+											errorsFarmacia.endereco &&
+											errorsFarmacia.endereco.municipio
+										}
+									>
+										<Select
 											id="municipio"
-											label="Municipio"
-											error={
-												errorsFarmacia.endereco &&
-												errorsFarmacia.endereco.municipio
-											}
-										>
-											<Select
-												id="municipio"
-												placeholder="Vilhena"
-												opcoes={municipios}
-												filtro={pesquisaMunicipio}
-												disabled={!watchFarmacia("endereco.estado")}
-												setFiltro={setPesquisaMunicipio}
-												setValue={setValueFarmacia}
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								name="endereco.bairro"
-								control={controlFarmacia}
-								rules={{
-									required: {
-										message: "Bairro é obrigatório",
-										value: true,
-									},
-									minLength: {
-										message: "Bairro deve ter mais de 3 letras",
-										value: 3,
-									},
-								}}
-								render={({ field }) => {
-									return (
-										<InputContainer
+											placeholder="Vilhena"
+											opcoes={municipios}
+											filtro={pesquisaMunicipio}
+											disabled={!watchFarmacia("endereco.estado")}
+											setFiltro={setPesquisaMunicipio}
+											setValue={setValueFarmacia}
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="endereco.bairro"
+							control={controlFarmacia}
+							rules={{
+								required: {
+									message: "Bairro é obrigatório",
+									value: true,
+								},
+								minLength: {
+									message: "Bairro deve ter mais de 3 letras",
+									value: 3,
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="bairro"
+										label="Bairro"
+										error={
+											errorsFarmacia.endereco && errorsFarmacia.endereco.bairro
+										}
+									>
+										<Input
 											id="bairro"
-											label="Bairro"
-											error={
-												errorsFarmacia.endereco &&
-												errorsFarmacia.endereco.bairro
-											}
-										>
-											<Input
-												id="bairro"
-												placeholder="Ex: Bairro das oliveiras"
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								name="endereco.logradouro"
-								control={controlFarmacia}
-								rules={{
-									required: {
-										message: "Logradouro é obrigatório",
-										value: true,
-									},
-									minLength: {
-										message: "Logradouro deve ter mais de 3 letras",
-										value: 3,
-									},
-								}}
-								render={({ field }) => {
-									return (
-										<InputContainer
+											placeholder="Ex: Bairro das oliveiras"
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="endereco.logradouro"
+							control={controlFarmacia}
+							rules={{
+								required: {
+									message: "Logradouro é obrigatório",
+									value: true,
+								},
+								minLength: {
+									message: "Logradouro deve ter mais de 3 letras",
+									value: 3,
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="logradouro"
+										label="Logradouro"
+										error={
+											errorsFarmacia.endereco &&
+											errorsFarmacia.endereco.logradouro
+										}
+									>
+										<Input
 											id="logradouro"
-											label="Logradouro"
-											error={
-												errorsFarmacia.endereco &&
-												errorsFarmacia.endereco.logradouro
-											}
-										>
-											<Input
-												id="logradouro"
-												placeholder="Ex: Rua palmeira"
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								name="endereco.numero"
-								control={controlFarmacia}
-								rules={{
-									required: {
-										value: true,
-										message: "Número é obrigatório",
-									},
-									pattern: {
-										value: /^[0-9]*$/,
-										message: "Número inválido",
-									},
-								}}
-								render={({ field }) => {
-									return (
-										<InputContainer
+											placeholder="Ex: Rua palmeira"
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="endereco.numero"
+							control={controlFarmacia}
+							rules={{
+								required: {
+									value: true,
+									message: "Número é obrigatório",
+								},
+								pattern: {
+									value: /^[0-9]*$/,
+									message: "Número inválido",
+								},
+							}}
+							render={({ field }) => {
+								return (
+									<InputContainer
+										id="numero"
+										label="Numero"
+										error={
+											errorsFarmacia.endereco && errorsFarmacia.endereco.numero
+										}
+									>
+										<Input
 											id="numero"
-											label="Numero"
-											error={
-												errorsFarmacia.endereco &&
-												errorsFarmacia.endereco.numero
-											}
-										>
-											<Input
-												id="numero"
-												placeholder="0000"
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
+											placeholder="0000"
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+					</CadastroInputs>
+					<div className={styles.map_container}>
+						<span className={styles.map_title}>
+							Selecione a posição no mapa
+						</span>
+						<div className={styles.map}>
+							<Map
+								setLocalizacao={setLocalizacao}
+								endereco_pesquisa={{
+									...watchFarmacia("endereco"),
+									nome_farmacia: watchFarmacia("nome_fantasia"),
 								}}
+								map_center={localizacao}
 							/>
-						</CadastroInputs>
-						<div className={styles.map_container}>
-							<span className={styles.map_title}>
-								Selecione a posição no mapa
-							</span>
-							<div className={styles.map}>
-								<Map
-									setLocalizacao={setLocalizacao}
-									endereco_pesquisa={{
-										...watchFarmacia("endereco"),
-										nome_farmacia: watchFarmacia("nome_fantasia"),
-									}}
-									map_center={localizacao}
-								/>
-							</div>
 						</div>
-					</CadastroEtapa>
-					<Secao titulo="Horários de serviço">
-						<HorariosServico horario={horario} setHorario={setHorario} />
-					</Secao>
-					<Secao titulo="Escala de plantão">
-						<Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
-					</Secao>
-					<CadastroBotoes>
-						<Botao fullWidth type="submit">
-							Salvar
-						</Botao>
-						<Botao fullWidth secundario>
-							Cancelar
-						</Botao>
-					</CadastroBotoes>
-				</CadastroForm>
-			</CadastroMain>
+					</div>
+				</CadastroEtapa>
+				<Secao titulo="Horários de serviço">
+					<HorariosServico horario={horario} setHorario={setHorario} />
+				</Secao>
+				<Secao titulo="Escala de plantão">
+					<Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
+				</Secao>
+				<CadastroBotoes>
+					<Botao fullWidth type="submit">
+						Salvar
+					</Botao>
+					<Botao fullWidth secundario>
+						Cancelar
+					</Botao>
+				</CadastroBotoes>
+			</CadastroForm>
 		</>
 	);
 }

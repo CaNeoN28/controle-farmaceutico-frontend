@@ -12,6 +12,8 @@ import Botao from "@/components/Botao";
 import { useRouter } from "next/navigation";
 import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import Menu from "@/components/Menu";
+import { CadastroMain } from "@/components/Cadastro";
+import TituloSecao from "@/components/TituloSecao";
 
 export default function CadastroFarmacia() {
 	redirecionarAutenticacao();
@@ -26,7 +28,7 @@ export default function CadastroFarmacia() {
 	const salvarFarmacia = async (farmacia: IFarmacia) => {
 		const token = getCookie("authentication");
 
-		await postFarmacia(farmacia)
+		await postFarmacia(farmacia, token)
 			.then((res) => {
 				setErro(undefined);
 				setMensagem("Farmácia cadastrada com sucesso");
@@ -52,7 +54,10 @@ export default function CadastroFarmacia() {
 	return (
 		<>
 			<Menu />
-			<FormularioFarmacia salvarFarmacia={salvarFarmacia} />
+			<CadastroMain>
+				<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
+				<FormularioFarmacia salvarFarmacia={salvarFarmacia} />
+			</CadastroMain>
 			<Alert show={showAlert} setShow={setShowAlert}>
 				<div className={styles.alert}>
 					<span className={styles.alert_texto}>{erro || mensagem}</span>
