@@ -30,7 +30,7 @@ export default function EditarFarmacia({
 
 	const router = useRouter();
 	const fetchFarmacia = new FetchFarmacia();
-	const deleteImagem = new FetchImagem().removeImagem
+	const deleteImagem = new FetchImagem().removeImagem;
 
 	const [farmacia, setFarmacia] = useState<IFarmacia>();
 	const [showAlert, setShowAlert] = useState(false);
@@ -70,8 +70,8 @@ export default function EditarFarmacia({
 					response: { data },
 				} = err;
 
-				if(urlImagem){
-					deleteImagem(urlImagem).then().catch()
+				if (urlImagem) {
+					deleteImagem(urlImagem).then().catch();
 				}
 
 				if (typeof data === "string") {
@@ -79,7 +79,7 @@ export default function EditarFarmacia({
 				} else {
 					setErroEdicao("Não foi possível atualizar farmácia");
 					console.error(err.response);
-				}				
+				}
 
 				setShowAlert(true);
 			});
@@ -99,7 +99,17 @@ export default function EditarFarmacia({
 						salvarFarmacia={salvarFarmacia}
 						farmacia={farmacia}
 					/>
-					<Alert show={showAlert} setShow={setShowAlert}>
+					<Alert
+						show={showAlert}
+						onClickBackground={() => {
+							if (erro) {
+								setShowAlert(false);
+							} else if (mensagem) {
+								setShowAlert(false);
+								router.push("/administracao");
+							}
+						}}
+					>
 						<div className={styles.alert}>
 							<span className={styles.alert_texto}>
 								{erroEdicao || mensagem}

@@ -65,7 +65,17 @@ export default function CadastroFarmacia() {
 				<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
 				<FormularioFarmacia salvarFarmacia={salvarFarmacia} />
 			</CadastroMain>
-			<Alert show={showAlert} setShow={setShowAlert}>
+			<Alert
+				show={showAlert}
+				onClickBackground={() => {
+					if (erro) {
+						setShowAlert(false);
+					} else if (mensagem) {
+						setShowAlert(false);
+						router.push("/administracao");
+					}
+				}}
+			>
 				<div className={styles.alert}>
 					<span className={styles.alert_texto}>{erro || mensagem}</span>
 					<div className={styles.alert_opcoes}>

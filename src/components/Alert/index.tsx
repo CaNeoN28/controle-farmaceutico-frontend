@@ -4,13 +4,13 @@ import styles from "./Alert.module.scss";
 interface Props {
 	children?: ReactNode;
 	show?: boolean;
-	setShow: Dispatch<SetStateAction<boolean>>;
+	onClickBackground?: () => void;
 }
 
-export default function Alert({ children, show, setShow }: Props) {
+export default function Alert({ children, show, onClickBackground }: Props) {
 	if (show)
 		return (
-			<div className={styles.background} onClick={() => setShow(false)}>
+			<div className={styles.background} onClick={onClickBackground}>
 				<div className={styles.alert}>{children}</div>
 			</div>
 		);
