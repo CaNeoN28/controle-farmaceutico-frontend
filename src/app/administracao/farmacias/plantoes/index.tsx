@@ -5,7 +5,12 @@ import Input from "@/components/Input";
 import InputContainer from "@/components/InputContainer";
 import { FaPlus } from "react-icons/fa";
 import Botao from "@/components/Botao";
+import { FieldError } from "react-hook-form";
 
+interface Erros {
+	entrada?: FieldError;
+	saida?: FieldError;
+}
 interface Plantao {
 	entrada: string;
 	saida: string;
@@ -20,16 +25,39 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 	const [entrada, setEntrada] = useState("");
 	const [saida, setSaida] = useState("");
 
-	const onSubmit = () => {};
+	const [erros, setErros] = useState<Erros>({});
 
-	useEffect(() => {
-		console.log(entrada);
-	}, [entrada]);
+	const onSubmit = () => {
+		const erros: any = {};
+
+		if (!entrada) {
+			erros.entrada = { message: "A data de entrada é obrigatória" };
+		}
+
+		if (!saida) {
+			erros.saida = { message: "A data de saída é obrigatória" };
+		}
+
+		if (Object.keys(erros).length > 0) {
+			setErros(erros);
+
+			return;
+		}
+
+		console.log({
+			entrada,
+			saida,
+		});
+	};
 
 	return (
 		<div className={styles.etapa_retratil}>
 			<div className={styles.form}>
-				<InputContainer id="entrada" label="Horário entrada">
+				<InputContainer
+					id="entrada"
+					label="Horário entrada"
+					error={erros.entrada}
+				>
 					<Input
 						id="entrada"
 						name="entrada"
@@ -38,7 +66,7 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 						onChange={(e) => setEntrada(e.target.value)}
 					/>
 				</InputContainer>
-				<InputContainer id="saida" label="Horário saida">
+				<InputContainer id="saida" label="Horário saida" error={erros.saida}>
 					<Input
 						id="saida"
 						name="saida"
