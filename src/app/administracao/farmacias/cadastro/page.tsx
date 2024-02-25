@@ -14,12 +14,14 @@ import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import Menu from "@/components/Menu";
 import { CadastroMain } from "@/components/Cadastro";
 import TituloSecao from "@/components/TituloSecao";
+import FetchImagem from "@/fetch/imagens";
 
 export default function CadastroFarmacia() {
 	redirecionarAutenticacao();
 
 	const router = useRouter();
 	const postFarmacia = new FetchFarmacia().postFarmacia;
+	const deleteImagem = new FetchImagem().removeImagem;
 
 	const [showAlert, setShowAlert] = useState(false);
 	const [erro, setErro] = useState<string>();
@@ -27,6 +29,7 @@ export default function CadastroFarmacia() {
 
 	const salvarFarmacia = async (farmacia: IFarmacia) => {
 		const token = getCookie("authentication");
+		const urlImagem = farmacia.imagem_url;
 
 		await postFarmacia(farmacia, token)
 			.then((res) => {
@@ -39,6 +42,10 @@ export default function CadastroFarmacia() {
 				const {
 					response: { data },
 				} = err;
+
+				if (urlImagem) {
+					deleteImagem(urlImagem).then().catch();
+				}
 
 				if (typeof data === "string") {
 					setErro(data);

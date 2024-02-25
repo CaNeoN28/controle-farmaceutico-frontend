@@ -15,6 +15,7 @@ import Menu from "@/components/Menu";
 import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import { CadastroMain } from "@/components/Cadastro";
 import TituloSecao from "@/components/TituloSecao";
+import FetchImagem from "@/fetch/imagens";
 
 interface Params {
 	id: string;
@@ -29,8 +30,8 @@ export default function EditarFarmacia({
 
 	const router = useRouter();
 	const fetchFarmacia = new FetchFarmacia();
+	const deleteImagem = new FetchImagem().removeImagem
 
-	const [imagem, setImagem] = useState<File>();
 	const [farmacia, setFarmacia] = useState<IFarmacia>();
 	const [showAlert, setShowAlert] = useState(false);
 	const [erro, setErro] = useState<string>();
@@ -54,6 +55,7 @@ export default function EditarFarmacia({
 
 	const salvarFarmacia = async (farmacia: IFarmacia) => {
 		const token = getCookie("authentication");
+		const urlImagem = farmacia.imagem_url;
 
 		await fetchFarmacia
 			.updateFarmacia(farmacia, id_farmacia, token)
@@ -68,12 +70,16 @@ export default function EditarFarmacia({
 					response: { data },
 				} = err;
 
+				if(urlImagem){
+					deleteImagem(urlImagem).then().catch()
+				}
+
 				if (typeof data === "string") {
 					setErroEdicao(data);
 				} else {
 					setErroEdicao("Não foi possível atualizar farmácia");
 					console.error(err.response);
-				}
+				}				
 
 				setShowAlert(true);
 			});
