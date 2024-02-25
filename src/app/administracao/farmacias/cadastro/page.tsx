@@ -63,7 +63,7 @@ export default function CadastroFarmacia() {
 		},
 	});
 
-	const [errosHorario, setErrosServico] = useState<{
+	const [errosHorario, setErrosHorario] = useState<{
 		dia_semana?: FieldError;
 		horario_entrada?: FieldError;
 		horario_saida?: FieldError;
@@ -171,6 +171,10 @@ export default function CadastroFarmacia() {
 			erros.push("dia_semana:Dia da semana é obrigatório");
 		}
 
+		if(!horario_entrada){
+			erros.push("horario_entrada:Horário de entrada é obrigatório")
+		}
+
 		if (erros.length > 0) {
 			const erroObject: any = {};
 
@@ -182,15 +186,16 @@ export default function CadastroFarmacia() {
 				};
 			});
 
-			setErrosServico(erroObject);
+			setErrosHorario(erroObject);
 
 			return;
 		}
 
-		setErrosServico({});
+		setErrosHorario({});
 
 		console.log({
 			dia_semana,
+			horario_entrada
 		});
 	};
 
@@ -527,6 +532,7 @@ export default function CadastroFarmacia() {
 					<Secao titulo="Horários de serviço">
 						<HorariosServico
 							errosHorario={errosHorario}
+							setErros={setErrosHorario}
 							onSubmitHorario={onSubmitHorario}
 						/>
 					</Secao>
