@@ -18,6 +18,7 @@ interface Erros {
 interface Props {
 	errosHorario: Erros;
 	horario: { [key: string]: IHorário };
+	setHorario: Dispatch<SetStateAction<{ [key: string]: IHorário }>>;
 	setErros: Dispatch<SetStateAction<Erros>>;
 	onSubmitHorario: ({
 		dia_semana,
@@ -60,6 +61,7 @@ const OpcoesDiaSemana: Opcao[] = [
 export default function HorariosServico({
 	horario,
 	errosHorario,
+	setHorario,
 	setErros,
 	onSubmitHorario,
 }: Props) {
@@ -205,7 +207,12 @@ export default function HorariosServico({
 								dia_semana={diaSemana}
 								entrada={horario_entrada}
 								saida={horario_saida}
-								onClick={() => {}}
+								onClick={() => {
+									const horarioNovo = { ...horario };
+									delete horarioNovo[key];
+
+									setHorario(horarioNovo);
+								}}
 							/>
 						);
 					})}

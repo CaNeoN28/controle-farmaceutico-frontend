@@ -543,6 +543,7 @@ export default function CadastroFarmacia() {
 						<HorariosServico
 							horario={horario}
 							errosHorario={errosHorario}
+							setHorario={setHorario}
 							setErros={setErrosHorario}
 							onSubmitHorario={onSubmitHorario}
 						/>
