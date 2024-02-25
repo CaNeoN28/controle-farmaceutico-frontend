@@ -1,47 +1,52 @@
 .secao {
-  overflow: hidden;
+	max-height: 40px;
 
-  max-height: 40px;
+	transition-duration: 200ms;
 
-  transition-duration: 200ms;
+	.titulo {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 
-  .titulo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+		font-size: 16px;
 
-    font-size: 16px;
+		padding: 8px 16px;
+	}
 
-    padding: 8px 16px;
-  }
+	.titulo:hover {
+		cursor: pointer;
+	}
 
-  .titulo:hover {
-    cursor: pointer;
-  }
+	.icone {
+		font-size: 24px;
 
-  .icone {
-    font-size: 24px;
+		transition-duration: 100ms;
+	}
 
-    transition-duration: 100ms;
-  }
+	.content {
+		overflow: hidden;
 
-  .content {
-    padding: 8px;
-  }
+		max-height: 0px;
+		padding: 8px;
+	}
 }
 
 .secao.ativo {
-  max-height: 400vh;
+	max-height: 400vh;
 
-  .icone {
-    transform: rotateX(180deg);
-  }
+	.content {
+		max-height: 400vh;
+	}
+
+	.icone {
+		transform: rotateX(180deg);
+	}
 }
 
 @media screen and (min-width: 480px) {
-  .secao {
-    .content {
-      padding: 0 24px;
-    }
-  }
+	.secao {
+		.content {
+			padding: 0 24px;
+		}
+	}
 }
