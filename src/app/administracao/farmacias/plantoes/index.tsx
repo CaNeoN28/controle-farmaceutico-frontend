@@ -135,9 +135,10 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 								key={i}
 								data={p.entrada}
 								onClick={() => {
-									const plantoesNovos = [...plantoes];
-									delete plantoesNovos[i];
-
+									const plantoesNovos = plantoes.filter((_, index) => {
+										return i != index;
+									});
+									
 									setPlantoes(plantoesNovos);
 								}}
 							/>
