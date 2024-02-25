@@ -20,9 +20,10 @@ export interface Opcao {
 interface Props extends ComponentPropsWithoutRef<"input"> {
 	filtro: string;
 	placeholder: string;
-	setFiltro: Dispatch<SetStateAction<string>>;
-	setValue: UseFormSetValue<any>;
 	opcoes: Opcao[];
+	setFiltro: Dispatch<SetStateAction<string>>;
+	setValue?: UseFormSetValue<any>;
+	setValueState?: Dispatch<SetStateAction<string | number>>;
 }
 
 export default function Select({
@@ -33,6 +34,7 @@ export default function Select({
 	disabled,
 	setFiltro,
 	setValue,
+	setValueState,
 	...props
 }: Props) {
 	const [ativo, setAtivo] = useState<boolean>();
@@ -90,7 +92,13 @@ export default function Select({
 							className={styles.icone_remover}
 							onClick={() => {
 								setFiltro("");
-								name && setValue(name, "");
+								if (name) {
+									if (setValue) {
+										setValue(name, "");
+									} else if (setValueState) {
+										setValueState("");
+									}
+								}
 							}}
 						>
 							<MdOutlineClose />
@@ -114,7 +122,13 @@ export default function Select({
 								e.preventDefault();
 								setAtivo(false);
 								setFiltro(o.label);
-								name && setValue(name, o.valor);
+								if (name) {
+									if (setValue) {
+										setValue(name, o.valor);
+									} else if (setValueState) {
+										setValueState(o.valor);
+									}
+								}
 							}}
 						>
 							{o.label}

@@ -1,19 +1,15 @@
-import { FormEventHandler, ReactNode } from "react";
+import React, { FormEventHandler, ReactNode } from "react";
 import styles from "./Cadastro.module.scss";
 
 export function CadastroMain({ children }: { children?: ReactNode }) {
 	return <main className={styles.main_cadastro}>{children}</main>;
 }
 
-export function CadastroForm({
-	onSubmit,
-	children,
-}: {
-	onSubmit: FormEventHandler<HTMLFormElement>;
-	children?: ReactNode;
-}) {
+interface CadastroProps extends React.ComponentPropsWithoutRef<"form"> {}
+
+export function CadastroForm({ onSubmit, children, ...props }: CadastroProps) {
 	return (
-		<form onSubmit={onSubmit} className={styles.formulario_cadastro}>
+		<form onSubmit={onSubmit} className={styles.formulario_cadastro} {...props}>
 			{children}
 		</form>
 	);
