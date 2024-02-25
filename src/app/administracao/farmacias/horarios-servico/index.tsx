@@ -20,7 +20,7 @@ interface Props {
 		dia_semana,
 		horario_entrada,
 		horario_saida,
-	}: IHorarioDia) => void;
+	}: IHorarioDia) => boolean;
 }
 
 const OpcoesDiaSemana: Opcao[] = [
@@ -175,11 +175,18 @@ export default function HorariosServico({
 					fullWidth
 					onClick={(e) => {
 						e.preventDefault();
-						onSubmitHorario({
+						const sucesso = onSubmitHorario({
 							dia_semana: diaSemana,
 							horario_entrada: horarioEntrada,
 							horario_saida: horarioSaida,
 						});
+
+						if (sucesso) {
+							setHorarioEntrada("");
+							setHorarioSaida("");
+							setDiaSemana("");
+							setFiltroDiaSemana("");
+						}
 					}}
 				>
 					<span>Adicionar</span>

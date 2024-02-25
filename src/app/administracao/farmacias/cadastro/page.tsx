@@ -63,6 +63,9 @@ export default function CadastroFarmacia() {
 		},
 	});
 
+	const [horario, setHorario] = useState<{
+		[key: string]: IHorário;
+	}>({});
 	const [errosHorario, setErrosHorario] = useState<{
 		dia_semana?: FieldError;
 		horario_entrada?: FieldError;
@@ -192,16 +195,18 @@ export default function CadastroFarmacia() {
 
 			setErrosHorario(erroObject);
 
-			return;
+			return false;
 		}
+		setHorario({
+			...horario,
+			[dia_semana]: {
+				horario_entrada,
+				horario_saida,
+			},
+		});
 
 		setErrosHorario({});
-
-		console.log({
-			dia_semana,
-			horario_entrada,
-			horario_saida,
-		});
+		return true;
 	};
 
 	useLayoutEffect(() => {
@@ -239,6 +244,10 @@ export default function CadastroFarmacia() {
 		setValueFarmacia("endereco.localizacao.x", localizacao.lat);
 		setValueFarmacia("endereco.localizacao.y", localizacao.lng);
 	}, [localizacao]);
+
+	useEffect(() => {
+		console.log(horario);
+	}, [horario]);
 
 	return (
 		<>
