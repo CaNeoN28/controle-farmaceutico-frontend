@@ -52,8 +52,8 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	const classesContainer = classNames({
 		[styles.container]: true,
-		["box-shadow"]: true
-	})
+		["box-shadow"]: true,
+	});
 
 	const getRota = () => {
 		if (farmacia) {
@@ -118,8 +118,8 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	useEffect(() => {
 		if (farmacia) {
-			getRota()
-			
+			getRota();
+
 			const horarios: Horario[] = Object.keys(farmacia.horarios_servico).map(
 				(v: string) => {
 					const dia = v as DiaSemana;
@@ -137,7 +137,9 @@ export default function Farmacia({ params }: { params: Params }) {
 			const plantoes: Plantoes = {};
 
 			farmacia.plantoes
-				.sort((a, b) => (Number(new Date(a.entrada)) > Number(new Date(b.entrada)) ? 1 : -1))
+				.sort((a, b) =>
+					Number(new Date(a.entrada)) > Number(new Date(b.entrada)) ? 1 : -1
+				)
 				.map((p) => {
 					const ano = new Date(p.entrada).getFullYear();
 
@@ -156,12 +158,12 @@ export default function Farmacia({ params }: { params: Params }) {
 	}, [farmacia]);
 
 	useEffect(() => {
-		console.log(rota)
-	}, [rota])
+		console.log(rota);
+	}, [rota]);
 
 	useEffect(() => {
-		getRota()
-	}, [localizacaoUsuario])
+		getRota();
+	}, [localizacaoUsuario]);
 
 	return (
 		<>

@@ -5,6 +5,15 @@ export interface Escala {
 	[dia: string]: IFarmacia[];
 }
 
+export interface IHorário {
+	horario_entrada: string;
+	horario_saida: string;
+}
+
+export interface IHorarioDia extends IHorário {
+	dia_semana: string;
+}
+
 export interface IFarmaciaAberta extends IFarmacia {
 	dia_semana: string;
 }
@@ -23,10 +32,7 @@ export default interface IFarmacia {
 		saida: string;
 	}[];
 	horarios_servico: {
-		[dia_semana in DiaSemana]: {
-			horario_entrada: string;
-			horario_saida: string;
-		};
+		[dia_semana in DiaSemana]: IHorário;
 	};
 	imagem_url?: string;
 	__v: 0;

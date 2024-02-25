@@ -23,7 +23,7 @@ interface Props extends ComponentPropsWithoutRef<"input"> {
 	opcoes: Opcao[];
 	setFiltro: Dispatch<SetStateAction<string>>;
 	setValue?: UseFormSetValue<any>;
-	setValueState?: Dispatch<SetStateAction<string | number>>;
+	setValueState?: Dispatch<SetStateAction<string>>;
 }
 
 export default function Select({
@@ -126,7 +126,7 @@ export default function Select({
 									if (setValue) {
 										setValue(name, o.valor);
 									} else if (setValueState) {
-										setValueState(o.valor);
+										setValueState(String(o.valor));
 									}
 								}
 							}}

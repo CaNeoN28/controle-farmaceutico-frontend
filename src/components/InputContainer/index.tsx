@@ -7,7 +7,9 @@ interface Props {
 	label: string;
 	id: string;
 	tamanho?: number | string;
-	error?: FieldError;
+	error?: {
+		message?: string
+	};
 	children: ReactNode;
 }
 

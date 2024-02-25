@@ -1,12 +1,18 @@
 "use client";
 
+import { FaPlus } from "react-icons/fa";
 import Botao from "@/components/Botao";
 import styles from "./CadastroFarmacia.module.scss";
 import Menu from "@/components/Menu";
 import TituloSecao from "@/components/TituloSecao";
 import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import IFarmacia from "@/types/Farmacia";
+import {
+	Controller,
+	FieldError,
+	SubmitHandler,
+	useForm,
+} from "react-hook-form";
+import IFarmacia, { IHorarioDia, IHorário } from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
@@ -30,16 +36,18 @@ import Select, { Opcao } from "@/components/Select";
 import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
 import Map from "@/components/Map";
 import { Coordenadas } from "@/types/Localizacao";
+import Secao from "@/components/Secao";
+import HorariosServico from "../horarios-servico";
 
 export default function CadastroFarmacia() {
 	const {
-		formState: { errors },
-		control,
-		handleSubmit,
-		watch,
-		setError,
-		setValue,
-		clearErrors,
+		formState: { errors: errorsFarmacia },
+		control: controlFarmacia,
+		handleSubmit: handleSubmitFarmacia,
+		watch: watchFarmacia,
+		setError: setErrorFarmacia,
+		setValue: setValueFarmacia,
+		clearErrors: clearErrorsFarmacia,
 	} = useForm<IFarmacia>({
 		defaultValues: {
 			cnpj: "",
@@ -55,6 +63,12 @@ export default function CadastroFarmacia() {
 		},
 	});
 
+	const [errosHorario, setErrosServico] = useState<{
+		dia_semana?: FieldError;
+		horario_entrada?: FieldError;
+		horario_saida?: FieldError;
+	}>({});
+
 	const [pesquisaEstado, setPesquisaEstado] = useState("");
 	const [estados, setEstados] = useState<Opcao[]>([]);
 
@@ -65,7 +79,6 @@ export default function CadastroFarmacia() {
 		lat: 0,
 		lng: 0,
 	});
-	const [pesquisaMapa, setPesquisaMapa] = useState<string>("");
 
 	redirecionarAutenticacao();
 
@@ -89,7 +102,7 @@ export default function CadastroFarmacia() {
 	};
 
 	const getMunicipios = async () => {
-		const estado = watch("endereco.estado");
+		const estado = watchFarmacia("endereco.estado");
 
 		if (estado) {
 			const sigla = getSiglaFromEstado(estado);
@@ -115,13 +128,16 @@ export default function CadastroFarmacia() {
 	};
 
 	const onChangeCep = async (cep: string) => {
-		clearErrors("endereco.cep");
+		clearErrorsFarmacia("endereco.cep");
 		cep = cep.replaceAll(/([_-])+/g, "");
 
 		if (cep.length == 8) {
 			await getDadosCep(cep).then(async (res) => {
 				if (res.data.erro) {
-					setError("endereco.cep", { message: "CEP inválido", type: "server" });
+					setErrorFarmacia("endereco.cep", {
+						message: "CEP inválido",
+						type: "server",
+					});
 				} else {
 					const { uf, bairro, localidade, logradouro } = res.data;
 
@@ -131,17 +147,51 @@ export default function CadastroFarmacia() {
 						estado = res.data.nome;
 					});
 
-					setValue("endereco.bairro", bairro);
-					setValue("endereco.municipio", localidade);
-					setValue("endereco.logradouro", logradouro);
-					setValue("endereco.estado", estado);
+					setValueFarmacia("endereco.bairro", bairro);
+					setValueFarmacia("endereco.municipio", localidade);
+					setValueFarmacia("endereco.logradouro", logradouro);
+					setValueFarmacia("endereco.estado", estado);
 				}
 			});
 		}
 	};
 
-	const onSubmit: SubmitHandler<IFarmacia> = (data) => {
+	const onSubmitFarmacia: SubmitHandler<IFarmacia> = (data) => {
 		console.log(data);
+	};
+
+	const onSubmitHorario = ({
+		dia_semana,
+		horario_entrada,
+		horario_saida,
+	}: IHorarioDia) => {
+		const erros: string[] = [];
+
+		if (!dia_semana) {
+			erros.push("dia_semana:Dia da semana é obrigatório");
+		}
+
+		if (erros.length > 0) {
+			const erroObject: any = {};
+
+			erros.map((e) => {
+				const [campo, valor] = e.split(":");
+
+				erroObject[campo] = {
+					message: valor,
+				};
+			});
+
+			setErrosServico(erroObject);
+
+			return;
+		}
+
+		setErrosServico({});
+
+		console.log({
+			dia_semana,
+		});
 	};
 
 	useLayoutEffect(() => {
@@ -149,28 +199,23 @@ export default function CadastroFarmacia() {
 	}, []);
 
 	useEffect(() => {
-		onChangeCep(watch("endereco.cep"));
-	}, [watch("endereco.cep")]);
+		onChangeCep(watchFarmacia("endereco.cep"));
+	}, [watchFarmacia("endereco.cep")]);
 
 	useEffect(() => {
-		const estado = watch("endereco.estado");
-
-		setPesquisaMapa(estado);
-
 		getMunicipios();
 
-		if (!watch("endereco.cep")) {
+		if (!watchFarmacia("endereco.cep")) {
 			setPesquisaMunicipio("");
-			setValue("endereco.municipio", "");
+			setValueFarmacia("endereco.municipio", "");
 		}
-	}, [watch("endereco.estado")]);
+	}, [watchFarmacia("endereco.estado")]);
 
 	useEffect(() => {
-		const municipio = watch("endereco.municipio");
+		const municipio = watchFarmacia("endereco.municipio");
 
 		setPesquisaMunicipio(municipio);
-		setPesquisaMapa(municipio);
-	}, [watch("endereco.municipio")]);
+	}, [watchFarmacia("endereco.municipio")]);
 
 	useLayoutEffect(() => {
 		getEstados();
@@ -181,8 +226,8 @@ export default function CadastroFarmacia() {
 	}, [pesquisaMunicipio]);
 
 	useEffect(() => {
-		setValue("endereco.localizacao.x", localizacao.lat);
-		setValue("endereco.localizacao.y", localizacao.lng);
+		setValueFarmacia("endereco.localizacao.x", localizacao.lat);
+		setValueFarmacia("endereco.localizacao.y", localizacao.lng);
 	}, [localizacao]);
 
 	return (
@@ -190,12 +235,12 @@ export default function CadastroFarmacia() {
 			<Menu />
 			<CadastroMain>
 				<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
-				<CadastroForm onSubmit={handleSubmit(onSubmit)}>
+				<CadastroForm onSubmit={handleSubmitFarmacia(onSubmitFarmacia)}>
 					<CadastroEtapa titulo="Dados da farmácia">
 						<CadastroInputs>
 							<Controller
 								name="cnpj"
-								control={control}
+								control={controlFarmacia}
 								rules={{
 									required: {
 										message: "CNPJ é obrigatório",
@@ -211,7 +256,11 @@ export default function CadastroFarmacia() {
 								}}
 								render={({ field }) => {
 									return (
-										<InputContainer id="cnpj" label="CNPJ" error={errors.cnpj}>
+										<InputContainer
+											id="cnpj"
+											label="CNPJ"
+											error={errorsFarmacia.cnpj}
+										>
 											<InputMascara
 												id="cnpj"
 												mask="99.999.999/9999-99"
@@ -224,7 +273,7 @@ export default function CadastroFarmacia() {
 							/>
 							<Controller
 								name="nome_fantasia"
-								control={control}
+								control={controlFarmacia}
 								rules={{
 									required: {
 										value: true,
@@ -240,7 +289,7 @@ export default function CadastroFarmacia() {
 										<InputContainer
 											id="nome_fantasia"
 											label="Nome fantasia"
-											error={errors.nome_fantasia}
+											error={errorsFarmacia.nome_fantasia}
 										>
 											<Input
 												id="nome_fantasia"
@@ -264,7 +313,7 @@ export default function CadastroFarmacia() {
 						<CadastroInputs>
 							<Controller
 								name="endereco.cep"
-								control={control}
+								control={controlFarmacia}
 								rules={{
 									required: {
 										message: "CEP é obrigatório",
@@ -280,7 +329,9 @@ export default function CadastroFarmacia() {
 										<InputContainer
 											id="cep"
 											label="CEP"
-											error={errors.endereco && errors.endereco.cep}
+											error={
+												errorsFarmacia.endereco && errorsFarmacia.endereco.cep
+											}
 										>
 											<InputMascara
 												mask="99999-999"
@@ -297,7 +348,7 @@ export default function CadastroFarmacia() {
 							/>
 							<Controller
 								name="endereco.estado"
-								control={control}
+								control={controlFarmacia}
 								rules={{
 									required: {
 										message: "Estado é obrigatório",
@@ -309,7 +360,10 @@ export default function CadastroFarmacia() {
 										<InputContainer
 											id="estado"
 											label="Estado"
-											error={errors.endereco && errors.endereco.estado}
+											error={
+												errorsFarmacia.endereco &&
+												errorsFarmacia.endereco.estado
+											}
 										>
 											<Select
 												id="estado"
@@ -317,7 +371,7 @@ export default function CadastroFarmacia() {
 												opcoes={estados}
 												filtro={pesquisaEstado}
 												setFiltro={setPesquisaEstado}
-												setValue={setValue}
+												setValue={setValueFarmacia}
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
@@ -326,7 +380,7 @@ export default function CadastroFarmacia() {
 							/>
 							<Controller
 								name="endereco.municipio"
-								control={control}
+								control={controlFarmacia}
 								rules={{
 									required: {
 										message: "Municipio é obrigatório",
@@ -338,16 +392,19 @@ export default function CadastroFarmacia() {
 										<InputContainer
 											id="municipio"
 											label="Municipio"
-											error={errors.endereco && errors.endereco.municipio}
+											error={
+												errorsFarmacia.endereco &&
+												errorsFarmacia.endereco.municipio
+											}
 										>
 											<Select
 												id="municipio"
 												placeholder="Vilhena"
 												opcoes={municipios}
 												filtro={pesquisaMunicipio}
-												disabled={!watch("endereco.estado")}
+												disabled={!watchFarmacia("endereco.estado")}
 												setFiltro={setPesquisaMunicipio}
-												setValue={setValue}
+												setValue={setValueFarmacia}
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
@@ -356,7 +413,7 @@ export default function CadastroFarmacia() {
 							/>
 							<Controller
 								name="endereco.bairro"
-								control={control}
+								control={controlFarmacia}
 								rules={{
 									required: {
 										message: "Bairro é obrigatório",
@@ -372,7 +429,10 @@ export default function CadastroFarmacia() {
 										<InputContainer
 											id="bairro"
 											label="Bairro"
-											error={errors.endereco && errors.endereco.bairro}
+											error={
+												errorsFarmacia.endereco &&
+												errorsFarmacia.endereco.bairro
+											}
 										>
 											<Input
 												id="bairro"
@@ -385,7 +445,7 @@ export default function CadastroFarmacia() {
 							/>
 							<Controller
 								name="endereco.logradouro"
-								control={control}
+								control={controlFarmacia}
 								rules={{
 									required: {
 										message: "Logradouro é obrigatório",
@@ -401,7 +461,10 @@ export default function CadastroFarmacia() {
 										<InputContainer
 											id="logradouro"
 											label="Logradouro"
-											error={errors.endereco && errors.endereco.logradouro}
+											error={
+												errorsFarmacia.endereco &&
+												errorsFarmacia.endereco.logradouro
+											}
 										>
 											<Input
 												id="logradouro"
@@ -414,7 +477,7 @@ export default function CadastroFarmacia() {
 							/>
 							<Controller
 								name="endereco.numero"
-								control={control}
+								control={controlFarmacia}
 								rules={{
 									required: {
 										value: true,
@@ -430,7 +493,10 @@ export default function CadastroFarmacia() {
 										<InputContainer
 											id="numero"
 											label="Numero"
-											error={errors.endereco && errors.endereco.numero}
+											error={
+												errorsFarmacia.endereco &&
+												errorsFarmacia.endereco.numero
+											}
 										>
 											<Input
 												id="numero"
@@ -450,14 +516,21 @@ export default function CadastroFarmacia() {
 								<Map
 									setLocalizacao={setLocalizacao}
 									endereco_pesquisa={{
-										...watch("endereco"),
-										nome_farmacia: watch("nome_fantasia"),
+										...watchFarmacia("endereco"),
+										nome_farmacia: watchFarmacia("nome_fantasia"),
 									}}
 									map_center={localizacao}
 								/>
 							</div>
 						</div>
 					</CadastroEtapa>
+					<Secao titulo="Horários de serviço">
+						<HorariosServico
+							errosHorario={errosHorario}
+							onSubmitHorario={onSubmitHorario}
+						/>
+					</Secao>
+					<Secao titulo="Escala de plantão"></Secao>
 					<CadastroBotoes>
 						<Botao fullWidth type="submit">
 							Salvar
