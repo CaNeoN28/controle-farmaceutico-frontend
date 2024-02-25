@@ -23,6 +23,8 @@ export default function EditarFarmacia({
 }: {
 	params: Params;
 }) {
+	redirecionarAutenticacao()
+
 	const router = useRouter();
 	const fetchFarmacia = new FetchFarmacia();
 

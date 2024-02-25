@@ -10,8 +10,12 @@ import { useState } from "react";
 import { RequestErro } from "@/types/Requests";
 import Botao from "@/components/Botao";
 import { useRouter } from "next/navigation";
+import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
+import Menu from "@/components/Menu";
 
 export default function CadastroFarmacia() {
+	redirecionarAutenticacao();
+
 	const router = useRouter();
 	const postFarmacia = new FetchFarmacia().postFarmacia;
 
@@ -28,7 +32,7 @@ export default function CadastroFarmacia() {
 				setMensagem("Farmácia cadastrada com sucesso");
 				setShowAlert(true);
 			})
-			
+
 			.catch((err: RequestErro<any>) => {
 				const {
 					response: { data },
@@ -47,6 +51,7 @@ export default function CadastroFarmacia() {
 
 	return (
 		<>
+			<Menu />
 			<FormularioFarmacia salvarFarmacia={salvarFarmacia} />
 			<Alert show={showAlert} setShow={setShowAlert}>
 				<div className={styles.alert}>
