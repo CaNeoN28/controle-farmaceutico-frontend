@@ -6,6 +6,7 @@ import InputContainer from "@/components/InputContainer";
 import { FaPlus } from "react-icons/fa";
 import Botao from "@/components/Botao";
 import { FieldError } from "react-hook-form";
+import classNames from "classnames";
 
 interface Erros {
 	entrada?: FieldError;
@@ -57,9 +58,17 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 		]);
 	};
 
+	const classesForm = classNames({
+		[styles.form]: true,
+		[styles.erros]: Object.keys(erros).length > 0,
+	});
+
 	useEffect(() => {
 		if (entrada) {
-			setErros({ ...erros, entrada: undefined });
+			const errosNovos = { ...erros };
+			delete errosNovos.entrada;
+
+			setErros(errosNovos);
 		}
 
 		if (saida && entrada) {
@@ -76,7 +85,10 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 
 	useEffect(() => {
 		if (saida) {
-			setErros({ ...erros, saida: undefined });
+			const errosNovos = { ...erros };
+			delete errosNovos.saida;
+
+			setErros(errosNovos);
 		}
 
 		if (saida && entrada) {
@@ -93,7 +105,7 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 
 	return (
 		<div className={styles.etapa_retratil}>
-			<div className={styles.form}>
+			<div className={classesForm}>
 				<InputContainer
 					id="entrada"
 					label="Horário entrada"
@@ -138,7 +150,7 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 									const plantoesNovos = plantoes.filter((_, index) => {
 										return i != index;
 									});
-									
+
 									setPlantoes(plantoesNovos);
 								}}
 							/>

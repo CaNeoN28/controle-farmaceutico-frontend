@@ -9,6 +9,7 @@ import { FieldError } from "react-hook-form";
 import Input from "@/components/Input";
 import HorarioServico from "@/components/HorarioServico";
 import DiaSemana, { getDayName } from "@/types/DiasSemana";
+import classNames from "classnames";
 
 interface Erros {
 	dia_semana?: FieldError;
@@ -16,10 +17,8 @@ interface Erros {
 	horario_saida?: FieldError;
 }
 interface Props {
-	errosHorario: Erros;
 	horario: { [key: string]: IHorário };
 	setHorario: Dispatch<SetStateAction<{ [key: string]: IHorário }>>;
-	setErros: Dispatch<SetStateAction<Erros>>;
 }
 
 const OpcoesDiaSemana: Opcao[] = [
@@ -55,10 +54,10 @@ const OpcoesDiaSemana: Opcao[] = [
 
 export default function HorariosServico({
 	horario,
-	errosHorario,
 	setHorario,
-	setErros,
 }: Props) {
+	const [erros, setErros] = useState<Erros>({});
+
 	const [diaSemana, setDiaSemana] = useState("");
 	const [filtroDiaSemana, setFiltroDiaSemana] = useState("");
 
@@ -107,18 +106,23 @@ export default function HorariosServico({
 		return true;
 	};
 
+	const classesForm = classNames({
+		[styles.form]: true,
+		[styles.erros]: Object.keys(erros).length > 0,
+	});
+
 	useEffect(() => {
-		setErros({
-			...errosHorario,
-			dia_semana: undefined,
-		});
+		const errosNovos = {...erros}
+		delete errosNovos.dia_semana
+
+		setErros(errosNovos);
 	}, [diaSemana]);
 
 	useEffect(() => {
-		setErros({
-			...errosHorario,
-			horario_entrada: undefined,
-		});
+		const errosNovos = {...erros}
+		delete errosNovos.horario_entrada
+
+		setErros(errosNovos);
 
 		if (horarioSaida && horarioEntrada) {
 			const [horaEntrada, minutoEntrada] = horarioEntrada
@@ -140,10 +144,10 @@ export default function HorariosServico({
 	}, [horarioEntrada]);
 
 	useEffect(() => {
-		setErros({
-			...errosHorario,
-			horario_saida: undefined,
-		});
+		const errosNovos = {...erros}
+		delete errosNovos.horario_saida
+
+		setErros(errosNovos);
 
 		if (horarioSaida && horarioEntrada) {
 			const [horaEntrada, minutoEntrada] = horarioEntrada
@@ -166,11 +170,11 @@ export default function HorariosServico({
 
 	return (
 		<div className={styles.etapa_retratil}>
-			<div className={styles.form}>
+			<div className={classesForm}>
 				<InputContainer
 					id="dia_semana"
 					label="Dia da semana"
-					error={errosHorario.dia_semana}
+					error={erros.dia_semana}
 				>
 					<Select
 						name="dia_semana"
@@ -185,7 +189,7 @@ export default function HorariosServico({
 				<InputContainer
 					id="horario_entrada"
 					label="Horário entrada"
-					error={errosHorario.horario_entrada}
+					error={erros.horario_entrada}
 				>
 					<Input
 						id="horario_entrada"
@@ -199,7 +203,7 @@ export default function HorariosServico({
 				<InputContainer
 					id="horario_saida"
 					label="Horário saida"
-					error={errosHorario.horario_saida}
+					error={erros.horario_saida}
 				>
 					<Input
 						id="horario_saida"

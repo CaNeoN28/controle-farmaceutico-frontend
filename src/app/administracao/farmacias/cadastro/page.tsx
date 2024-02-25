@@ -71,11 +71,6 @@ export default function CadastroFarmacia() {
 	const [horario, setHorario] = useState<{
 		[key: string]: IHorário;
 	}>({});
-	const [errosHorario, setErrosHorario] = useState<{
-		dia_semana?: FieldError;
-		horario_entrada?: FieldError;
-		horario_saida?: FieldError;
-	}>({});
 
 	const [plantoes, setPlantoes] = useState<
 		{ entrada: string; saida: string }[]
@@ -505,9 +500,7 @@ export default function CadastroFarmacia() {
 					<Secao titulo="Horários de serviço">
 						<HorariosServico
 							horario={horario}
-							errosHorario={errosHorario}
 							setHorario={setHorario}
-							setErros={setErrosHorario}
 						/>
 					</Secao>
 					<Secao titulo="Escala de plantão">
