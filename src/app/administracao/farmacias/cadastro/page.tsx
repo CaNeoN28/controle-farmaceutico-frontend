@@ -545,6 +545,7 @@ export default function CadastroFarmacia() {
 					</CadastroEtapa>
 					<Secao titulo="Horários de serviço">
 						<HorariosServico
+							horario={horario}
 							errosHorario={errosHorario}
 							setErros={setErrosHorario}
 							onSubmitHorario={onSubmitHorario}

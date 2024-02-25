@@ -1,4 +1,11 @@
-.etapa_retratil {
+.etapa_retratil{
+	display: flex;
+	flex-direction: column;
+
+	gap: 24px;
+}
+
+.form {
 	display: flex;
 	align-items: flex-end;
 
@@ -16,4 +23,12 @@
 
 .botao{
 	width: 25%;
+}
+
+.horarios{
+	display: grid;
+
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+
+	gap: 16px 24px;
 }
