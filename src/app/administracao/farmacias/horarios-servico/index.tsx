@@ -63,10 +63,14 @@ export default function HorariosServico({
 	const [filtroDiaSemana, setFiltroDiaSemana] = useState("");
 
 	const [horarioEntrada, setHorarioEntrada] = useState("");
+	const [horarioSaida, setHorarioSaida] = useState("");
 
 	useEffect(() => {
-		setErros({});
-	}, [diaSemana, horarioEntrada]);
+		setErros({
+			...errosHorario,
+			dia_semana: undefined
+		});
+	}, [diaSemana]);
 
 	return (
 		<div className={styles.etapa_retratil}>
@@ -100,6 +104,20 @@ export default function HorariosServico({
 						value={horarioEntrada}
 					/>
 				</InputContainer>
+				<InputContainer
+					id="horario_saida"
+					label="Horário saida"
+					error={errosHorario.horario_saida}
+				>
+					<Input
+						id="horario_saida"
+						type="time"
+						onChange={(e) => {
+							setHorarioSaida(e.target.value);
+						}}
+						value={horarioSaida}
+					/>
+				</InputContainer>
 			</div>
 			<span className={styles.botao}>
 				<Botao
@@ -110,7 +128,7 @@ export default function HorariosServico({
 						onSubmitHorario({
 							dia_semana: diaSemana,
 							horario_entrada: horarioEntrada,
-							horario_saida: "",
+							horario_saida: horarioSaida,
 						});
 					}}
 				>

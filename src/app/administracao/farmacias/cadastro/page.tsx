@@ -171,8 +171,12 @@ export default function CadastroFarmacia() {
 			erros.push("dia_semana:Dia da semana é obrigatório");
 		}
 
-		if(!horario_entrada){
-			erros.push("horario_entrada:Horário de entrada é obrigatório")
+		if (!horario_entrada) {
+			erros.push("horario_entrada:Horário de entrada é obrigatório");
+		}
+
+		if (!horario_saida) {
+			erros.push("horario_saida:Horário de saída é obrigatório");
 		}
 
 		if (erros.length > 0) {
@@ -195,7 +199,8 @@ export default function CadastroFarmacia() {
 
 		console.log({
 			dia_semana,
-			horario_entrada
+			horario_entrada,
+			horario_saida,
 		});
 	};
 
