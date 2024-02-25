@@ -77,6 +77,24 @@ export default function HorariosServico({
 			...errosHorario,
 			horario_entrada: undefined,
 		});
+
+		if (horarioSaida && horarioEntrada) {
+			const [horaEntrada, minutoEntrada] = horarioEntrada
+				.split(":")
+				.map((e) => Number(e));
+			const [horaSaida, minutoSaida] = horarioSaida
+				.split(":")
+				.map((e) => Number(e));
+
+			if (
+				horaEntrada > horaSaida ||
+				(horaEntrada == horaSaida && minutoEntrada > minutoSaida)
+			) {
+				setHorarioSaida(horarioEntrada);
+			}
+		} else {
+			setHorarioSaida(horarioEntrada);
+		}
 	}, [horarioEntrada]);
 
 	useEffect(() => {
@@ -84,6 +102,24 @@ export default function HorariosServico({
 			...errosHorario,
 			horario_saida: undefined,
 		});
+
+		if (horarioSaida && horarioEntrada) {
+			const [horaEntrada, minutoEntrada] = horarioEntrada
+				.split(":")
+				.map((e) => Number(e));
+			const [horaSaida, minutoSaida] = horarioSaida
+				.split(":")
+				.map((e) => Number(e));
+
+			if (
+				horaEntrada > horaSaida ||
+				(horaEntrada == horaSaida && minutoEntrada > minutoSaida)
+			) {
+				setHorarioEntrada(horarioSaida);
+			}
+		} else {
+			setHorarioEntrada(horarioSaida);
+		}
 	}, [horarioSaida]);
 
 	return (
