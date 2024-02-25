@@ -50,6 +50,40 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 		});
 	};
 
+	useEffect(() => {
+		if (entrada) {
+			setErros({ ...erros, entrada: undefined });
+		}
+		
+		if (saida && entrada) {
+			const dataEntrada = new Date(entrada);
+			const dataSaida = new Date(saida);
+
+			if (Number(dataEntrada) > Number(dataSaida)) {
+				setSaida(entrada);
+			}
+		} else {
+			setSaida(entrada);
+		}
+	}, [entrada]);
+
+	useEffect(() => {
+		if (saida) {
+			setErros({ ...erros, saida: undefined });
+		}
+
+		if (saida && entrada) {
+			const dataEntrada = new Date(entrada);
+			const dataSaida = new Date(saida);
+
+			if (Number(dataEntrada) > Number(dataSaida)) {
+				setEntrada(saida);
+			}
+		} else {
+			setEntrada(saida);
+		}
+	}, [saida]);
+
 	return (
 		<div className={styles.etapa_retratil}>
 			<div className={styles.form}>

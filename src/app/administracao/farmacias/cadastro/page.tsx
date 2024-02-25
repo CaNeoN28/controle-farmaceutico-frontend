@@ -208,10 +208,6 @@ export default function CadastroFarmacia() {
 		setValueFarmacia("endereco.localizacao.y", localizacao.lng);
 	}, [localizacao]);
 
-	useEffect(() => {
-		console.log(horario);
-	}, [horario]);
-
 	return (
 		<>
 			<Menu />
