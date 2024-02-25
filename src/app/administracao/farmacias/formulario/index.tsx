@@ -163,6 +163,8 @@ export default function FormularioFarmacia({
 	const onSubmitFarmacia: SubmitHandler<IFarmacia> = (data) => {
 		const horarios_servico = horario as { [key in DiaSemana]: IHorário };
 
+		data.endereco.cep = data.endereco.cep.replaceAll("-", "")
+
 		const farmacia: IFarmacia = {
 			...data,
 			plantoes,

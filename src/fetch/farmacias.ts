@@ -57,4 +57,14 @@ export default class FetchFarmacia {
 
 		return response;
 	}
+
+	updateFarmacia(farmacia: IFarmacia, id: string, authToken?: string) {
+		const response = axios.put(`${API_URL}/farmacia/${id}`, farmacia, {
+			headers: {
+				Authorization: `Bearer ${authToken}`,
+			},
+		});
+
+		return response;
+	}
 }
