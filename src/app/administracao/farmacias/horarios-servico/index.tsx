@@ -101,20 +101,23 @@ export default function HorariosServico({
 					/>
 				</InputContainer>
 			</div>
-			<Botao
-				type="submit"
-				onClick={(e) => {
-					e.preventDefault();
-					onSubmitHorario({
-						dia_semana: diaSemana,
-						horario_entrada: horarioEntrada,
-						horario_saida: "",
-					});
-				}}
-			>
-				<span>Adicionar</span>
-				<FaPlus />
-			</Botao>
+			<span className={styles.botao}>
+				<Botao
+					type="submit"
+					fullWidth
+					onClick={(e) => {
+						e.preventDefault();
+						onSubmitHorario({
+							dia_semana: diaSemana,
+							horario_entrada: horarioEntrada,
+							horario_saida: "",
+						});
+					}}
+				>
+					<span>Adicionar</span>
+					<FaPlus />
+				</Botao>
+			</span>
 		</div>
 	);
 }

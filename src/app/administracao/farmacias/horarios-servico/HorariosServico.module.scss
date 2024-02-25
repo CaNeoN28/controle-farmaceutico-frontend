@@ -1,12 +1,19 @@
 .etapa_retratil {
 	display: flex;
-	flex-direction: column;
+	align-items: flex-end;
 
 	gap: 24px;
 }
 
 .form_inputs {
 	display: flex;
+	align-items: flex-end;
+
+	width: 75%;
 
 	gap: 24px;
+}
+
+.botao{
+	width: 25%;
 }
