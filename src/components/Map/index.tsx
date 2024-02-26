@@ -56,8 +56,8 @@ export default function Map(props: Props) {
 		});
 
 		if (endereco_pesquisa) {
-			const { cep, estado, municipio, bairro, logradouro } = endereco_pesquisa;
-			const pesquisa = [cep, estado, municipio, bairro, logradouro].join(" ");
+			const { cep, estado, municipio, bairro, logradouro, numero, nome_farmacia } = endereco_pesquisa;
+			const pesquisa = [cep, estado, municipio, bairro, logradouro, numero, nome_farmacia].join(" ");
 
 			geocoder
 				.geocode({ address: pesquisa })
