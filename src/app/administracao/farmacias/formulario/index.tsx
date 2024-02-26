@@ -232,6 +232,8 @@ export default function FormularioFarmacia({
 			setPesquisaMunicipio("");
 			setValueFarmacia("endereco.municipio", "");
 		}
+
+		setPesquisaEstado(watchFarmacia("endereco.estado"));
 	}, [watchFarmacia("endereco.estado")]);
 
 	useEffect(() => {
