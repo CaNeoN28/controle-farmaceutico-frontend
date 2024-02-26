@@ -62,14 +62,17 @@ export default function Menu({}: Props) {
 					<BotaoMenu link="/listagem/plantoes">Plantões</BotaoMenu>
 					{userId && <BotaoMenu link="/administracao">Administração</BotaoMenu>}
 				</div>
-				<div>
+				<div className={styles.opcoes}>
 					{userId ? (
 						<BotaoMenu link="/perfil">
 							<span>Perfil</span>
 							<FaUserCircle />
 						</BotaoMenu>
 					) : (
-						<BotaoMenu link="/login">Entrar</BotaoMenu>
+						<>
+							<BotaoMenu link="/cadastro">Registrar</BotaoMenu>
+							<BotaoMenu link="/login">Entrar</BotaoMenu>
+						</>
 					)}
 				</div>
 			</div>
