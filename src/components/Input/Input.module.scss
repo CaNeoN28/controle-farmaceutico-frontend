@@ -12,7 +12,11 @@
   color: var(--gray);
 }
 
+.input::placeholder{
+	color: var(--placeholder);
+}
+
 .input:disabled {
-  background-color: var(--light-gray);
+  background-color: var(--lighter-gray);
   color: var(--gray);
 }

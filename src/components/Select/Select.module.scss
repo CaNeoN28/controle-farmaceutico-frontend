@@ -21,7 +21,8 @@
 }
 
 .input_disabled {
-	background-color: var(--light-gray);
+	background-color: var(--lighter-gray);
+
 	.input:disabled {
 		background: none;
 	}
@@ -43,6 +44,10 @@
 	width: 100%;
 
 	color: var(--gray);
+}
+
+.input::placeholder{
+	color: var(--placeholder);
 }
 
 .icones {
