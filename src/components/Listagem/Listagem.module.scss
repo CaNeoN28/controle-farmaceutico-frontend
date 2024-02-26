@@ -10,9 +10,9 @@
 
 @media screen and (min-width: 480px) {
 	.listagem {
-		display: grid;
+		flex-wrap: wrap;
 		justify-content: center;
-		grid-template-columns: auto auto;
+		flex-direction: row;
 
 		margin: auto;
 	}
@@ -20,20 +20,6 @@
 
 @media screen and (min-width: 800px) {
 	.listagem {
-		grid-template-columns: auto auto auto;
-
 		gap: 24px;
-	}
-}
-
-@media screen and (min-width: 1020px) {
-	.listagem {
-		grid-template-columns: auto auto auto auto;
-	}
-}
-
-@media screen and (min-width: 1220px) {
-	.listagem {
-		grid-template-columns: auto auto auto auto auto;
 	}
 }
