@@ -337,10 +337,6 @@ export default function FormularioFarmacia({
 							name="endereco.cep"
 							control={controlFarmacia}
 							rules={{
-								required: {
-									message: "CEP é obrigatório",
-									value: true,
-								},
 								minLength: {
 									message: "CEP deve ter 8 digitos",
 									value: 9,

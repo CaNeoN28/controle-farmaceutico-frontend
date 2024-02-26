@@ -199,12 +199,6 @@ export default function AutoCadastro() {
 							<Controller
 								name="entidade_relacionada"
 								control={control}
-								rules={{
-									required: {
-										message: "Entidade relacionada é obrigatório",
-										value: true,
-									},
-								}}
 								render={({ field }) => {
 									return (
 										<InputContainer
