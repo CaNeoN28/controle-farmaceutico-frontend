@@ -63,24 +63,26 @@ export default function Farmacias() {
 				filtros.nome_fantasia = pesquisa;
 			}
 
-			farmaciaFetch
+			await farmaciaFetch
 				.getFarmacias(filtros)
 				.then((res) => {
 					const response = res.data as GetManyRequest<IFarmacia[]>;
 					const farmacias = response.dados.map((f) => {
 						const dia_semana = getDayFromNum(data.getDay());
 
-						const horario = f.horarios_servico[dia_semana];
+						if (f.horarios_servico) {
+							const horario = f.horarios_servico[dia_semana];
 
-						const aberto_hoje = farmaciaEstaAberta(f, data);
+							const aberto_hoje = farmaciaEstaAberta(f, data);
 
-						if (aberto_hoje) {
-							return {
-								...f,
-								aberto_hoje: true,
-								entrada: horario && horario.horario_entrada,
-								saida: horario && horario.horario_saida,
-							};
+							if (aberto_hoje) {
+								return {
+									...f,
+									aberto_hoje: true,
+									entrada: horario && horario.horario_entrada,
+									saida: horario && horario.horario_saida,
+								};
+							}
 						}
 
 						return {
@@ -165,10 +167,6 @@ export default function Farmacias() {
 	useEffect(() => {
 		getFarmacias();
 	}, [position]);
-
-	useEffect(() => {
-		console.log(farmacias);
-	}, [farmacias]);
 
 	useLayoutEffect(() => {
 		getFarmacias();
