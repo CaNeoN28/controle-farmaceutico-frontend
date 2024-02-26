@@ -15,6 +15,7 @@ import {
 	CadastroEtapa,
 	CadastroInputs,
 	CadastroBotoes,
+	CadastroContainer,
 } from "@/components/Cadastro";
 import { validarCNPJ } from "@/utils/validation";
 import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
@@ -253,8 +254,8 @@ export default function FormularioFarmacia({
 	}, [localizacao]);
 
 	return (
-		<>
-			<CadastroForm onSubmit={handleSubmitFarmacia(onSubmitFarmacia)}>
+		<CadastroContainer>
+			<CadastroForm>
 				<CadastroEtapa titulo="Dados da farmácia">
 					<CadastroInputs>
 						<Controller
@@ -539,21 +540,25 @@ export default function FormularioFarmacia({
 						</div>
 					</div>
 				</CadastroEtapa>
-				<Secao titulo="Horários de serviço">
-					<HorariosServico horario={horario} setHorario={setHorario} />
-				</Secao>
-				<Secao titulo="Escala de plantão">
-					<Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
-				</Secao>
-				<CadastroBotoes>
-					<Botao fullWidth type="submit">
-						Salvar
-					</Botao>
-					<Botao fullWidth secundario>
-						Cancelar
-					</Botao>
-				</CadastroBotoes>
 			</CadastroForm>
-		</>
+			<Secao titulo="Horários de serviço">
+				<HorariosServico horario={horario} setHorario={setHorario} />
+			</Secao>
+			<Secao titulo="Escala de plantão">
+				<Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
+			</Secao>
+			<CadastroBotoes>
+				<Botao
+					onClick={handleSubmitFarmacia(onSubmitFarmacia)}
+					fullWidth
+					type="submit"
+				>
+					Salvar
+				</Botao>
+				<Botao fullWidth secundario>
+					Cancelar
+				</Botao>
+			</CadastroBotoes>
+		</CadastroContainer>
 	);
 }

@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import Botao from "@/components/Botao";
 import { FieldError } from "react-hook-form";
 import classNames from "classnames";
+import { CadastroForm } from "@/components/Cadastro";
 
 interface Erros {
 	entrada?: FieldError;
@@ -104,61 +105,62 @@ export default function Plantoes({ plantoes, setPlantoes }: Props) {
 	}, [saida]);
 
 	return (
-		<div className={styles.etapa_retratil}>
-			<div className={classesForm}>
-				<InputContainer
-					id="entrada"
-					label="Horário entrada"
-					error={erros.entrada}
-				>
-					<Input
+		<CadastroForm
+			onSubmit={(e) => {
+				e.preventDefault();
+
+				onSubmit();
+			}}
+		>
+			<div className={styles.etapa_retratil}>
+				<div className={classesForm}>
+					<InputContainer
 						id="entrada"
-						name="entrada"
-						type="datetime-local"
-						value={entrada}
-						onChange={(e) => setEntrada(e.target.value)}
-					/>
-				</InputContainer>
-				<InputContainer id="saida" label="Horário saida" error={erros.saida}>
-					<Input
-						id="saida"
-						name="saida"
-						type="datetime-local"
-						value={saida}
-						onChange={(e) => setSaida(e.target.value)}
-					/>
-				</InputContainer>
-				<Botao
-					fullWidth
-					onClick={(e) => {
-						e.preventDefault();
-
-						onSubmit();
-					}}
-				>
-					<span>Adicionar</span>
-					<FaPlus />
-				</Botao>
-			</div>
-			{plantoes.length > 0 && (
-				<div className={styles.plantoes}>
-					{plantoes.map((p, i) => {
-						return (
-							<DiaPlantao
-								key={i}
-								data={p.entrada}
-								onClick={() => {
-									const plantoesNovos = plantoes.filter((_, index) => {
-										return i != index;
-									});
-
-									setPlantoes(plantoesNovos);
-								}}
-							/>
-						);
-					})}
+						label="Horário entrada"
+						error={erros.entrada}
+					>
+						<Input
+							id="entrada"
+							name="entrada"
+							type="datetime-local"
+							value={entrada}
+							onChange={(e) => setEntrada(e.target.value)}
+						/>
+					</InputContainer>
+					<InputContainer id="saida" label="Horário saida" error={erros.saida}>
+						<Input
+							id="saida"
+							name="saida"
+							type="datetime-local"
+							value={saida}
+							onChange={(e) => setSaida(e.target.value)}
+						/>
+					</InputContainer>
+					<Botao fullWidth type="submit">
+						<span>Adicionar</span>
+						<FaPlus />
+					</Botao>
 				</div>
-			)}
-		</div>
+				{plantoes.length > 0 && (
+					<div className={styles.plantoes}>
+						{plantoes.map((p, i) => {
+							return (
+								<DiaPlantao
+									key={i}
+									data={p.entrada}
+									onClick={() => {
+										const plantoesNovos = plantoes.filter((_, index) => {
+											return i != index;
+										});
+
+										setPlantoes(plantoesNovos);
+									}}
+								/>
+							);
+						})}
+					</div>
+				)}
+			</div>
+		</CadastroForm>
 	);
 }

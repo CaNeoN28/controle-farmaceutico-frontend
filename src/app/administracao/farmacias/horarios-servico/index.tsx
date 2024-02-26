@@ -10,6 +10,7 @@ import Input from "@/components/Input";
 import HorarioServico from "@/components/HorarioServico";
 import DiaSemana, { getDayName } from "@/types/DiasSemana";
 import classNames from "classnames";
+import { CadastroForm } from "@/components/Cadastro";
 
 interface Erros {
 	dia_semana?: FieldError;
@@ -52,10 +53,7 @@ const OpcoesDiaSemana: Opcao[] = [
 	},
 ];
 
-export default function HorariosServico({
-	horario,
-	setHorario,
-}: Props) {
+export default function HorariosServico({ horario, setHorario }: Props) {
 	const [erros, setErros] = useState<Erros>({});
 
 	const [diaSemana, setDiaSemana] = useState("");
@@ -112,15 +110,15 @@ export default function HorariosServico({
 	});
 
 	useEffect(() => {
-		const errosNovos = {...erros}
-		delete errosNovos.dia_semana
+		const errosNovos = { ...erros };
+		delete errosNovos.dia_semana;
 
 		setErros(errosNovos);
 	}, [diaSemana]);
 
 	useEffect(() => {
-		const errosNovos = {...erros}
-		delete errosNovos.horario_entrada
+		const errosNovos = { ...erros };
+		delete errosNovos.horario_entrada;
 
 		setErros(errosNovos);
 
@@ -144,8 +142,8 @@ export default function HorariosServico({
 	}, [horarioEntrada]);
 
 	useEffect(() => {
-		const errosNovos = {...erros}
-		delete errosNovos.horario_saida
+		const errosNovos = { ...erros };
+		delete errosNovos.horario_saida;
 
 		setErros(errosNovos);
 
@@ -169,92 +167,92 @@ export default function HorariosServico({
 	}, [horarioSaida]);
 
 	return (
-		<div className={styles.etapa_retratil}>
-			<div className={classesForm}>
-				<InputContainer
-					id="dia_semana"
-					label="Dia da semana"
-					error={erros.dia_semana}
-				>
-					<Select
-						name="dia_semana"
-						placeholder="Segunda feira"
-						filtro={filtroDiaSemana}
-						opcoes={OpcoesDiaSemana}
-						value={diaSemana}
-						setFiltro={setFiltroDiaSemana}
-						setValueState={setDiaSemana}
-					/>
-				</InputContainer>
-				<InputContainer
-					id="horario_entrada"
-					label="Horário entrada"
-					error={erros.horario_entrada}
-				>
-					<Input
+		<CadastroForm
+			onSubmit={(e) => {
+				e.preventDefault();
+				const sucesso = onSubmit();
+
+				if (sucesso) {
+					setHorarioEntrada("");
+					setHorarioSaida("");
+					setDiaSemana("");
+					setFiltroDiaSemana("");
+				}
+			}}
+		>
+			<div className={styles.etapa_retratil}>
+				<div className={classesForm}>
+					<InputContainer
+						id="dia_semana"
+						label="Dia da semana"
+						error={erros.dia_semana}
+					>
+						<Select
+							name="dia_semana"
+							placeholder="Segunda feira"
+							filtro={filtroDiaSemana}
+							opcoes={OpcoesDiaSemana}
+							value={diaSemana}
+							setFiltro={setFiltroDiaSemana}
+							setValueState={setDiaSemana}
+						/>
+					</InputContainer>
+					<InputContainer
 						id="horario_entrada"
-						type="time"
-						onChange={(e) => {
-							setHorarioEntrada(e.target.value);
-						}}
-						value={horarioEntrada}
-					/>
-				</InputContainer>
-				<InputContainer
-					id="horario_saida"
-					label="Horário saida"
-					error={erros.horario_saida}
-				>
-					<Input
+						label="Horário entrada"
+						error={erros.horario_entrada}
+					>
+						<Input
+							id="horario_entrada"
+							type="time"
+							onChange={(e) => {
+								setHorarioEntrada(e.target.value);
+							}}
+							value={horarioEntrada}
+						/>
+					</InputContainer>
+					<InputContainer
 						id="horario_saida"
-						type="time"
-						onChange={(e) => {
-							setHorarioSaida(e.target.value);
-						}}
-						value={horarioSaida}
-					/>
-				</InputContainer>
-				<Botao
-					type="submit"
-					fullWidth
-					onClick={(e) => {
-						e.preventDefault();
-						const sucesso = onSubmit();
-
-						if (sucesso) {
-							setHorarioEntrada("");
-							setHorarioSaida("");
-							setDiaSemana("");
-							setFiltroDiaSemana("");
-						}
-					}}
-				>
-					<span>Adicionar</span>
-					<FaPlus />
-				</Botao>
-			</div>
-			{Object.keys(horario).length > 0 && (
-				<div className={styles.horarios}>
-					{Object.keys(horario).map((key) => {
-						const { horario_entrada, horario_saida } = horario[key];
-						const diaSemana = getDayName(key as DiaSemana);
-						return (
-							<HorarioServico
-								key={key}
-								dia_semana={diaSemana}
-								entrada={horario_entrada}
-								saida={horario_saida}
-								onClick={() => {
-									const horarioNovo = { ...horario };
-									delete horarioNovo[key];
-
-									setHorario(horarioNovo);
-								}}
-							/>
-						);
-					})}
+						label="Horário saida"
+						error={erros.horario_saida}
+					>
+						<Input
+							id="horario_saida"
+							type="time"
+							onChange={(e) => {
+								setHorarioSaida(e.target.value);
+							}}
+							value={horarioSaida}
+						/>
+					</InputContainer>
+					<Botao type="submit" fullWidth>
+						<span>Adicionar</span>
+						<FaPlus />
+					</Botao>
 				</div>
-			)}
-		</div>
+				{Object.keys(horario).length > 0 && (
+					<div className={styles.horarios}>
+						{Object.keys(horario).map((key) => {
+							const { horario_entrada, horario_saida } = horario[key];
+							const diaSemana = getDayName(key as DiaSemana);
+							return (
+								<HorarioServico
+									key={key}
+									dia_semana={diaSemana}
+									entrada={horario_entrada}
+									saida={horario_saida}
+									onClick={() => {
+										const horarioNovo = { ...horario };
+										delete horarioNovo[key];
+
+										setHorario(horarioNovo);
+									}}
+								/>
+							);
+						})}
+					</div>
+				)}
+			</div>
+		</CadastroForm>
 	);
 }

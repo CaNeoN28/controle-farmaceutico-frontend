@@ -5,6 +5,10 @@ export function CadastroMain({ children }: { children?: ReactNode }) {
 	return <main className={styles.main_cadastro}>{children}</main>;
 }
 
+export function CadastroContainer({ children }: { children?: ReactNode }) {
+	return <div className={styles.container_cadastro}>{children}</div>;
+}
+
 interface CadastroProps extends React.ComponentPropsWithoutRef<"form"> {}
 
 export function CadastroForm({ onSubmit, children, ...props }: CadastroProps) {

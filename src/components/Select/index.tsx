@@ -113,31 +113,33 @@ export default function Select({
 					</span>
 				</div>
 			</div>
-			<div id={`opcoes_${nome_formatado}`} className={styles.opcoes}>
-				{opcoes.length > 0 ? (
-					opcoes.map((o, i) => (
-						<button
-							key={i}
-							onClick={(e) => {
-								e.preventDefault();
-								setAtivo(false);
-								setFiltro(o.label);
-								if (name) {
-									if (setValue) {
-										setValue(name, o.valor);
-									} else if (setValueState) {
-										setValueState(String(o.valor));
+			{ativo && (
+				<div id={`opcoes_${nome_formatado}`} className={styles.opcoes}>
+					{opcoes.length > 0 ? (
+						opcoes.map((o, i) => (
+							<button
+								key={i}
+								onClick={(e) => {
+									e.preventDefault();
+									setAtivo(false);
+									setFiltro(o.label);
+									if (name) {
+										if (setValue) {
+											setValue(name, o.valor);
+										} else if (setValueState) {
+											setValueState(String(o.valor));
+										}
 									}
-								}
-							}}
-						>
-							{o.label}
-						</button>
-					))
-				) : (
-					<span className={styles.erro}>Não encontrado</span>
-				)}
-			</div>
+								}}
+							>
+								{o.label}
+							</button>
+						))
+					) : (
+						<span className={styles.erro}>Não encontrado</span>
+					)}
+				</div>
+			)}
 			<input
 				className={styles.hidden}
 				value={value}

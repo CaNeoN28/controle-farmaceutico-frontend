@@ -7,10 +7,10 @@
 	padding: 40px 92px;
 }
 
-.formulario_cadastro {
+.container_cadastro{
 	display: flex;
 	flex-direction: column;
-
+	
 	gap: 40px;
 	padding: 40px 24px;
 
@@ -67,7 +67,7 @@
 		padding: 64px 20px;
 	}
 
-	.formulario_cadastro{
+	.container_cadastro{
 		padding: 0;
 		border: none;
 	}
