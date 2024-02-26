@@ -12,22 +12,25 @@ export default function farmaciaEstaAberta(farmacia: IFarmacia, horario: Date) {
 	};
 
 	let noHorario = false;
-	const hoje = horarios[dia_semana];
 
-	if (hoje) {
-		const [horaEntrada, minutoEntrada] = hoje.horario_entrada
-			.split(":")
-			.map((h) => Number(h));
+	if (horarios) {
+		const hoje = horarios[dia_semana];
 
-		const [horaSaida, minutoSaida] = hoje.horario_saida
-			.split(":")
-			.map((h) => Number(h));
+		if (hoje) {
+			const [horaEntrada, minutoEntrada] = hoje.horario_entrada
+				.split(":")
+				.map((h) => Number(h));
 
-		if (
-			hora > horaEntrada &&
-			(hora < horaSaida || (hora <= horaSaida && minuto < minutoSaida))
-		) {
-			noHorario = true;
+			const [horaSaida, minutoSaida] = hoje.horario_saida
+				.split(":")
+				.map((h) => Number(h));
+
+			if (
+				hora > horaEntrada &&
+				(hora < horaSaida || (hora <= horaSaida && minuto < minutoSaida))
+			) {
+				noHorario = true;
+			}
 		}
 	}
 

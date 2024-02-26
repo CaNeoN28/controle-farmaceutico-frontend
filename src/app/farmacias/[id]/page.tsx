@@ -37,7 +37,7 @@ export default function Farmacia({ params }: { params: Params }) {
 
 	const fFarmacias = new FetchFarmacia();
 
-	const [date, setDate] = useState(new Date());
+	const [date] = useState(new Date());
 	const [farmacia, setFarmacia] = useState<IFarmacia>();
 	const [localizacaoUsuario, setLocalizacaoUsuario] = useState<Coordenadas>();
 
@@ -120,19 +120,24 @@ export default function Farmacia({ params }: { params: Params }) {
 		if (farmacia) {
 			getRota();
 
-			const horarios: Horario[] = Object.keys(farmacia.horarios_servico).map(
-				(v: string) => {
-					const dia = v as DiaSemana;
+			if (
+				farmacia.horarios_servico &&
+				Object.keys(farmacia.horarios_servico).length > 0
+			) {
+				const horarios: Horario[] = Object.keys(farmacia.horarios_servico).map(
+					(v: string) => {
+						const dia = v as DiaSemana;
 
-					return {
-						dia_semana: getDayName(dia),
-						entrada: farmacia.horarios_servico[dia].horario_entrada,
-						saida: farmacia.horarios_servico[dia].horario_saida,
-					};
-				}
-			);
+						return {
+							dia_semana: getDayName(dia),
+							entrada: farmacia.horarios_servico[dia].horario_entrada,
+							saida: farmacia.horarios_servico[dia].horario_saida,
+						};
+					}
+				);
 
-			setHorarios(horarios);
+				setHorarios(horarios);
+			}
 
 			const plantoes: Plantoes = {};
 
