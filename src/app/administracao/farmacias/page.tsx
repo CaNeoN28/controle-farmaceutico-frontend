@@ -350,6 +350,7 @@ export default function FarmaciasAdministracao() {
 
 									return (
 										<AdministracaoItem
+											id={f._id}
 											key={i}
 											imagem_url={f.imagem_url}
 											conteudoPrincipal={conteudoPrincipal}

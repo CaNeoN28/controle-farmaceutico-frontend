@@ -39,9 +39,60 @@ export function AdministracaoContainer({ children }: DefaultProps) {
 }
 
 export function AdministracaoFiltros({ children, onSubmit }: FiltrosProps) {
+	const [width, setWidth] = useState(window.innerWidth);
+	const [ativo, setAtivo] = useState(false);
+
+	useEffect(() => {
+		const form = document.getElementById("form_filtros");
+		const dropdown = document.getElementById("form_dropdown");
+
+		if (form && dropdown) {
+			form.classList.toggle(styles.ativo)
+			dropdown.classList.toggle(styles.ativo)
+		}
+	}, [ativo]);
+
+	useEffect(() => {
+		const getWidth = () => {
+			const { innerWidth } = window;
+
+			setWidth(innerWidth);
+		};
+
+		window.addEventListener("resize", getWidth);
+
+		setAtivo(false);
+
+		return () => {
+			window.removeEventListener("resize", getWidth);
+		};
+	}, []);
+
+	if (width >= 620)
+		return (
+			<form className={styles.filtros_administracao} onSubmit={onSubmit}>
+				{children}
+			</form>
+		);
+
 	return (
-		<form className={styles.filtros_administracao} onSubmit={onSubmit}>
-			{children}
+		<form
+			id={`form_filtros`}
+			className={styles.filtros_administracao}
+			onSubmit={onSubmit}
+		>
+			<div
+				className={styles.filtros_toggle}
+				onClick={() => {
+					setAtivo(!ativo);
+				}}
+			>
+				<span>Filtros</span>
+				<span id="form_dropdown" className={styles.filtro_dropbutton}>
+					<FaChevronDown />
+				</span>
+			</div>
+			<div className={styles.filtros_content}>{children}</div>
 		</form>
 	);
 }
