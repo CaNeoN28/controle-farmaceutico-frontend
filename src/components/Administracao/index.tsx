@@ -201,7 +201,7 @@ export function AdministracaoItem({
 					)}
 				</div>
 				<div className={styles.main_content}>{conteudoPrincipal}</div>
-				<div id={`dropbutton_${id}`} className={styles.dropbutton}>
+				<div id={`dropbutton_${id}`} className={styles.item_dropbutton}>
 					<FaChevronDown />
 				</div>
 			</div>

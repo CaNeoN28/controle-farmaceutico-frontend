@@ -112,17 +112,17 @@
 	gap: 8px;
 }
 
-.dropbutton {
+.item_dropbutton {
 	display: flex;
 	align-items: center;
-	font-size: 24px;
+	font-size: 16px;
 
 	transition-property: all;
 	transition-duration: 200ms;
 	transition-timing-function: cubic-bezier(1, 1, 1, 1);
 }
 
-.dropbutton.ativo {
+.item_dropbutton.ativo {
 	transform: rotateX(180deg);
 }
 
