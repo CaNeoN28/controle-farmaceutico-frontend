@@ -29,6 +29,7 @@ import { getCookie } from "cookies-next";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import Alert from "@/components/Alert";
 import Botao from "@/components/Botao";
+import { mascararCnpj } from "@/utils/mascaras";
 
 interface Filtros {
 	nome_fantasia?: string;
@@ -334,7 +335,7 @@ export default function FarmaciasAdministracao() {
 									const conteudoPrincipal = (
 										<>
 											<span>{f.nome_fantasia}</span>
-											<span>{f.cnpj}</span>
+											<span>{mascararCnpj(f.cnpj)}</span>
 										</>
 									);
 
