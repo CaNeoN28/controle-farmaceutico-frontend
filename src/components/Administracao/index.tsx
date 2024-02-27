@@ -157,14 +157,14 @@ export function AdministracaoItem({
 			<div id={`content_${id}`} className={styles.hidden_content}>
 				<div className={styles.secondary_content}>{conteudoSecundario}</div>
 				<div className={styles.acoes}>
-					<LinkButton secundario especial link={linkEditar || ""}>
-						<span>Editar</span>
-						<MdEdit />
-					</LinkButton>
 					<Botao vermelho secundario especial fullWidth onClick={onDelete}>
 						<span>Remover</span>
 						<FaTrash />
 					</Botao>
+					<LinkButton secundario especial link={linkEditar || ""}>
+						<span>Editar</span>
+						<MdEdit />
+					</LinkButton>
 				</div>
 			</div>
 		</div>
