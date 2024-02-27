@@ -10,9 +10,13 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import {
 	AdministracaoContainer,
 	AdministracaoFiltros,
+	AdministracaoItem,
 	AdministracaoListagem,
 	AdministracaoMain,
 } from "@/components/Administracao";
+import IFarmacia from "@/types/Farmacia";
+import FetchFarmacia from "@/fetch/farmacias";
+import { GetManyRequest } from "@/types/Requests";
 
 export default function FarmaciasAdministracao() {
 	redirecionarAutenticacao();
@@ -25,7 +29,12 @@ export default function FarmaciasAdministracao() {
 		pagina: Number(searchParams.get("pagina")) || 1,
 	};
 
+	const fFarmacias = new FetchFarmacia();
+
 	const [params, setParams] = useState<URLSearchParams>();
+	const [maxPaginas, setMaxPaginas] = useState<number>(5)
+
+	const [farmacias, setFarmacias] = useState<IFarmacia[]>([]);
 
 	function addSearchParam(chave: string, valor?: string) {
 		const params = new URLSearchParams(searchParams);
@@ -38,6 +47,27 @@ export default function FarmaciasAdministracao() {
 
 		setParams(params);
 	}
+
+	async function getFarmacias() {
+		await fFarmacias
+			.getFarmacias({ pagina })
+			.then((res) => {
+				const { dados, paginas_totais, pagina } = res.data as GetManyRequest<IFarmacia[]>;
+
+				if (dados.length > 0) {
+					setFarmacias(dados);
+				}
+
+				setMaxPaginas(paginas_totais)
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
+	useEffect(() => {
+		getFarmacias();
+	}, [pagina]);
 
 	useLayoutEffect(() => {
 		if (params) {
@@ -52,11 +82,21 @@ export default function FarmaciasAdministracao() {
 				<TituloSecao>LISTAGEM DE FARMÁCIAS</TituloSecao>
 				<AdministracaoContainer>
 					<AdministracaoFiltros></AdministracaoFiltros>
-					<AdministracaoListagem></AdministracaoListagem>
+					{farmacias.length > 0 && (
+						<AdministracaoListagem>
+							{farmacias.map((f, i) => {
+								return (
+									<AdministracaoItem key={i}>
+										{f.nome_fantasia}
+									</AdministracaoItem>
+								);
+							})}
+						</AdministracaoListagem>
+					)}
 				</AdministracaoContainer>
 				<Paginacao
 					pagina={pagina}
-					paginaMax={5}
+					paginaMax={maxPaginas}
 					setPagina={(v) => {
 						addSearchParam("pagina", v.toString());
 					}}
