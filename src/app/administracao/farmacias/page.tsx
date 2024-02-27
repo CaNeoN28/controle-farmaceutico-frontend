@@ -7,6 +7,12 @@ import TituloSecao from "@/components/TituloSecao";
 import Paginacao from "@/components/Paginacao";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
+import {
+	AdministracaoContainer,
+	AdministracaoFiltros,
+	AdministracaoListagem,
+	AdministracaoMain,
+} from "@/components/Administracao";
 
 export default function FarmaciasAdministracao() {
 	redirecionarAutenticacao();
@@ -15,11 +21,11 @@ export default function FarmaciasAdministracao() {
 	const pathname = usePathname();
 	const router = useRouter();
 
-	const { pagina} = {
+	const { pagina } = {
 		pagina: Number(searchParams.get("pagina")) || 1,
 	};
 
-	const [params, setParams] = useState<URLSearchParams>()
+	const [params, setParams] = useState<URLSearchParams>();
 
 	function addSearchParam(chave: string, valor?: string) {
 		const params = new URLSearchParams(searchParams);
@@ -30,22 +36,24 @@ export default function FarmaciasAdministracao() {
 			params.delete(chave);
 		}
 
-		setParams(params)
+		setParams(params);
 	}
 
 	useLayoutEffect(() => {
-		if(params){
-			router.replace(`${pathname}?${params}`)
+		if (params) {
+			router.replace(`${pathname}?${params}`);
 		}
-	}, [params])
+	}, [params]);
 
 	return (
 		<>
 			<Menu />
-			<main>
+			<AdministracaoMain>
 				<TituloSecao>LISTAGEM DE FARMÁCIAS</TituloSecao>
-				<div></div>
-				<div></div>
+				<AdministracaoContainer>
+					<AdministracaoFiltros></AdministracaoFiltros>
+					<AdministracaoListagem></AdministracaoListagem>
+				</AdministracaoContainer>
 				<Paginacao
 					pagina={pagina}
 					paginaMax={5}
@@ -53,7 +61,7 @@ export default function FarmaciasAdministracao() {
 						addSearchParam("pagina", v.toString());
 					}}
 				/>
-			</main>
+			</AdministracaoMain>
 		</>
 	);
 }
