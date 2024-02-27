@@ -25,14 +25,15 @@ export default function FarmaciasAdministracao() {
 	const pathname = usePathname();
 	const router = useRouter();
 
-	const { pagina } = {
+	const { pagina, nome_fantasia } = {
 		pagina: Number(searchParams.get("pagina")) || 1,
+		nome_fantasia: searchParams.get("nome") || "",
 	};
 
 	const fFarmacias = new FetchFarmacia();
 
 	const [params, setParams] = useState<URLSearchParams>();
-	const [maxPaginas, setMaxPaginas] = useState<number>(5)
+	const [maxPaginas, setMaxPaginas] = useState<number>(5);
 
 	const [farmacias, setFarmacias] = useState<IFarmacia[]>([]);
 
@@ -50,15 +51,17 @@ export default function FarmaciasAdministracao() {
 
 	async function getFarmacias() {
 		await fFarmacias
-			.getFarmacias({ pagina })
+			.getFarmacias({ pagina, nome_fantasia })
 			.then((res) => {
-				const { dados, paginas_totais, pagina } = res.data as GetManyRequest<IFarmacia[]>;
+				const { dados, paginas_totais } = res.data as GetManyRequest<
+					IFarmacia[]
+				>;
 
 				if (dados.length > 0) {
 					setFarmacias(dados);
 				}
 
-				setMaxPaginas(paginas_totais)
+				setMaxPaginas(paginas_totais);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -86,7 +89,11 @@ export default function FarmaciasAdministracao() {
 						<AdministracaoListagem>
 							{farmacias.map((f, i) => {
 								return (
-									<AdministracaoItem key={i}>
+									<AdministracaoItem
+										key={i}
+										onDelete={() => {}}
+										onEdit={() => {}}
+									>
 										{f.nome_fantasia}
 									</AdministracaoItem>
 								);
