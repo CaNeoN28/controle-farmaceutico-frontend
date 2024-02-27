@@ -41,3 +41,33 @@
 
   transform: translateY(1px);
 }
+
+.vermelho {
+	background-color: var(--red);
+	color: var(--white);
+
+	border-color: var(--red);
+
+	font-weight: bold;
+}
+
+.vermelho.secundario {
+	background-color: var(--white);
+	color: var(--red);
+
+	font-weight: normal;
+}
+
+.secundario.especial:hover {
+	background-color: var(--primary-color);
+	color: var(--white);
+
+	font-weight: bold;
+}
+
+.vermelho.especial:hover{
+	background-color: var(--red);
+	color: var(--white);
+
+	font-weight: bold;
+}

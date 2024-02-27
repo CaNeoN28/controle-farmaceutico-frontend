@@ -79,11 +79,11 @@ export function AdministracaoItem({
 			</div>
 			<div className={styles.content}>{children}</div>
 			<div className={styles.acoes}>
-				<LinkButton link={linkEditar || ""}>
+				<LinkButton secundario especial link={linkEditar || ""}>
 					<span>Editar</span>
 					<MdEdit />
 				</LinkButton>
-				<Botao fullWidth onClick={onDelete}>
+				<Botao vermelho secundario especial fullWidth onClick={onDelete}>
 					<span>Remover</span>
 					<FaTrash />
 				</Botao>
