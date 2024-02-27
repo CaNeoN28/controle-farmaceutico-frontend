@@ -1,5 +1,5 @@
 import FetchAutenticacao from "@/fetch/autenticacao";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 
 export default function redirecionarAutenticacao() {
@@ -17,6 +17,7 @@ export default function redirecionarAutenticacao() {
 	fAuth(token)
 		.then()
 		.catch(() => {
+			deleteCookie("authentication")
 			router.push("/login");
 		});
 }
