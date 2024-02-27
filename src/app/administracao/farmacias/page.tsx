@@ -22,8 +22,9 @@ import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Estado } from "@/types/Localizacao";
-import { fetchEstados } from "@/fetch/localizacao";
+import { fetchEstados, fetchMunicipios } from "@/fetch/localizacao";
 import Select, { Opcao } from "@/components/Select";
+import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
 
 interface Filtros {
 	nome_fantasia?: string;
@@ -60,6 +61,9 @@ export default function FarmaciasAdministracao() {
 	const [estados, setEstados] = useState<Opcao[]>([]);
 	const [filtroEstado, setFiltroEstado] = useState(estado);
 
+	const [municipios, setMunicipios] = useState<Opcao[]>([]);
+	const [filtroMunicipio, setFiltroMunicipio] = useState(municipio);
+
 	const [params, setParams] = useState<URLSearchParams>(searchParams);
 	const [maxPaginas, setMaxPaginas] = useState<number>(5);
 
@@ -72,7 +76,7 @@ export default function FarmaciasAdministracao() {
 
 				const fEstados: Opcao[] = estados
 					.filter((e) => new RegExp(filtroEstado, "i").test(e.nome))
-					.sort((a, b) => a.nome > b.nome ? 1: -1)
+					.sort((a, b) => (a.nome > b.nome ? 1 : -1))
 					.map((e) => {
 						return {
 							label: e.nome,
@@ -85,6 +89,30 @@ export default function FarmaciasAdministracao() {
 			.catch((err) => {
 				console.log(err);
 			});
+	};
+
+	const getMunicipios = async () => {
+		const estado = watch("estado");
+
+		if (estado) {
+			const siglaEstado = getSiglaFromEstado(estado);
+
+			await fetchMunicipios(siglaEstado).then((res) => {
+				const municipios = res.data;
+
+				const fMunicipios: Opcao[] = municipios
+					.filter((m) => new RegExp(filtroMunicipio, "i").test(m.nome))
+					.sort((a, b) => (a.nome > b.nome ? 1 : -1))
+					.map((m) => {
+						return {
+							label: m.nome,
+							valor: m.nome,
+						};
+					});
+
+				setMunicipios(fMunicipios);
+			});
+		}
 	};
 
 	const submitFiltros: SubmitHandler<Filtros> = function (data) {
@@ -158,6 +186,16 @@ export default function FarmaciasAdministracao() {
 	}, [filtroEstado]);
 
 	useEffect(() => {
+		const estado = watch("estado");
+
+		if (estado) getMunicipios();
+		else {
+			setValue("municipio", "");
+			setFiltroMunicipio("");
+		}
+	}, [watch("estado"), filtroMunicipio]);
+
+	useEffect(() => {
 		getFarmacias();
 	}, [pagina]);
 
@@ -196,6 +234,7 @@ export default function FarmaciasAdministracao() {
 								return (
 									<InputContainer id="estado" label="Estado">
 										<Select
+											id="estado"
 											filtro={filtroEstado}
 											opcoes={estados}
 											placeholder="Rondônia"
@@ -213,7 +252,16 @@ export default function FarmaciasAdministracao() {
 							render={({ field }) => {
 								return (
 									<InputContainer id="municipio" label="Municipio">
-										<Input id="municipio" {...{ ...field, ref: null }} />
+										<Select
+											id="municipio"
+											filtro={filtroMunicipio}
+											opcoes={municipios}
+											placeholder="Vilhena"
+											disabled={!watch("estado")}
+											setFiltro={setFiltroMunicipio}
+											setValue={setValue}
+											{...{ ...field, ref: null }}
+										/>
 									</InputContainer>
 								);
 							}}
