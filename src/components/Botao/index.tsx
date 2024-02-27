@@ -4,6 +4,8 @@ import styles from "./Botao.module.scss";
 
 interface Props extends React.ComponentPropsWithoutRef<"button"> {
   secundario?: boolean;
+  vermelho?: boolean;
+  especial?: boolean;
   fullWidth?: boolean;
   tamanho?: number | string;
   children: ReactNode;
@@ -11,6 +13,8 @@ interface Props extends React.ComponentPropsWithoutRef<"button"> {
 
 export default function Botao({
   secundario,
+  vermelho,
+	especial,
   fullWidth,
   tamanho,
   children,
@@ -19,6 +23,8 @@ export default function Botao({
   const classes = classnames({
     [styles.botao]: true,
     [styles.secundario]: secundario,
+    [styles.vermelho]: vermelho,
+    [styles.especial]: especial,
     "full-width": fullWidth,
     "box-shadow": true,
   });
