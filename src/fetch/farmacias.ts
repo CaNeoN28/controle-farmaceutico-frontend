@@ -67,4 +67,14 @@ export default class FetchFarmacia {
 
 		return response;
 	}
+
+	removeFarmacia(id: string, authToken?: string) {
+		const response = axios.delete(`${API_URL}/farmacia/${id}`, {
+			headers: {
+				Authorization: `Bearer ${authToken}`,
+			},
+		});
+
+		return response;
+	}
 }

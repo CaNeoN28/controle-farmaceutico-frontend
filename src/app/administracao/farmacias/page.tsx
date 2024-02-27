@@ -27,6 +27,8 @@ import Select, { Opcao } from "@/components/Select";
 import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
 import { getCookie } from "cookies-next";
 import FetchAutenticacao from "@/fetch/autenticacao";
+import Alert from "@/components/Alert";
+import Botao from "@/components/Botao";
 
 interface Filtros {
 	nome_fantasia?: string;
@@ -73,6 +75,9 @@ export default function FarmaciasAdministracao() {
 	const [farmacias, setFarmacias] = useState<IFarmacia[]>([]);
 
 	const [tokenValido, setTokenValido] = useState("");
+	const [farmaciaParaRemover, setFarmaciaParaRemover] = useState<IFarmacia>();
+	const [mensagemRemocao, setMensagemRemocao] = useState("");
+	const [erroAoRemover, setErroAoRemover] = useState("");
 
 	const getEstados = async () => {
 		await fetchEstados()
@@ -143,6 +148,24 @@ export default function FarmaciasAdministracao() {
 
 		setParams(newParams);
 		router.replace(`${pathname}`);
+	};
+
+	const removerFarmacia = async () => {
+		if (farmaciaParaRemover && tokenValido) {
+			await fFarmacias
+				.removeFarmacia(farmaciaParaRemover._id, tokenValido)
+				.then((res) => {
+					setMensagemRemocao("Farmácia removida com sucesso");
+					setErroAoRemover("");
+				})
+				.catch((err) => {
+					const { data } = err.response;
+					setErroAoRemover(`Erro: ${data}`);
+				});
+
+			setFarmaciaParaRemover(undefined);
+			getFarmacias();
+		}
 	};
 
 	const submitFiltros: SubmitHandler<Filtros> = function (data) {
@@ -312,8 +335,10 @@ export default function FarmaciasAdministracao() {
 										<AdministracaoItem
 											key={i}
 											imagem_url={f.imagem_url}
-											onDelete={() => {}}
-											linkEditar={`/administracao/farmacias/editar/${f._id}`}	
+											onDelete={() => {
+												setFarmaciaParaRemover(f);
+											}}
+											linkEditar={`/administracao/farmacias/editar/${f._id}`}
 										>
 											{f.nome_fantasia}
 										</AdministracaoItem>
@@ -332,6 +357,73 @@ export default function FarmaciasAdministracao() {
 						/>
 					)}
 				</AdministracaoMain>
+				<Alert
+					show={!!farmaciaParaRemover}
+					onClickBackground={() => {
+						setFarmaciaParaRemover(undefined);
+					}}
+				>
+					<div className={styles.alert}>
+						<span>
+							Deseja remover a farmácia {farmaciaParaRemover?.nome_fantasia}?
+						</span>
+						<div className={styles.alert_botoes}>
+							<Botao
+								fullWidth
+								onClick={() => {
+									removerFarmacia();
+								}}
+							>
+								Confirmar
+							</Botao>
+							<Botao
+								fullWidth
+								secundario
+								onClick={() => {
+									setFarmaciaParaRemover(undefined);
+								}}
+							>
+								Cancelar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
+				<Alert
+					show={!!erroAoRemover}
+					onClickBackground={() => {
+						setErroAoRemover("");
+					}}
+				>
+					<div className={styles.alert}>
+						<span>{erroAoRemover}</span>
+						<Botao
+							fullWidth
+							onClick={() => {
+								setErroAoRemover("");
+							}}
+						>
+							Confirmar
+						</Botao>
+					</div>
+				</Alert>
+				<Alert
+					show={!!mensagemRemocao}
+					onClickBackground={() => {
+						setMensagemRemocao("");
+					}}
+				>
+					<div className={styles.alert}>
+						<span>{mensagemRemocao}</span>
+						<Botao
+							fullWidth
+							onClick={() => {
+								setMensagemRemocao("");
+							}}
+						>
+							Confirmar
+						</Botao>
+					</div>
+				</Alert>
 			</>
 		);
 
