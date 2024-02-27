@@ -21,6 +21,9 @@ import { GetManyRequest } from "@/types/Requests";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Estado } from "@/types/Localizacao";
+import { fetchEstados } from "@/fetch/localizacao";
+import Select, { Opcao } from "@/components/Select";
 
 interface Filtros {
 	nome_fantasia?: string;
@@ -39,22 +42,50 @@ export default function FarmaciasAdministracao() {
 
 	const fFarmacias = new FetchFarmacia();
 
-	const { control, watch, handleSubmit } = useForm<Filtros>({
+	const { pagina, estado, municipio, nome_fantasia }: Filtros = {
+		pagina: Number(searchParams.get("pagina")) || 1,
+		estado: searchParams.get("estado") || "",
+		municipio: searchParams.get("municipio") || "",
+		nome_fantasia: searchParams.get("nome_fantasia") || "",
+	};
+
+	const { control, watch, handleSubmit, setValue } = useForm<Filtros>({
 		defaultValues: {
-			estado: "",
-			municipio: "",
-			nome_fantasia: "",
+			estado,
+			municipio,
+			nome_fantasia,
 		},
 	});
 
-	const { pagina } = {
-		pagina: Number(searchParams.get("pagina")) || 1,
-	};
+	const [estados, setEstados] = useState<Opcao[]>([]);
+	const [filtroEstado, setFiltroEstado] = useState(estado);
 
 	const [params, setParams] = useState<URLSearchParams>(searchParams);
 	const [maxPaginas, setMaxPaginas] = useState<number>(5);
 
 	const [farmacias, setFarmacias] = useState<IFarmacia[]>([]);
+
+	const getEstados = async () => {
+		await fetchEstados()
+			.then((res) => {
+				const estados = res.data;
+
+				const fEstados: Opcao[] = estados
+					.filter((e) => new RegExp(filtroEstado, "i").test(e.nome))
+					.sort((a, b) => a.nome > b.nome ? 1: -1)
+					.map((e) => {
+						return {
+							label: e.nome,
+							valor: e.nome,
+						};
+					});
+
+				setEstados(fEstados);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	const submitFiltros: SubmitHandler<Filtros> = function (data) {
 		const params = new URLSearchParams(searchParams);
@@ -123,6 +154,10 @@ export default function FarmaciasAdministracao() {
 	}
 
 	useEffect(() => {
+		getEstados();
+	}, [filtroEstado]);
+
+	useEffect(() => {
 		getFarmacias();
 	}, [pagina]);
 
@@ -160,7 +195,14 @@ export default function FarmaciasAdministracao() {
 							render={({ field }) => {
 								return (
 									<InputContainer id="estado" label="Estado">
-										<Input id="estado" {...{ ...field, ref: null }} />
+										<Select
+											filtro={filtroEstado}
+											opcoes={estados}
+											placeholder="Rondônia"
+											setFiltro={setFiltroEstado}
+											setValue={setValue}
+											{...{ ...field, ref: null }}
+										/>
 									</InputContainer>
 								);
 							}}
@@ -170,13 +212,17 @@ export default function FarmaciasAdministracao() {
 							control={control}
 							render={({ field }) => {
 								return (
-									<InputContainer id="estado" label="Estado">
-										<Input id="estado" {...{ ...field, ref: null }} />
+									<InputContainer id="municipio" label="Municipio">
+										<Input id="municipio" {...{ ...field, ref: null }} />
 									</InputContainer>
 								);
 							}}
 						/>
-						<AdministracaoConfirmarFiltros onClean={() => {}} />
+						<AdministracaoConfirmarFiltros
+							onClean={() => {
+								router.replace(`${pathname}`);
+							}}
+						/>
 					</AdministracaoFiltros>
 					{farmacias.length > 0 && (
 						<AdministracaoListagem>
