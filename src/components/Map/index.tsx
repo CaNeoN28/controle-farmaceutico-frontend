@@ -5,13 +5,13 @@ import React, { Dispatch, SetStateAction } from "react";
 import Endereco from "@/types/Endereco";
 
 interface Pesquisa {
-  cep: string,
-  estado: string,
-  municipio: string,
-  bairro: string,
-  logradouro: string,
-  numero: string,
-  nome_farmacia: string,
+  cep: string;
+  estado: string;
+  municipio: string;
+  bairro: string;
+  logradouro: string;
+  numero: string;
+  nome_farmacia: string;
 }
 
 interface Props {
@@ -26,29 +26,31 @@ export default class Map extends React.Component {
 
   constructor(props: Props) {
     super(props);
+
+    this.props = props;
   }
 
   shouldComponentUpdate(nextProps: Props) {
     if (this.props.map_center && nextProps.map_center) {
-      const pesquisaAntiga = this.props.endereco_pesquisa
-      const pesquisaNova = nextProps.endereco_pesquisa
+      const pesquisaAntiga = this.props.endereco_pesquisa;
+      const pesquisaNova = nextProps.endereco_pesquisa;
 
-      if(pesquisaAntiga && pesquisaNova){
+      if (pesquisaAntiga && pesquisaNova) {
         const enderecoMudou = Object.keys(this.props)
           .map((k) => {
             const key = k as keyof Pesquisa;
-  
+
             const antigo = pesquisaAntiga[key];
             const novo = pesquisaNova[key];
-  
+
             if (novo) {
               if (novo != antigo) return true;
             }
-  
+
             return false;
           })
           .find((v) => v);
-  
+
         if (enderecoMudou) {
           return true;
         }
