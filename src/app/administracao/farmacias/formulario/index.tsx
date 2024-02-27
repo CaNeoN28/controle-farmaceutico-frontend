@@ -10,20 +10,20 @@ import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
 import InputImagem from "@/components/InputImagem";
 import {
-	CadastroForm,
-	CadastroMain,
-	CadastroEtapa,
-	CadastroInputs,
-	CadastroBotoes,
-	CadastroContainer,
+  CadastroForm,
+  CadastroMain,
+  CadastroEtapa,
+  CadastroInputs,
+  CadastroBotoes,
+  CadastroContainer,
 } from "@/components/Cadastro";
 import { validarCNPJ } from "@/utils/validation";
 import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 import {
-	fetchEstados,
-	fetchMunicipios,
-	getDadosCep,
-	getEstadoFromSigla,
+  fetchEstados,
+  fetchMunicipios,
+  getDadosCep,
+  getEstadoFromSigla,
 } from "@/fetch/localizacao";
 import Select, { Opcao } from "@/components/Select";
 import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
@@ -34,533 +34,556 @@ import HorariosServico from "../horarios-servico";
 import Plantoes from "../plantoes";
 import DiaSemana from "@/types/DiasSemana";
 import FetchImagem from "@/fetch/imagens";
+import { EncontrarCoordenada } from "@/utils/geocoder";
 
 interface Props {
-	farmacia?: IFarmacia;
-	salvarFarmacia: (farmacia: IFarmacia) => {};
+  farmacia?: IFarmacia;
+  salvarFarmacia: (farmacia: IFarmacia) => {};
 }
 
 export default function FormularioFarmacia({
-	farmacia,
-	salvarFarmacia,
+  farmacia,
+  salvarFarmacia,
 }: Props) {
-	const {
-		formState: { errors: errorsFarmacia },
-		control: controlFarmacia,
-		handleSubmit: handleSubmitFarmacia,
-		watch: watchFarmacia,
-		setError: setErrorFarmacia,
-		setValue: setValueFarmacia,
-		clearErrors: clearErrorsFarmacia,
-	} = useForm<IFarmacia>({
-		defaultValues: farmacia || {
-			cnpj: "",
-			nome_fantasia: "",
-			endereco: {
-				cep: "",
-				estado: "",
-				municipio: "",
-				bairro: "",
-				logradouro: "",
-				numero: "",
-			},
-		},
-	});
+  const {
+    formState: { errors: errorsFarmacia },
+    control: controlFarmacia,
+    handleSubmit: handleSubmitFarmacia,
+    watch: watchFarmacia,
+    setError: setErrorFarmacia,
+    setValue: setValueFarmacia,
+    clearErrors: clearErrorsFarmacia,
+  } = useForm<IFarmacia>({
+    defaultValues: farmacia || {
+      cnpj: "",
+      nome_fantasia: "",
+      endereco: {
+        cep: "",
+        estado: "",
+        municipio: "",
+        bairro: "",
+        logradouro: "",
+        numero: "",
+      },
+    },
+  });
 
-	const fetchImagem = new FetchImagem().postImagem;
+  const fetchImagem = new FetchImagem().postImagem;
 
-	const [imagem, setImagem] = useState<File>();
-	const [erroImagem, setErroImagem] = useState<string>("");
+  const [imagem, setImagem] = useState<File>();
+  const [erroImagem, setErroImagem] = useState<string>("");
 
-	const [horario, setHorario] = useState<{
-		[key: string]: IHorário;
-	}>({});
+  const [horario, setHorario] = useState<{
+    [key: string]: IHorário;
+  }>({});
 
-	const [plantoes, setPlantoes] = useState<
-		{ entrada: string; saida: string }[]
-	>([]);
+  const [plantoes, setPlantoes] = useState<
+    { entrada: string; saida: string }[]
+  >([]);
 
-	const [pesquisaEstado, setPesquisaEstado] = useState("");
-	const [estados, setEstados] = useState<Opcao[]>([]);
+  const [pesquisaEstado, setPesquisaEstado] = useState("");
+  const [estados, setEstados] = useState<Opcao[]>([]);
 
-	const [pesquisaMunicipio, setPesquisaMunicipio] = useState("");
-	const [municipios, setMunicipios] = useState<Opcao[]>([]);
+  const [pesquisaMunicipio, setPesquisaMunicipio] = useState("");
+  const [municipios, setMunicipios] = useState<Opcao[]>([]);
 
-	const [localizacao, setLocalizacao] = useState<Coordenadas>({
-		lat: 0,
-		lng: 0,
-	});
+  const [localizacao, setLocalizacao] = useState<Coordenadas>({
+    lat: 0,
+    lng: 0,
+  });
 
-	redirecionarAutenticacao();
+  redirecionarAutenticacao();
 
-	const getEstados = async () => {
-		await fetchEstados().then((res) => {
-			const estados = res.data;
+  const getEstados = async () => {
+    await fetchEstados().then((res) => {
+      const estados = res.data;
 
-			const opcoesEstados: Opcao[] = [];
-			estados
-				.filter((e) => RegExp(pesquisaEstado, "i").test(e.nome))
-				.sort((a, b) => (a.nome > b.nome ? 1 : -1))
-				.map((e) => {
-					opcoesEstados.push({
-						label: e.nome,
-						valor: e.nome,
-					});
-				});
+      const opcoesEstados: Opcao[] = [];
+      estados
+        .filter((e) => RegExp(pesquisaEstado, "i").test(e.nome))
+        .sort((a, b) => (a.nome > b.nome ? 1 : -1))
+        .map((e) => {
+          opcoesEstados.push({
+            label: e.nome,
+            valor: e.nome,
+          });
+        });
 
-			setEstados(opcoesEstados);
-		});
-	};
+      setEstados(opcoesEstados);
+    });
+  };
 
-	const sendImagem = (e: ChangeEvent<HTMLInputElement>) => {
-		const { files } = e.target;
+  const mapPesquisa = async () => {
+    const { endereco, nome_fantasia } = watchFarmacia();
 
-		if (files && files.length) {
-			setImagem(files[0]);
-		} else {
-			setImagem(undefined);
-		}
-	};
+    if (endereco && nome_fantasia) {
+      const coordenadas = await EncontrarCoordenada({
+        ...endereco,
+        nome_farmacia: nome_fantasia,
+      });
 
-	const getMunicipios = async () => {
-		const estado = watchFarmacia("endereco.estado");
+      if (
+        coordenadas.lat != localizacao.lat ||
+        coordenadas.lng != localizacao.lng
+      ) {
+        setLocalizacao(coordenadas);
+      }
+    }
+  };
 
-		if (estado) {
-			const sigla = getSiglaFromEstado(estado);
+  const sendImagem = (e: ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
 
-			await fetchMunicipios(sigla).then((res) => {
-				const municipios = res.data;
+    if (files && files.length) {
+      setImagem(files[0]);
+    } else {
+      setImagem(undefined);
+    }
+  };
 
-				const opcoesMunicipios: Opcao[] = [];
+  const getMunicipios = async () => {
+    const estado = watchFarmacia("endereco.estado");
 
-				municipios
-					.filter((m) => RegExp(pesquisaMunicipio, "i").test(m.nome))
-					.sort((a, b) => (a.nome > b.nome ? 1 : -1))
-					.map((m) => {
-						opcoesMunicipios.push({
-							label: m.nome,
-							valor: m.nome,
-						});
-					});
+    if (estado) {
+      const sigla = getSiglaFromEstado(estado);
 
-				setMunicipios(opcoesMunicipios);
-			});
-		}
-	};
+      await fetchMunicipios(sigla).then((res) => {
+        const municipios = res.data;
 
-	const onChangeCep = async (cep: string) => {
-		clearErrorsFarmacia("endereco.cep");
-		cep = cep.replaceAll(/([_-])+/g, "");
+        const opcoesMunicipios: Opcao[] = [];
 
-		if (cep.length == 8) {
-			await getDadosCep(cep).then(async (res) => {
-				if (res.data.erro) {
-					setErrorFarmacia("endereco.cep", {
-						message: "CEP inválido",
-						type: "server",
-					});
-				} else {
-					const { uf, bairro, localidade, logradouro } = res.data;
+        municipios
+          .filter((m) => RegExp(pesquisaMunicipio, "i").test(m.nome))
+          .sort((a, b) => (a.nome > b.nome ? 1 : -1))
+          .map((m) => {
+            opcoesMunicipios.push({
+              label: m.nome,
+              valor: m.nome,
+            });
+          });
 
-					let estado = "";
+        setMunicipios(opcoesMunicipios);
+      });
+    }
+  };
 
-					await getEstadoFromSigla(uf).then((res) => {
-						estado = res.data.nome;
-					});
+  const onChangeCep = async (cep: string) => {
+    clearErrorsFarmacia("endereco.cep");
+    cep = cep.replaceAll(/([_-])+/g, "");
 
-					setValueFarmacia("endereco.bairro", bairro);
-					setValueFarmacia("endereco.municipio", localidade);
-					setValueFarmacia("endereco.logradouro", logradouro);
-					setValueFarmacia("endereco.estado", estado);
-				}
-			});
-		}
-	};
+    if (cep.length == 8) {
+      await getDadosCep(cep).then(async (res) => {
+        if (res.data.erro) {
+          setErrorFarmacia("endereco.cep", {
+            message: "CEP inválido",
+            type: "server",
+          });
+        } else {
+          const { uf, bairro, localidade, logradouro } = res.data;
 
-	const onSubmitFarmacia: SubmitHandler<IFarmacia> = async (data) => {
-		let erroImagem = "";
+          let estado = "";
 
-		if (imagem) {
-			await fetchImagem(imagem)
-				.then((res) => {
-					const imagens = res.data as { [key: string]: string };
+          await getEstadoFromSigla(uf).then((res) => {
+            estado = res.data.nome;
+          });
 
-					const imagensArray: string[] = [];
+          setValueFarmacia("endereco.bairro", bairro);
+          setValueFarmacia("endereco.municipio", localidade);
+          setValueFarmacia("endereco.logradouro", logradouro);
+          setValueFarmacia("endereco.estado", estado);
+        }
+      });
+    }
+  };
 
-					Object.keys(imagens).map((k: string) => {
-						imagensArray.push(imagens[k]);
-					});
+  const onSubmitFarmacia: SubmitHandler<IFarmacia> = async (data) => {
+    let erroImagem = "";
 
-					data.imagem_url = imagensArray[0];
-					erroImagem = "";
-				})
-				.catch((err) => {
-					erroImagem = "Extensão inválida de arquivo";
-				});
+    if (imagem) {
+      await fetchImagem(imagem)
+        .then((res) => {
+          const imagens = res.data as { [key: string]: string };
 
-			setErroImagem(erroImagem);
-		}
+          const imagensArray: string[] = [];
 
-		if (!erroImagem) {
-			const horarios_servico = horario as { [key in DiaSemana]: IHorário };
+          Object.keys(imagens).map((k: string) => {
+            imagensArray.push(imagens[k]);
+          });
 
-			data.endereco.cep = data.endereco.cep.replaceAll("-", "");
-			data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "");
+          data.imagem_url = imagensArray[0];
+          erroImagem = "";
+        })
+        .catch((err) => {
+          erroImagem = "Extensão inválida de arquivo";
+        });
 
-			const farmacia: IFarmacia = {
-				...data,
-				plantoes,
-				horarios_servico,
-			};
+      setErroImagem(erroImagem);
+    }
 
-			salvarFarmacia(farmacia);
-		}
-	};
+    if (!erroImagem) {
+      const horarios_servico = horario as { [key in DiaSemana]: IHorário };
 
-	useLayoutEffect(() => {
-		getEstados();
-	}, []);
+      data.endereco.cep = data.endereco.cep.replaceAll("-", "");
+      data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "");
 
-	useEffect(() => {
-		onChangeCep(watchFarmacia("endereco.cep"));
-	}, [watchFarmacia("endereco.cep")]);
+      const farmacia: IFarmacia = {
+        ...data,
+        plantoes,
+        horarios_servico,
+      };
 
-	useEffect(() => {
-		getMunicipios();
+      salvarFarmacia(farmacia);
+    }
+  };
 
-		if (!watchFarmacia("endereco.cep")) {
-			setPesquisaMunicipio("");
-			setValueFarmacia("endereco.municipio", "");
-		}
+  useLayoutEffect(() => {
+    getEstados();
+  }, []);
 
-		setPesquisaEstado(watchFarmacia("endereco.estado"));
-	}, [watchFarmacia("endereco.estado")]);
+  useEffect(() => {
+    onChangeCep(watchFarmacia("endereco.cep"));
+  }, [watchFarmacia("endereco.cep")]);
 
-	useEffect(() => {
-		const municipio = watchFarmacia("endereco.municipio");
+  useEffect(() => {
+    getMunicipios();
 
-		setPesquisaMunicipio(municipio);
-	}, [watchFarmacia("endereco.municipio")]);
+    if (!watchFarmacia("endereco.cep")) {
+      setPesquisaMunicipio("");
+      setValueFarmacia("endereco.municipio", "");
+    }
 
-	useLayoutEffect(() => {
-		getEstados();
-	}, [pesquisaEstado]);
+    setPesquisaEstado(watchFarmacia("endereco.estado"));
+  }, [watchFarmacia("endereco.estado")]);
 
-	useLayoutEffect(() => {
-		getMunicipios();
-	}, [pesquisaMunicipio]);
+  useEffect(() => {
+    const municipio = watchFarmacia("endereco.municipio");
 
-	useEffect(() => {
-		setValueFarmacia("endereco.localizacao.x", localizacao.lat);
-		setValueFarmacia("endereco.localizacao.y", localizacao.lng);
-	}, [localizacao]);
+    setPesquisaMunicipio(municipio);
+  }, [watchFarmacia("endereco.municipio")]);
 
-	return (
-		<CadastroContainer>
-			<CadastroForm>
-				<CadastroEtapa titulo="Dados da farmácia">
-					<CadastroInputs>
-						<Controller
-							name="cnpj"
-							control={controlFarmacia}
-							rules={{
-								required: {
-									message: "CNPJ é obrigatório",
-									value: true,
-								},
-								validate: (v: string) => {
-									const cnpj = v.replaceAll(/([/.-])+/g, "");
+  useLayoutEffect(() => {
+    getEstados();
+  }, [pesquisaEstado]);
 
-									if (!validarCNPJ(cnpj)) {
-										return "CNPJ inválido";
-									}
-								},
-							}}
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="cnpj"
-										label="CNPJ"
-										error={errorsFarmacia.cnpj}
-									>
-										<InputMascara
-											id="cnpj"
-											mask="99.999.999/9999-99"
-											placeholder="00.000.000/0000-00"
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<Controller
-							name="nome_fantasia"
-							control={controlFarmacia}
-							rules={{
-								required: {
-									value: true,
-									message: "Nome fantasia é obrigatório",
-								},
-								minLength: {
-									value: 3,
-									message: "Nome fantasia não é grande o suficiente",
-								},
-							}}
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="nome_fantasia"
-										label="Nome fantasia"
-										error={errorsFarmacia.nome_fantasia}
-									>
-										<Input
-											id="nome_fantasia"
-											placeholder="Nome de exibição da farmácia"
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<InputContainer id="imagem" label="Imagem">
-							<InputImagem
-								id="imagem"
-								onChange={sendImagem}
-								titulo="Enviar imagem"
-							/>
-							{erroImagem && (
-								<span className={styles.erro_imagem}>{erroImagem}</span>
-							)}
-						</InputContainer>
-					</CadastroInputs>
-				</CadastroEtapa>
-				<CadastroEtapa titulo="Endereço">
-					<CadastroInputs>
-						<Controller
-							name="endereco.cep"
-							control={controlFarmacia}
-							rules={{
-								minLength: {
-									message: "CEP deve ter 8 digitos",
-									value: 9,
-								},
-							}}
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="cep"
-										label="CEP"
-										error={
-											errorsFarmacia.endereco && errorsFarmacia.endereco.cep
-										}
-									>
-										<InputMascara
-											mask="99999-999"
-											id="cep"
-											placeholder="00000-00"
-											{...{
-												...field,
-												ref: null,
-											}}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<Controller
-							name="endereco.estado"
-							control={controlFarmacia}
-							rules={{
-								required: {
-									message: "Estado é obrigatório",
-									value: true,
-								},
-							}}
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="estado"
-										label="Estado"
-										error={
-											errorsFarmacia.endereco && errorsFarmacia.endereco.estado
-										}
-									>
-										<Select
-											id="estado"
-											placeholder="Rondônia"
-											opcoes={estados}
-											filtro={pesquisaEstado}
-											setFiltro={setPesquisaEstado}
-											setValue={setValueFarmacia}
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<Controller
-							name="endereco.municipio"
-							control={controlFarmacia}
-							rules={{
-								required: {
-									message: "Municipio é obrigatório",
-									value: true,
-								},
-							}}
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="municipio"
-										label="Municipio"
-										error={
-											errorsFarmacia.endereco &&
-											errorsFarmacia.endereco.municipio
-										}
-									>
-										<Select
-											id="municipio"
-											placeholder="Vilhena"
-											opcoes={municipios}
-											filtro={pesquisaMunicipio}
-											disabled={!watchFarmacia("endereco.estado")}
-											setFiltro={setPesquisaMunicipio}
-											setValue={setValueFarmacia}
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<Controller
-							name="endereco.bairro"
-							control={controlFarmacia}
-							rules={{
-								required: {
-									message: "Bairro é obrigatório",
-									value: true,
-								},
-								minLength: {
-									message: "Bairro deve ter mais de 3 letras",
-									value: 3,
-								},
-							}}
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="bairro"
-										label="Bairro"
-										error={
-											errorsFarmacia.endereco && errorsFarmacia.endereco.bairro
-										}
-									>
-										<Input
-											id="bairro"
-											placeholder="Ex: Bairro das oliveiras"
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<Controller
-							name="endereco.logradouro"
-							control={controlFarmacia}
-							rules={{
-								required: {
-									message: "Logradouro é obrigatório",
-									value: true,
-								},
-								minLength: {
-									message: "Logradouro deve ter mais de 3 letras",
-									value: 3,
-								},
-							}}
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="logradouro"
-										label="Logradouro"
-										error={
-											errorsFarmacia.endereco &&
-											errorsFarmacia.endereco.logradouro
-										}
-									>
-										<Input
-											id="logradouro"
-											placeholder="Ex: Rua palmeira"
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<Controller
-							name="endereco.numero"
-							control={controlFarmacia}
-							rules={{
-								required: {
-									value: true,
-									message: "Número é obrigatório",
-								},
-								pattern: {
-									value: /^[0-9]*$/,
-									message: "Número inválido",
-								},
-							}}
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="numero"
-										label="Numero"
-										error={
-											errorsFarmacia.endereco && errorsFarmacia.endereco.numero
-										}
-									>
-										<Input
-											id="numero"
-											placeholder="0000"
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-					</CadastroInputs>
-					<div className={styles.map_container}>
-						<span className={styles.map_title}>
-							Selecione a posição no mapa
-						</span>
-						<div className={styles.map}>
-							<Map
-								setLocalizacao={setLocalizacao}
-								endereco_pesquisa={{
-									...watchFarmacia("endereco"),
-									nome_farmacia: watchFarmacia("nome_fantasia"),
-								}}
-								map_center={localizacao}
-							/>
-						</div>
-					</div>
-				</CadastroEtapa>
-			</CadastroForm>
-			<Secao titulo="Horários de serviço">
-				<HorariosServico horario={horario} setHorario={setHorario} />
-			</Secao>
-			<Secao titulo="Escala de plantão">
-				<Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
-			</Secao>
-			<CadastroBotoes>
-				<Botao
-					onClick={handleSubmitFarmacia(onSubmitFarmacia)}
-					fullWidth
-					type="submit"
-				>
-					Salvar
-				</Botao>
-				<Botao fullWidth secundario>
-					Cancelar
-				</Botao>
-			</CadastroBotoes>
-		</CadastroContainer>
-	);
+  useLayoutEffect(() => {
+    getMunicipios();
+  }, [pesquisaMunicipio]);
+
+  useEffect(() => {
+    setValueFarmacia("endereco.localizacao.x", localizacao.lat);
+    setValueFarmacia("endereco.localizacao.y", localizacao.lng);
+  }, [localizacao]);
+
+  useEffect(() => {
+    mapPesquisa();
+  }, [watchFarmacia()]);
+
+  return (
+    <CadastroContainer>
+      <CadastroForm>
+        <CadastroEtapa titulo="Dados da farmácia">
+          <CadastroInputs>
+            <Controller
+              name="cnpj"
+              control={controlFarmacia}
+              rules={{
+                required: {
+                  message: "CNPJ é obrigatório",
+                  value: true,
+                },
+                validate: (v: string) => {
+                  const cnpj = v.replaceAll(/([/.-])+/g, "");
+
+                  if (!validarCNPJ(cnpj)) {
+                    return "CNPJ inválido";
+                  }
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="cnpj"
+                    label="CNPJ"
+                    error={errorsFarmacia.cnpj}
+                  >
+                    <InputMascara
+                      id="cnpj"
+                      mask="99.999.999/9999-99"
+                      placeholder="00.000.000/0000-00"
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+            <Controller
+              name="nome_fantasia"
+              control={controlFarmacia}
+              rules={{
+                required: {
+                  value: true,
+                  message: "Nome fantasia é obrigatório",
+                },
+                minLength: {
+                  value: 3,
+                  message: "Nome fantasia não é grande o suficiente",
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="nome_fantasia"
+                    label="Nome fantasia"
+                    error={errorsFarmacia.nome_fantasia}
+                  >
+                    <Input
+                      id="nome_fantasia"
+                      placeholder="Nome de exibição da farmácia"
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+            <InputContainer id="imagem" label="Imagem">
+              <InputImagem
+                id="imagem"
+                onChange={sendImagem}
+                titulo="Enviar imagem"
+              />
+              {erroImagem && (
+                <span className={styles.erro_imagem}>{erroImagem}</span>
+              )}
+            </InputContainer>
+          </CadastroInputs>
+        </CadastroEtapa>
+        <CadastroEtapa titulo="Endereço">
+          <CadastroInputs>
+            <Controller
+              name="endereco.cep"
+              control={controlFarmacia}
+              rules={{
+                minLength: {
+                  message: "CEP deve ter 8 digitos",
+                  value: 9,
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="cep"
+                    label="CEP"
+                    error={
+                      errorsFarmacia.endereco && errorsFarmacia.endereco.cep
+                    }
+                  >
+                    <InputMascara
+                      mask="99999-999"
+                      id="cep"
+                      placeholder="00000-00"
+                      {...{
+                        ...field,
+                        ref: null,
+                      }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+            <Controller
+              name="endereco.estado"
+              control={controlFarmacia}
+              rules={{
+                required: {
+                  message: "Estado é obrigatório",
+                  value: true,
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="estado"
+                    label="Estado"
+                    error={
+                      errorsFarmacia.endereco && errorsFarmacia.endereco.estado
+                    }
+                  >
+                    <Select
+                      id="estado"
+                      placeholder="Rondônia"
+                      opcoes={estados}
+                      filtro={pesquisaEstado}
+                      setFiltro={setPesquisaEstado}
+                      setValue={setValueFarmacia}
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+            <Controller
+              name="endereco.municipio"
+              control={controlFarmacia}
+              rules={{
+                required: {
+                  message: "Municipio é obrigatório",
+                  value: true,
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="municipio"
+                    label="Municipio"
+                    error={
+                      errorsFarmacia.endereco &&
+                      errorsFarmacia.endereco.municipio
+                    }
+                  >
+                    <Select
+                      id="municipio"
+                      placeholder="Vilhena"
+                      opcoes={municipios}
+                      filtro={pesquisaMunicipio}
+                      disabled={!watchFarmacia("endereco.estado")}
+                      setFiltro={setPesquisaMunicipio}
+                      setValue={setValueFarmacia}
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+            <Controller
+              name="endereco.bairro"
+              control={controlFarmacia}
+              rules={{
+                required: {
+                  message: "Bairro é obrigatório",
+                  value: true,
+                },
+                minLength: {
+                  message: "Bairro deve ter mais de 3 letras",
+                  value: 3,
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="bairro"
+                    label="Bairro"
+                    error={
+                      errorsFarmacia.endereco && errorsFarmacia.endereco.bairro
+                    }
+                  >
+                    <Input
+                      id="bairro"
+                      placeholder="Ex: Bairro das oliveiras"
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+            <Controller
+              name="endereco.logradouro"
+              control={controlFarmacia}
+              rules={{
+                required: {
+                  message: "Logradouro é obrigatório",
+                  value: true,
+                },
+                minLength: {
+                  message: "Logradouro deve ter mais de 3 letras",
+                  value: 3,
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="logradouro"
+                    label="Logradouro"
+                    error={
+                      errorsFarmacia.endereco &&
+                      errorsFarmacia.endereco.logradouro
+                    }
+                  >
+                    <Input
+                      id="logradouro"
+                      placeholder="Ex: Rua palmeira"
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+            <Controller
+              name="endereco.numero"
+              control={controlFarmacia}
+              rules={{
+                required: {
+                  value: true,
+                  message: "Número é obrigatório",
+                },
+                pattern: {
+                  value: /^[0-9]*$/,
+                  message: "Número inválido",
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="numero"
+                    label="Numero"
+                    error={
+                      errorsFarmacia.endereco && errorsFarmacia.endereco.numero
+                    }
+                  >
+                    <Input
+                      id="numero"
+                      placeholder="0000"
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+          </CadastroInputs>
+          <div className={styles.map_container}>
+            <span className={styles.map_title}>
+              Selecione a posição no mapa
+            </span>
+            <div className={styles.map}>
+              <Map
+                setLocalizacao={setLocalizacao}
+                endereco_pesquisa={{
+                  ...watchFarmacia("endereco"),
+                  nome_farmacia: watchFarmacia("nome_fantasia"),
+                }}
+                map_center={localizacao}
+              />
+            </div>
+          </div>
+        </CadastroEtapa>
+      </CadastroForm>
+      <Secao titulo="Horários de serviço">
+        <HorariosServico horario={horario} setHorario={setHorario} />
+      </Secao>
+      <Secao titulo="Escala de plantão">
+        <Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
+      </Secao>
+      <CadastroBotoes>
+        <Botao
+          onClick={handleSubmitFarmacia(onSubmitFarmacia)}
+          fullWidth
+          type="submit"
+        >
+          Salvar
+        </Botao>
+        <Botao fullWidth secundario>
+          Cancelar
+        </Botao>
+      </CadastroBotoes>
+    </CadastroContainer>
+  );
 }

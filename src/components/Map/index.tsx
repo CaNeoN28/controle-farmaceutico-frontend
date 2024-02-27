@@ -1,80 +1,110 @@
-// import { useLoadScript, GoogleMap, Marker } from "@react-google-maps/api";
-// import { useMemo } from "react";
-// import usePlacesAutocomplete from "use-places-autocomplete";
 import styles from "./Map.module.scss";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Coordenadas } from "@/types/Localizacao";
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import Endereco from "@/types/Endereco";
 
-interface Props {
-	map_center?: Coordenadas;
-	map_options?: google.maps.MapOptions;
-	endereco_pesquisa?: Endereco & { nome_farmacia: string };
-	setLocalizacao?: Dispatch<SetStateAction<Coordenadas>>;
+interface Pesquisa {
+  cep: string,
+  estado: string,
+  municipio: string,
+  bairro: string,
+  logradouro: string,
+  numero: string,
+  nome_farmacia: string,
 }
 
-export default function Map(props: Props) {
-	const { map_center, endereco_pesquisa, setLocalizacao } = props;
+interface Props {
+  map_center?: Coordenadas;
+  map_options?: google.maps.MapOptions;
+  endereco_pesquisa?: Pesquisa;
+  setLocalizacao?: Dispatch<SetStateAction<Coordenadas>>;
+}
 
-	const loader = new Loader({
-		apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
-	});
+export default class Map extends React.Component {
+  props: Props = {};
 
-	let map: google.maps.Map | undefined = undefined;
+  constructor(props: Props) {
+    super(props);
+  }
 
-	loader.load().then(async () => {
-		const { Map } = (await google.maps.importLibrary(
-			"maps"
-		)) as google.maps.MapsLibrary;
-		const { AdvancedMarkerElement } = (await google.maps.importLibrary(
-			"marker"
-		)) as google.maps.MarkerLibrary;
-		const geocoder = new google.maps.Geocoder();
+  shouldComponentUpdate(nextProps: Props) {
+    if (this.props.map_center && nextProps.map_center) {
+      const pesquisaAntiga = this.props.endereco_pesquisa
+      const pesquisaNova = nextProps.endereco_pesquisa
 
-		map = new Map(document.getElementById("google_map")!, {
-			zoom: 18,
-			center: map_center || { lat: 0, lng: 0 },
-			disableDefaultUI: true,
-			mapId: "b7a7a363c50a7f5d",
-		});
+      if(pesquisaAntiga && pesquisaNova){
+        const enderecoMudou = Object.keys(this.props)
+          .map((k) => {
+            const key = k as keyof Pesquisa;
+  
+            const antigo = pesquisaAntiga[key];
+            const novo = pesquisaNova[key];
+  
+            if (novo) {
+              if (novo != antigo) return true;
+            }
+  
+            return false;
+          })
+          .find((v) => v);
+  
+        if (enderecoMudou) {
+          return true;
+        }
+      }
 
-		let marker = new AdvancedMarkerElement({
-			map,
-			position: map.getCenter(),
-		});
+      if (this.props.map_center.lat === nextProps.map_center.lat) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-		map.addListener("click", (e: google.maps.MapMouseEvent) => {
-			marker.map = null;
+    return false;
+  }
 
-			marker = new AdvancedMarkerElement({
-				map,
-				position: e.latLng,
-			});
+  render(): React.ReactNode {
+    const { map_center, setLocalizacao } = this.props;
 
-			if (setLocalizacao && e.latLng) setLocalizacao(e.latLng.toJSON());
-		});
+    const loader = new Loader({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
+    });
 
-		if (endereco_pesquisa) {
-			const { cep, estado, municipio, bairro, logradouro, numero, nome_farmacia } = endereco_pesquisa;
-			const pesquisa = [cep, estado, municipio, bairro, logradouro, numero, nome_farmacia].join(" ");
+    let map: google.maps.Map | undefined = undefined;
 
-			geocoder
-				.geocode({ address: pesquisa })
-				.then((res) => {
-					const resultado = res.results[0].geometry.location.toJSON();
+    loader.load().then(async () => {
+      const { Map } = (await google.maps.importLibrary(
+        "maps"
+      )) as google.maps.MapsLibrary;
+      const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+        "marker"
+      )) as google.maps.MarkerLibrary;
 
-					if (
-						setLocalizacao &&
-						resultado.lat != map_center?.lat &&
-						resultado.lng != map_center?.lng
-					) {
-						setLocalizacao(resultado);
-					}
-				})
-				.catch(() => {});
-		}
-	});
+      map = new Map(document.getElementById("google_map")!, {
+        zoom: 18,
+        center: map_center || { lat: 0, lng: 0 },
+        disableDefaultUI: true,
+        mapId: "b7a7a363c50a7f5d",
+      });
 
-	return <div id="google_map" className={styles.map} />;
+      let marker = new AdvancedMarkerElement({
+        map,
+        position: map.getCenter(),
+      });
+
+      map.addListener("click", (e: google.maps.MapMouseEvent) => {
+        marker.map = null;
+
+        marker = new AdvancedMarkerElement({
+          map,
+          position: e.latLng,
+        });
+
+        if (setLocalizacao && e.latLng) setLocalizacao(e.latLng.toJSON());
+      });
+    });
+
+    return <div id="google_map" className={styles.map} />;
+  }
 }

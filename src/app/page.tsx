@@ -217,10 +217,6 @@ export default function Home() {
     setFarmaciasEscalaF(farmaciasEscala.slice(0, numFarmacias));
   }, [numFarmacias]);
 
-  useEffect(() => {
-    console.log(date)
-  }, [date])
-
   return (
     <>
       <Menu />
