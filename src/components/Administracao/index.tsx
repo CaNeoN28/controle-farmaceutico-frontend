@@ -3,6 +3,7 @@ import { MdLocalPharmacy, MdEdit } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import styles from "./Administracao.module.scss";
 import Botao from "../Botao";
+import LinkButton from "../LinkButton";
 
 interface DefaultProps {
 	children?: ReactNode;
@@ -18,7 +19,7 @@ interface ConfirmarFiltrosProps extends DefaultProps {
 
 interface ItemProps extends DefaultProps {
 	imagem_url?: string;
-	onEdit: () => void;
+	linkEditar?: string;
 	onDelete: () => void;
 }
 
@@ -62,8 +63,8 @@ export function AdministracaoListagem({ children }: DefaultProps) {
 export function AdministracaoItem({
 	children,
 	imagem_url,
+	linkEditar,
 	onDelete,
-	onEdit,
 }: ItemProps) {
 	return (
 		<div className={styles.item_administracao}>
@@ -78,10 +79,10 @@ export function AdministracaoItem({
 			</div>
 			<div className={styles.content}>{children}</div>
 			<div className={styles.acoes}>
-				<Botao fullWidth onClick={onEdit}>
+				<LinkButton link={linkEditar || ""}>
 					<span>Editar</span>
 					<MdEdit />
-				</Botao>
+				</LinkButton>
 				<Botao fullWidth onClick={onDelete}>
 					<span>Remover</span>
 					<FaTrash />

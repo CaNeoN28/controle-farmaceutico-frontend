@@ -313,7 +313,7 @@ export default function FarmaciasAdministracao() {
 											key={i}
 											imagem_url={f.imagem_url}
 											onDelete={() => {}}
-											onEdit={() => {}}
+											linkEditar={`/administracao/farmacias/editar/${f._id}`}	
 										>
 											{f.nome_fantasia}
 										</AdministracaoItem>
