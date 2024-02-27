@@ -115,6 +115,21 @@ export default function FarmaciasAdministracao() {
 		}
 	};
 
+	const cleanFiltros = () => {
+		const newParams = new URLSearchParams();
+		const dados = watch();
+
+		Object.keys(dados).map((k) => {
+			const key = k as keyof Filtros;
+
+			setValue(key, "");
+			newParams.delete(key);
+		});
+
+		setParams(newParams);
+		router.replace(`${pathname}`);
+	};
+
 	const submitFiltros: SubmitHandler<Filtros> = function (data) {
 		const params = new URLSearchParams(searchParams);
 
@@ -188,10 +203,12 @@ export default function FarmaciasAdministracao() {
 	useEffect(() => {
 		const estado = watch("estado");
 
-		if (estado) getMunicipios();
-		else {
+		if (estado) {
+			getMunicipios();
+		} else {
 			setValue("municipio", "");
 			setFiltroMunicipio("");
+			setFiltroEstado("");
 		}
 	}, [watch("estado"), filtroMunicipio]);
 
@@ -266,11 +283,7 @@ export default function FarmaciasAdministracao() {
 								);
 							}}
 						/>
-						<AdministracaoConfirmarFiltros
-							onClean={() => {
-								router.replace(`${pathname}`);
-							}}
-						/>
+						<AdministracaoConfirmarFiltros onClean={cleanFiltros} />
 					</AdministracaoFiltros>
 					{farmacias.length > 0 && (
 						<AdministracaoListagem>
