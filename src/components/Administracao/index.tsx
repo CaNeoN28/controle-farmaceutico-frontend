@@ -34,7 +34,7 @@ export function AdministracaoListagem({ children }: DefaultProps) {
 
 export function AdministracaoItem({ children, imagem_url, onDelete, onEdit }: ItemProps) {
 	return (
-		<div className={styles.administracao_item}>
+		<div className={styles.item_administracao}>
 			<div className={styles.item_imagem}>
 				{imagem_url ? (
 					<img src={`${API_URL}${imagem_url}`} />
@@ -46,11 +46,11 @@ export function AdministracaoItem({ children, imagem_url, onDelete, onEdit }: It
 			</div>
 			<div className={styles.content}>{children}</div>
 			<div className={styles.acoes}>
-				<Botao onClick={onEdit}>
+				<Botao fullWidth onClick={onEdit}>
 					<span>Editar</span>
 					<MdEdit />
 				</Botao>
-				<Botao onClick={onDelete}>
+				<Botao fullWidth onClick={onDelete}>
 					<span>Remover</span>
 					<FaTrash/>
 				</Botao>

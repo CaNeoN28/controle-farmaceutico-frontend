@@ -1,8 +1,67 @@
-.main_administracao{
+.main_administracao {
 	display: flex;
 	flex-direction: column;
 
 	gap: 40px;
-	
+
 	padding: 40px 92px;
+}
+
+.item_administracao {
+	display: flex;
+
+	border: 1px solid var(--gray);
+	border-radius: 8px;
+
+	padding: 16px;
+	gap: 16px;
+}
+
+.item_imagem {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	overflow: hidden;
+
+	min-width: 120px;
+	max-width: 120px;
+
+	border-radius: 8px;
+
+	aspect-ratio: calc(1 / 1);
+
+	img{
+		width: 100%;
+		object-fit: cover;
+	}
+}
+
+.placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	height: 100%;
+
+	background-color: var(--secondary-color);
+
+	font-size: 64px;
+	color: var(--white);
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	width: 100%;
+}
+
+.acoes {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	gap: 8px;
 }

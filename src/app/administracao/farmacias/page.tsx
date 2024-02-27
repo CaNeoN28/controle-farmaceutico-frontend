@@ -91,6 +91,7 @@ export default function FarmaciasAdministracao() {
 								return (
 									<AdministracaoItem
 										key={i}
+										imagem_url={f.imagem_url}	
 										onDelete={() => {}}
 										onEdit={() => {}}
 									>
