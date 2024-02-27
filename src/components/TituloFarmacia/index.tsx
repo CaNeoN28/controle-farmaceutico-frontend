@@ -8,13 +8,15 @@ interface Props {
 }
 
 export default function TituloFarmacia({ image_url, children }: Props) {
+	const API_URL = process.env.NEXT_PUBLIC_API_URL
+
 	return (
 		<div className={styles.titulo_farmacia}>
 			<div className={styles.content}>
 				{children}
 			</div>
 			{image_url ? (
-				<img src={image_url} className={styles.image}/>
+				<img src={`${API_URL}${image_url}`} className={styles.image}/>
 			) : (
 				<div className={styles.placeholder}>
 					<MdLocalPharmacy />

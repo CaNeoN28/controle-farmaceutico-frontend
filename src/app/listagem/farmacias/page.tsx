@@ -186,6 +186,7 @@ export default function Farmacias() {
 								<CardFarmacia
 									key={f._id}
 									nome={f.nome_fantasia}
+									imagem_url={f.imagem_url || ""}
 									informacao={
 										f.aberto_hoje
 											? f.entrada && f.saida

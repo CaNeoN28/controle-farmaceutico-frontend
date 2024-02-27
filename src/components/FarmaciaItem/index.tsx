@@ -11,6 +11,8 @@ interface Props {
 }
 
 export default function FarmaciaItem({ informacao, nome, para, imagem_url }: Props) {
+	const API_URL = process.env.NEXT_PUBLIC_API_URL
+
   const classes = classNames({
     [styles.item]: true,
     "box-shadow": true
@@ -19,7 +21,7 @@ export default function FarmaciaItem({ informacao, nome, para, imagem_url }: Pro
     <Link href={para} className={classes}>
       <div className={styles.imagem}>
         {imagem_url ? (
-          <img />
+          <img src={`${API_URL}${imagem_url}`}/>
         ) : (
           <span className={styles.placeholder}>
             <MdLocalPharmacy />

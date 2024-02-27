@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { MdLocalPharmacy } from "react-icons/md";
 import styles from "./CardFarmacia.module.scss";
 import classNames from "classnames";
@@ -17,6 +16,8 @@ export default function CardFarmacia({
 	nome,
 	imagem_url,
 }: Props) {
+	const API_URL = process.env.NEXT_PUBLIC_API_URL
+
 	const classesCard = classNames({
 		[styles.card_farmacia]: true,
 		["box-shadow"]: true,
@@ -26,7 +27,7 @@ export default function CardFarmacia({
 		<Link href={link_farmacia} className={classesCard}>
 			<div className={styles.imagem}>
 				{imagem_url ? (
-					<img src={imagem_url} alt="imagem" />
+					<img src={`${API_URL}${imagem_url}`} alt="imagem" />
 				) : (
 					<div className={styles.placeholder}>
 						<MdLocalPharmacy />
