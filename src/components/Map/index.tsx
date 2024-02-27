@@ -32,30 +32,6 @@ export default class Map extends React.Component {
 
   shouldComponentUpdate(nextProps: Props) {
     if (this.props.map_center && nextProps.map_center) {
-      const pesquisaAntiga = this.props.endereco_pesquisa;
-      const pesquisaNova = nextProps.endereco_pesquisa;
-
-      if (pesquisaAntiga && pesquisaNova) {
-        const enderecoMudou = Object.keys(this.props)
-          .map((k) => {
-            const key = k as keyof Pesquisa;
-
-            const antigo = pesquisaAntiga[key];
-            const novo = pesquisaNova[key];
-
-            if (novo) {
-              if (novo != antigo) return true;
-            }
-
-            return false;
-          })
-          .find((v) => v);
-
-        if (enderecoMudou) {
-          return true;
-        }
-      }
-
       if (this.props.map_center.lat === nextProps.map_center.lat) {
         return false;
       } else {
