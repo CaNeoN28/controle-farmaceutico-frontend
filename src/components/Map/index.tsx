@@ -2,22 +2,10 @@ import styles from "./Map.module.scss";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Coordenadas } from "@/types/Localizacao";
 import React, { Dispatch, SetStateAction } from "react";
-import Endereco from "@/types/Endereco";
-
-interface Pesquisa {
-  cep: string;
-  estado: string;
-  municipio: string;
-  bairro: string;
-  logradouro: string;
-  numero: string;
-  nome_farmacia: string;
-}
 
 interface Props {
   map_center?: Coordenadas;
   map_options?: google.maps.MapOptions;
-  endereco_pesquisa?: Pesquisa;
   setLocalizacao?: Dispatch<SetStateAction<Coordenadas>>;
 }
 

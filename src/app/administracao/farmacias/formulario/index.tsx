@@ -559,10 +559,6 @@ export default function FormularioFarmacia({
 						<div className={styles.map}>
 							<Map
 								setLocalizacao={setLocalizacao}
-								endereco_pesquisa={{
-									...watchFarmacia("endereco"),
-									nome_farmacia: watchFarmacia("nome_fantasia"),
-								}}
 								map_center={mapCenter}
 							/>
 						</div>
