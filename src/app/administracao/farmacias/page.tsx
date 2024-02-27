@@ -20,6 +20,15 @@ import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+interface Filtros {
+	nome_fantasia?: string;
+	municipio?: string;
+	estado?: string;
+	pagina?: number;
+	limite?: number;
+}
 
 export default function FarmaciasAdministracao() {
 	redirecionarAutenticacao();
@@ -28,17 +37,41 @@ export default function FarmaciasAdministracao() {
 	const pathname = usePathname();
 	const router = useRouter();
 
-	const { pagina, nome_fantasia } = {
-		pagina: Number(searchParams.get("pagina")) || 1,
-		nome_fantasia: searchParams.get("nome") || "",
-	};
-
 	const fFarmacias = new FetchFarmacia();
+
+	const { control, watch, handleSubmit } = useForm<Filtros>({
+		defaultValues: {
+			estado: "",
+			municipio: "",
+			nome_fantasia: "",
+		},
+	});
+
+	const { pagina } = {
+		pagina: Number(searchParams.get("pagina")) || 1,
+	};
 
 	const [params, setParams] = useState<URLSearchParams>();
 	const [maxPaginas, setMaxPaginas] = useState<number>(5);
 
 	const [farmacias, setFarmacias] = useState<IFarmacia[]>([]);
+
+	const submitFiltros: SubmitHandler<Filtros> = function (data) {
+		const params = new URLSearchParams(searchParams);
+
+		Object.keys(data).map((k) => {
+			const key = k as keyof Filtros;
+			const value = String(data[key]);
+
+			if (value) {
+				params.set(key, value);
+			} else {
+				params.delete(key);
+			}
+		});
+
+		setParams(params);
+	};
 
 	function addSearchParam(chave: string, valor?: string) {
 		const params = new URLSearchParams(searchParams);
@@ -53,8 +86,22 @@ export default function FarmaciasAdministracao() {
 	}
 
 	async function getFarmacias() {
+		const { estado, municipio, nome_fantasia }: Filtros = {
+			estado: params?.get("estado") || "",
+			municipio: params?.get("municipio") || "",
+			nome_fantasia: params?.get("nome_fantasia") || "",
+		};
+
+		const filtros: Filtros = {
+			pagina,
+			limite: 10,
+			estado,
+			municipio,
+			nome_fantasia,
+		};
+
 		await fFarmacias
-			.getFarmacias({ pagina, nome_fantasia })
+			.getFarmacias(filtros)
 			.then((res) => {
 				const { dados, paginas_totais } = res.data as GetManyRequest<
 					IFarmacia[]
@@ -75,6 +122,10 @@ export default function FarmaciasAdministracao() {
 		getFarmacias();
 	}, [pagina]);
 
+	useEffect(() => {
+		getFarmacias();
+	}, [params]);
+
 	useLayoutEffect(() => {
 		if (params) {
 			router.replace(`${pathname}?${params}`);
@@ -87,16 +138,40 @@ export default function FarmaciasAdministracao() {
 			<AdministracaoMain>
 				<TituloSecao>LISTAGEM DE FARMÁCIAS</TituloSecao>
 				<AdministracaoContainer>
-					<AdministracaoFiltros onSubmit={() => {}}>
-						<InputContainer id="nome_fantasia" label="Nome">
-							<Input id="nome_fantasia" />
-						</InputContainer>
-						<InputContainer id="estado" label="Estado">
-							<Input id="estado" />
-						</InputContainer>
-						<InputContainer id="municipio" label="Municipio">
-							<Input id="municipio" />
-						</InputContainer>
+					<AdministracaoFiltros onSubmit={handleSubmit(submitFiltros)}>
+						<Controller
+							name="nome_fantasia"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer id="nome_fantasia" label="Nome">
+										<Input id="nome_fantasia" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="estado"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer id="estado" label="Estado">
+										<Input id="estado" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							name="municipio"
+							control={control}
+							render={({ field }) => {
+								return (
+									<InputContainer id="estado" label="Estado">
+										<Input id="estado" {...{ ...field, ref: null }} />
+									</InputContainer>
+								);
+							}}
+						/>
 						<AdministracaoConfirmarFiltros onClean={() => {}} />
 					</AdministracaoFiltros>
 					{farmacias.length > 0 && (
