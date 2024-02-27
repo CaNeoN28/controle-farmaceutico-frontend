@@ -14,10 +14,16 @@ export default function redirecionarAutenticacao() {
 
 	const fAuth = new FetchAutenticacao().getPerfil;
 
+	let tokenValido = ""
+
 	fAuth(token)
-		.then()
+		.then(() => {
+			tokenValido = token
+		})
 		.catch(() => {
 			deleteCookie("authentication")
 			router.push("/login");
 		});
+
+	return tokenValido
 }

@@ -25,6 +25,8 @@ import { Estado } from "@/types/Localizacao";
 import { fetchEstados, fetchMunicipios } from "@/fetch/localizacao";
 import Select, { Opcao } from "@/components/Select";
 import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
+import { getCookie } from "cookies-next";
+import FetchAutenticacao from "@/fetch/autenticacao";
 
 interface Filtros {
 	nome_fantasia?: string;
@@ -42,6 +44,7 @@ export default function FarmaciasAdministracao() {
 	const router = useRouter();
 
 	const fFarmacias = new FetchFarmacia();
+	const fAuth = new FetchAutenticacao().getPerfil;
 
 	const { pagina, estado, municipio, nome_fantasia }: Filtros = {
 		pagina: Number(searchParams.get("pagina")) || 1,
@@ -68,6 +71,8 @@ export default function FarmaciasAdministracao() {
 	const [maxPaginas, setMaxPaginas] = useState<number>(5);
 
 	const [farmacias, setFarmacias] = useState<IFarmacia[]>([]);
+
+	const [tokenValido, setTokenValido] = useState("");
 
 	const getEstados = async () => {
 		await fetchEstados()
@@ -113,6 +118,16 @@ export default function FarmaciasAdministracao() {
 				setMunicipios(fMunicipios);
 			});
 		}
+	};
+
+	const validarToken = async () => {
+		const token = getCookie("authentication") || "";
+
+		await fAuth(token)
+			.then((res) => {
+				setTokenValido(token);
+			})
+			.catch(() => {});
 	};
 
 	const cleanFiltros = () => {
@@ -197,6 +212,10 @@ export default function FarmaciasAdministracao() {
 	}
 
 	useEffect(() => {
+		validarToken();
+	}, []);
+
+	useEffect(() => {
 		getEstados();
 	}, [filtroEstado]);
 
@@ -226,92 +245,95 @@ export default function FarmaciasAdministracao() {
 		}
 	}, [params]);
 
-	return (
-		<>
-			<Menu />
-			<AdministracaoMain>
-				<TituloSecao>LISTAGEM DE FARMÁCIAS</TituloSecao>
-				<AdministracaoContainer>
-					<AdministracaoFiltros onSubmit={handleSubmit(submitFiltros)}>
-						<Controller
-							name="nome_fantasia"
-							control={control}
-							render={({ field }) => {
-								return (
-									<InputContainer id="nome_fantasia" label="Nome">
-										<Input id="nome_fantasia" {...{ ...field, ref: null }} />
-									</InputContainer>
-								);
+	if (tokenValido)
+		return (
+			<>
+				<Menu />
+				<AdministracaoMain>
+					<TituloSecao>LISTAGEM DE FARMÁCIAS</TituloSecao>
+					<AdministracaoContainer>
+						<AdministracaoFiltros onSubmit={handleSubmit(submitFiltros)}>
+							<Controller
+								name="nome_fantasia"
+								control={control}
+								render={({ field }) => {
+									return (
+										<InputContainer id="nome_fantasia" label="Nome">
+											<Input id="nome_fantasia" {...{ ...field, ref: null }} />
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								name="estado"
+								control={control}
+								render={({ field }) => {
+									return (
+										<InputContainer id="estado" label="Estado">
+											<Select
+												id="estado"
+												filtro={filtroEstado}
+												opcoes={estados}
+												placeholder="Rondônia"
+												setFiltro={setFiltroEstado}
+												setValue={setValue}
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								name="municipio"
+								control={control}
+								render={({ field }) => {
+									return (
+										<InputContainer id="municipio" label="Municipio">
+											<Select
+												id="municipio"
+												filtro={filtroMunicipio}
+												opcoes={municipios}
+												placeholder="Vilhena"
+												disabled={!watch("estado")}
+												setFiltro={setFiltroMunicipio}
+												setValue={setValue}
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<AdministracaoConfirmarFiltros onClean={cleanFiltros} />
+						</AdministracaoFiltros>
+						{farmacias.length > 0 && (
+							<AdministracaoListagem>
+								{farmacias.map((f, i) => {
+									return (
+										<AdministracaoItem
+											key={i}
+											imagem_url={f.imagem_url}
+											onDelete={() => {}}
+											onEdit={() => {}}
+										>
+											{f.nome_fantasia}
+										</AdministracaoItem>
+									);
+								})}
+							</AdministracaoListagem>
+						)}
+					</AdministracaoContainer>
+					{maxPaginas > 0 && (
+						<Paginacao
+							pagina={pagina}
+							paginaMax={maxPaginas}
+							setPagina={(v) => {
+								addSearchParam("pagina", v.toString());
 							}}
 						/>
-						<Controller
-							name="estado"
-							control={control}
-							render={({ field }) => {
-								return (
-									<InputContainer id="estado" label="Estado">
-										<Select
-											id="estado"
-											filtro={filtroEstado}
-											opcoes={estados}
-											placeholder="Rondônia"
-											setFiltro={setFiltroEstado}
-											setValue={setValue}
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<Controller
-							name="municipio"
-							control={control}
-							render={({ field }) => {
-								return (
-									<InputContainer id="municipio" label="Municipio">
-										<Select
-											id="municipio"
-											filtro={filtroMunicipio}
-											opcoes={municipios}
-											placeholder="Vilhena"
-											disabled={!watch("estado")}
-											setFiltro={setFiltroMunicipio}
-											setValue={setValue}
-											{...{ ...field, ref: null }}
-										/>
-									</InputContainer>
-								);
-							}}
-						/>
-						<AdministracaoConfirmarFiltros onClean={cleanFiltros} />
-					</AdministracaoFiltros>
-					{farmacias.length > 0 && (
-						<AdministracaoListagem>
-							{farmacias.map((f, i) => {
-								return (
-									<AdministracaoItem
-										key={i}
-										imagem_url={f.imagem_url}
-										onDelete={() => {}}
-										onEdit={() => {}}
-									>
-										{f.nome_fantasia}
-									</AdministracaoItem>
-								);
-							})}
-						</AdministracaoListagem>
 					)}
-				</AdministracaoContainer>
-				{maxPaginas > 0 && (
-					<Paginacao
-						pagina={pagina}
-						paginaMax={maxPaginas}
-						setPagina={(v) => {
-							addSearchParam("pagina", v.toString());
-						}}
-					/>
-				)}
-			</AdministracaoMain>
-		</>
-	);
+				</AdministracaoMain>
+			</>
+		);
+
+	return <></>;
 }
