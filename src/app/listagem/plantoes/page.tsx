@@ -68,11 +68,19 @@ export default function Plantoes() {
 				const resposta = res.data as GetManyRequest<Escala>;
 				const { paginas_totais, dados: escala } = resposta;
 
-				setEscala(escala);
-				setPaginaMax(paginas_totais);
+				if(Object.keys(escala).length > 0){
+					setEscala(escala);
+					setPaginaMax(paginas_totais);
+					setErroEscala("")
+				} else {
+					setErroEscala("Não há plantões para os próximos dias")
+				}
+
 			})
 			.catch((err) => {
 				console.log(err);
+
+				setErroEscala("Não foi possível listar plantões")
 			});
 	};
 

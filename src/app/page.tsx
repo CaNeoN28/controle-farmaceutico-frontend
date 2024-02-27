@@ -3,10 +3,8 @@
 import Menu from "@/components/Menu";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import "./globals.css";
-import { fromLatLng } from "react-geocode";
 import styles from "./Home.module.scss";
 import TituloFarmacia from "@/components/TituloFarmacia";
-import Botao from "@/components/Botao";
 import FarmaciaItem from "@/components/FarmaciaItem";
 import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
