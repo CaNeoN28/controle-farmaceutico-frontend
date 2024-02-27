@@ -51,7 +51,7 @@ export default function FarmaciasAdministracao() {
 		pagina: Number(searchParams.get("pagina")) || 1,
 	};
 
-	const [params, setParams] = useState<URLSearchParams>();
+	const [params, setParams] = useState<URLSearchParams>(searchParams);
 	const [maxPaginas, setMaxPaginas] = useState<number>(5);
 
 	const [farmacias, setFarmacias] = useState<IFarmacia[]>([]);
@@ -103,14 +103,18 @@ export default function FarmaciasAdministracao() {
 		await fFarmacias
 			.getFarmacias(filtros)
 			.then((res) => {
-				const { dados, paginas_totais } = res.data as GetManyRequest<
-					IFarmacia[]
-				>;
+				const { dados, documentos_totais, paginas_totais } =
+					res.data as GetManyRequest<IFarmacia[]>;
 
-				if (dados.length > 0) {
-					setFarmacias(dados);
+				if (dados.length == 0) {
+					if (documentos_totais != 0) {
+						addSearchParam("pagina", "1");
+					} else {
+						setMaxPaginas(0);
+					}
 				}
 
+				setFarmacias(dados);
 				setMaxPaginas(paginas_totais);
 			})
 			.catch((err) => {
@@ -191,13 +195,15 @@ export default function FarmaciasAdministracao() {
 						</AdministracaoListagem>
 					)}
 				</AdministracaoContainer>
-				<Paginacao
-					pagina={pagina}
-					paginaMax={maxPaginas}
-					setPagina={(v) => {
-						addSearchParam("pagina", v.toString());
-					}}
-				/>
+				{maxPaginas > 0 && (
+					<Paginacao
+						pagina={pagina}
+						paginaMax={maxPaginas}
+						setPagina={(v) => {
+							addSearchParam("pagina", v.toString());
+						}}
+					/>
+				)}
 			</AdministracaoMain>
 		</>
 	);
