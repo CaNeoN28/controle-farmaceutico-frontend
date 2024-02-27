@@ -331,17 +331,33 @@ export default function FarmaciasAdministracao() {
 						{farmacias.length > 0 && (
 							<AdministracaoListagem>
 								{farmacias.map((f, i) => {
+									const conteudoPrincipal = (
+										<>
+											<span>{f.nome_fantasia}</span>
+											<span>{f.cnpj}</span>
+										</>
+									);
+
+									const conteudoSecundario = (
+										<>
+											<span>{f.endereco.bairro}</span>
+											<span>
+												{f.endereco.municipio} - {f.endereco.estado}
+											</span>
+										</>
+									);
+
 									return (
 										<AdministracaoItem
 											key={i}
 											imagem_url={f.imagem_url}
+											conteudoPrincipal={conteudoPrincipal}
+											conteudoSecundario={conteudoSecundario}
 											onDelete={() => {
 												setFarmaciaParaRemover(f);
 											}}
 											linkEditar={`/administracao/farmacias/editar/${f._id}`}
-										>
-											{f.nome_fantasia}
-										</AdministracaoItem>
+										/>
 									);
 								})}
 							</AdministracaoListagem>
