@@ -124,6 +124,10 @@
 
 		filter: brightness(0.9);
 	}
+
+  button:focus{
+    filter: brightness(0.9);
+  }
 }
 
 .opcoes::-webkit-scrollbar{
