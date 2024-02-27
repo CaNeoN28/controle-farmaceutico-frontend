@@ -18,6 +18,13 @@
 	border-radius: 8px;
 }
 
+.formulario_cadastro{
+  display: flex;
+  flex-direction: column;
+
+  gap: 40px;
+}
+
 .etapa_cadastro {
 	display: flex;
 	flex-direction: column;

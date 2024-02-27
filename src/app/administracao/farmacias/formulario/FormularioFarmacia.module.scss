@@ -25,3 +25,15 @@
 		width: 100%;
 	}
 }
+
+@media screen and (max-width: 920px) {
+  .map{
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 1080px) {
+  .map{
+    width: 50%;
+  }
+}
