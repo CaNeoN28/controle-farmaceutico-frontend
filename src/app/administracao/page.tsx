@@ -5,15 +5,31 @@ import styles from "./Administracao.module.scss";
 import OpcaoAdministrativa from "@/components/OpcaoAdministrativa";
 import classNames from "classnames";
 import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Administracao() {
 	redirecionarAutenticacao();
 
+	const [width, setWidth] = useState(window.innerWidth);
+
 	const classesMain = classNames({
 		[styles.main]: true,
-		["box-shadow"]: true,
+		["box-shadow"]: width >= 672,
 	});
+
+	useEffect(() => {
+		const getWidth = () => {
+			const { innerWidth } = window;
+
+			setWidth(innerWidth);
+		};
+
+		window.addEventListener("resize", getWidth);
+
+		return () => {
+			window.removeEventListener("resize", getWidth);
+		};
+	}, []);
 
 	return (
 		<>
