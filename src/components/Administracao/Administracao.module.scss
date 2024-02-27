@@ -7,6 +7,36 @@
 	padding: 40px 92px;
 }
 
+.container_administracao{
+	display: flex;
+	flex-direction: column;
+
+	gap: 64px;
+}
+
+.filtros_administracao {
+	display: grid;
+
+	gap: 16px;
+
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.confirmar_filtros_administracao{
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: end;
+
+	gap: 16px;
+}
+
+.listagem_administracao{
+	display: flex;
+	flex-direction: column;
+
+	gap: 16px;
+}
+
 .item_administracao {
 	display: flex;
 

@@ -8,6 +8,7 @@ import Paginacao from "@/components/Paginacao";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
+	AdministracaoConfirmarFiltros,
 	AdministracaoContainer,
 	AdministracaoFiltros,
 	AdministracaoItem,
@@ -17,6 +18,8 @@ import {
 import IFarmacia from "@/types/Farmacia";
 import FetchFarmacia from "@/fetch/farmacias";
 import { GetManyRequest } from "@/types/Requests";
+import InputContainer from "@/components/InputContainer";
+import Input from "@/components/Input";
 
 export default function FarmaciasAdministracao() {
 	redirecionarAutenticacao();
@@ -84,14 +87,25 @@ export default function FarmaciasAdministracao() {
 			<AdministracaoMain>
 				<TituloSecao>LISTAGEM DE FARMÁCIAS</TituloSecao>
 				<AdministracaoContainer>
-					<AdministracaoFiltros></AdministracaoFiltros>
+					<AdministracaoFiltros onSubmit={() => {}}>
+						<InputContainer id="nome_fantasia" label="Nome">
+							<Input id="nome_fantasia" />
+						</InputContainer>
+						<InputContainer id="estado" label="Estado">
+							<Input id="estado" />
+						</InputContainer>
+						<InputContainer id="municipio" label="Municipio">
+							<Input id="municipio" />
+						</InputContainer>
+						<AdministracaoConfirmarFiltros onClean={() => {}} />
+					</AdministracaoFiltros>
 					{farmacias.length > 0 && (
 						<AdministracaoListagem>
 							{farmacias.map((f, i) => {
 								return (
 									<AdministracaoItem
 										key={i}
-										imagem_url={f.imagem_url}	
+										imagem_url={f.imagem_url}
 										onDelete={() => {}}
 										onEdit={() => {}}
 									>
