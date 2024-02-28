@@ -75,8 +75,10 @@
 
 	background-color: var(--secondary-color);
 
-	font-size: 24px;
+	font-size: 40px;
 	color: var(--white);
+
+	aspect-ratio: calc(1/1);
 }
 
 .content {
@@ -275,7 +277,7 @@
 	}
 
 	.placeholder {
-		font-size: 64px;
+		font-size: 80px;
 	}
 
 	.acoes {
