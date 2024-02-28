@@ -1,0 +1,13 @@
+.alert{
+	display: flex;
+	flex-direction: column;
+
+	gap: 24px;
+}
+
+.alert_botoes{
+	display: flex;
+	flex-direction: row-reverse;
+	
+	gap: 24px;
+}

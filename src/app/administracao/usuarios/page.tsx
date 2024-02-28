@@ -14,7 +14,7 @@ import {
 import TituloSecao from "@/components/TituloSecao";
 import { useEffect, useState } from "react";
 import { Funcao, IUsuarioAPI } from "@/types/Usuario";
-import { getUsuarios } from "@/fetch/usuarios";
+import { deleteUsuario, getUsuarios } from "@/fetch/usuarios";
 import { GetManyRequest } from "@/types/Requests";
 import { getCookie } from "cookies-next";
 import FetchAutenticacao from "@/fetch/autenticacao";
@@ -29,6 +29,8 @@ import Input from "@/components/Input";
 import Select, { Opcao } from "@/components/Select";
 import FetchEntidades from "@/fetch/entidades";
 import IEntidade from "@/types/Entidades";
+import Alert from "@/components/Alert";
+import Botao from "@/components/Botao";
 
 interface Filtros {
 	pagina?: number;
@@ -67,10 +69,13 @@ export default function UsuariosAdministracao() {
 	const [token, setToken] = useState("");
 
 	const [usuarios, setUsuarios] = useState<IUsuarioAPI[]>([]);
+	const [usuarioParaRemover, setUsuarioParaRemover] = useState<IUsuarioAPI>();
+	const [erroAoRemover, setErroAoRemover] = useState("");
+	const [mensagemRemocao, setMensagemRemocao] = useState("");
 
 	const [funcoes, setFuncoes] = useState<Opcao[]>([]);
 	const [filtroFuncao, setFiltroFuncao] = useState<string>(funcao || "");
- 
+
 	const [entidades, setEntidades] = useState<Opcao[]>([]);
 	const [filtroEntidade, setFiltroEntidade] = useState<string>("");
 
@@ -174,8 +179,8 @@ export default function UsuariosAdministracao() {
 			newParams.delete(key);
 		});
 
-		setFiltroEntidade("")
-		setFiltroFuncao("")
+		setFiltroEntidade("");
+		setFiltroFuncao("");
 		setParams(newParams), router.replace(`${pathname}`);
 	};
 
@@ -215,6 +220,23 @@ export default function UsuariosAdministracao() {
 				.catch((err) => {
 					console.log(err);
 				});
+	};
+
+	const removerUsuario = async () => {
+		if (usuarioParaRemover && token) {
+			await deleteUsuario(usuarioParaRemover._id!, token)
+				.then((res) => {
+					setMensagemRemocao("Usuário removido com sucesso");
+					setErroAoRemover("");
+				})
+				.catch((err) => {
+					const { data } = err.response;
+					setErroAoRemover(`Erro: ${data}`);
+				});
+
+			setUsuarioParaRemover(undefined);
+			fetchUsuarios();
+		}
 	};
 
 	useEffect(() => {
@@ -340,7 +362,9 @@ export default function UsuariosAdministracao() {
 										<AdministracaoItem
 											id={f._id}
 											key={i}
-											onDelete={() => {}}
+											onDelete={() => {
+												setUsuarioParaRemover(f);
+											}}
 											conteudoPrincipal={conteudoPrincipal}
 											conteudoSecundario={conteudoSecundario}
 											linkEditar={`/administracao/usuarios/editar/${f._id}`}
@@ -364,6 +388,73 @@ export default function UsuariosAdministracao() {
 						/>
 					)}
 				</AdministracaoMain>
+				<Alert
+					show={!!usuarioParaRemover}
+					onClickBackground={() => {
+						setUsuarioParaRemover(undefined);
+					}}
+				>
+					<div className={styles.alert}>
+						<span>
+							Deseja remover o usuário {usuarioParaRemover?.nome_usuario}?
+						</span>
+						<div className={styles.alert_botoes}>
+							<Botao
+								fullWidth
+								onClick={() => {
+									removerUsuario();
+								}}
+							>
+								Confirmar
+							</Botao>
+							<Botao
+								fullWidth
+								secundario
+								onClick={() => {
+									setUsuarioParaRemover(undefined);
+								}}
+							>
+								Cancelar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
+				<Alert
+					show={!!erroAoRemover}
+					onClickBackground={() => {
+						setErroAoRemover("");
+					}}
+				>
+					<div className={styles.alert}>
+						<span>{erroAoRemover}</span>
+						<Botao
+							fullWidth
+							onClick={() => {
+								setErroAoRemover("");
+							}}
+						>
+							Confirmar
+						</Botao>
+					</div>
+				</Alert>
+				<Alert
+					show={!!mensagemRemocao}
+					onClickBackground={() => {
+						setMensagemRemocao("");
+					}}
+				>
+					<div className={styles.alert}>
+						<span>{mensagemRemocao}</span>
+						<Botao
+							fullWidth
+							onClick={() => {
+								setMensagemRemocao("");
+							}}
+						>
+							Confirmar
+						</Botao>
+					</div>
+				</Alert>
 			</>
 		);
 
