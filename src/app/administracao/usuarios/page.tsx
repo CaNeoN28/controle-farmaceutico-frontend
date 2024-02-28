@@ -57,9 +57,9 @@ export default function UsuariosAdministracao() {
 
 	const { control, handleSubmit, watch, setValue } = useForm<Filtros>({
 		defaultValues: {
-			entidade_relacionada: "",
-			funcao: "",
-			nome_usuario: "",
+			entidade_relacionada,
+			funcao,
+			nome_usuario,
 		},
 	});
 
@@ -69,10 +69,10 @@ export default function UsuariosAdministracao() {
 	const [usuarios, setUsuarios] = useState<IUsuarioAPI[]>([]);
 
 	const [funcoes, setFuncoes] = useState<Opcao[]>([]);
-	const [filtroFuncao, setFiltroFuncao] = useState("");
+	const [filtroFuncao, setFiltroFuncao] = useState<string>(funcao);
 
 	const [entidades, setEntidades] = useState<Opcao[]>([]);
-	const [filtroEntidade, setFiltroEntidade] = useState("");
+	const [filtroEntidade, setFiltroEntidade] = useState<string>(entidade_relacionada);
 
 	const [params, setParams] = useState<URLSearchParams>(searchParams);
 	const [maxPaginas, setMaxPaginas] = useState<number>(5);
