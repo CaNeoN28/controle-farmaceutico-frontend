@@ -13,8 +13,9 @@ import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import { useEffect, useState } from "react";
 import Select, { Opcao } from "@/components/Select";
-import { fetchEstados } from "@/fetch/localizacao";
-import { Estado } from "@/types/Localizacao";
+import { fetchEstados, fetchMunicipios } from "@/fetch/localizacao";
+import { Estado, Municipio } from "@/types/Localizacao";
+import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
 
 interface Props {
 	entidade?: IEntidade;
@@ -25,6 +26,7 @@ export default function FormularioEntidade({ entidade }: Props) {
 		control,
 		formState: { errors },
 		handleSubmit,
+		watch,
 		setValue,
 	} = useForm<IEntidade>({
 		defaultValues: entidade || {
@@ -35,25 +37,53 @@ export default function FormularioEntidade({ entidade }: Props) {
 		},
 	});
 
+	const [municipios, setMunicipios] = useState<Opcao[]>([]);
+	const [filtroMunicipio, setFiltroMunicipio] = useState("");
+
 	const [estados, setEstados] = useState<Opcao[]>([]);
 	const [filtroEstado, setFiltroEstado] = useState("");
 
+	const getMunicipios = async () => {
+		const { estado } = watch();
+		const sigla = getSiglaFromEstado(estado);
+
+		await fetchMunicipios(sigla)
+			.then((res) => {
+				const municipios = res.data;
+
+				const opcoes: Opcao[] = municipios
+					.filter((m) => new RegExp(filtroMunicipio).test(m.nome))
+					.sort((a, b) => (a.nome > b.nome ? 1 : -1))
+					.map((m) => {
+						return {
+							label: m.nome,
+							valor: m.nome,
+						};
+					});
+
+				setMunicipios(opcoes);
+			})
+			.catch();
+	};
+
 	const getEstados = async () => {
-		await fetchEstados().then((res) => {
-			const estados = res.data as Estado[];
+		await fetchEstados()
+			.then((res) => {
+				const estados = res.data;
 
-			const opcoes: Opcao[] = estados
-				.filter((e) => new RegExp(filtroEstado).test(e.nome))
-				.sort((a, b) => (a.nome > b.nome ? 1 : -1))
-				.map((e) => {
-					return {
-						label: e.nome,
-						valor: e.nome,
-					};
-				});
+				const opcoes: Opcao[] = estados
+					.filter((e) => new RegExp(filtroEstado).test(e.nome))
+					.sort((a, b) => (a.nome > b.nome ? 1 : -1))
+					.map((e) => {
+						return {
+							label: e.nome,
+							valor: e.nome,
+						};
+					});
 
-			setEstados(opcoes);
-		});
+				setEstados(opcoes);
+			})
+			.catch();
 	};
 
 	const onSubmit: SubmitHandler<IEntidade> = (data) => {
@@ -61,8 +91,19 @@ export default function FormularioEntidade({ entidade }: Props) {
 	};
 
 	useEffect(() => {
+		getMunicipios();
+		
+		setFiltroMunicipio("");
+		setValue("municipio", "");
+	}, [watch("estado")]);
+
+	useEffect(() => {
 		getEstados();
 	}, [filtroEstado]);
+
+	useEffect(() => {
+		getMunicipios();
+	}, [filtroMunicipio]);
 
 	return (
 		<CadastroContainer>
@@ -100,6 +141,26 @@ export default function FormularioEntidade({ entidade }: Props) {
 											filtro={filtroEstado}
 											opcoes={estados}
 											setFiltro={setFiltroEstado}
+											setValue={setValue}
+											{...{ ...field, ref: null }}
+										/>
+									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							control={control}
+							name="municipio"
+							render={({ field }) => {
+								return (
+									<InputContainer id="municipio" label="Municipio">
+										<Select
+											id="municipio"
+											placeholder="Município"
+											filtro={filtroMunicipio}
+											opcoes={municipios}
+											disabled={!watch("estado")}
+											setFiltro={setFiltroMunicipio}
 											setValue={setValue}
 											{...{ ...field, ref: null }}
 										/>
