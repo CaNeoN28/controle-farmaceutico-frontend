@@ -1,3 +1,5 @@
+import styles from "./FormularioUsuario.module.scss";
+import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import Botao from "@/components/Botao";
 import {
   CadastroBotoes,
@@ -11,13 +13,18 @@ import InputContainer from "@/components/InputContainer";
 import InputImagem from "@/components/InputImagem";
 import InputMascara from "@/components/InputMascara/indext";
 import InputSenha from "@/components/InputSenha";
+import LinkButton from "@/components/LinkButton";
 import Select, { Opcao } from "@/components/Select";
+import FetchEntidades from "@/fetch/entidades";
+import IEntidade from "@/types/Entidades";
+import { GetManyRequest } from "@/types/Requests";
 import { IUsuarioAPI } from "@/types/Usuario";
 import { ARRAY_FUNCOES } from "@/utils/funcaoAdministrativa";
 import regexValidation from "@/utils/regexValidation";
 import { validarCPF } from "@/utils/validation";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import classNames from "classnames";
 
 interface Props {
   usuarioData?: IUsuarioAPI;
@@ -28,10 +35,13 @@ export default function FormularioUsuario({
   usuarioData,
   usuarioEditor,
 }: Props) {
+  const fEntidades = new FetchEntidades();
+
   const {
     formState: { errors },
     control,
     watch,
+    setValue,
     handleSubmit,
   } = useForm<IUsuarioAPI>({
     defaultValues: usuarioData || {
@@ -52,6 +62,14 @@ export default function FormularioUsuario({
   const [funcoes, setFuncoes] = useState<Opcao[]>([]);
   const [filtroFuncao, setFiltroFuncao] = useState("INATIVO");
 
+  const [entidades, setEntidades] = useState<Opcao[]>([]);
+  const [filtroEntidade, setFiltroEntidade] = useState("");
+
+  const classesRedirectEntidade = classNames({
+    [styles.link_button]: true,
+    [styles.error]: errors.dados_administrativos,
+  });
+
   const getFuncoesAdministrativas = () => {
     const funcaoEditor = ARRAY_FUNCOES.findIndex(
       (v) => v === usuarioEditor.dados_administrativos.funcao
@@ -61,35 +79,34 @@ export default function FormularioUsuario({
 
     const opcoes: Opcao[] = funcoes
       .map((v) => {
-        let label = "";
-
-        switch (v) {
-          case "ADMINISTRADOR":
-            label = "Administrador";
-            break;
-          case "GERENTE":
-            label = "Gerente";
-            break;
-          case "USUARIO":
-            label = "Usuário";
-            break;
-          case "INATIVO":
-            label = "Inativo";
-            break;
-        }
         return {
-          label: label,
+          label: v,
           valor: v,
         };
       })
       .filter((f) => new RegExp(filtroFuncao, "i").test(f.label));
 
-    console.log({
-      opcoes,
-      funcoes,
-    });
-
     setFuncoes(opcoes);
+  };
+
+  const getEntidades = async () => {
+    await fEntidades
+      .getEntidades({
+        limite: 10,
+        nome_entidade: filtroEntidade,
+      })
+      .then((res) => {
+        const { dados } = res.data as GetManyRequest<IEntidade[]>;
+
+        const opcoes: Opcao[] = dados.map((d) => {
+          return {
+            label: d.nome_entidade,
+            valor: d._id,
+          };
+        });
+
+        setEntidades(opcoes);
+      });
   };
 
   const onSubmit: SubmitHandler<IUsuarioAPI> = (data) => {
@@ -99,6 +116,10 @@ export default function FormularioUsuario({
   useEffect(() => {
     getFuncoesAdministrativas();
   }, [filtroFuncao]);
+
+  useEffect(() => {
+    getEntidades();
+  }, [filtroEntidade]);
 
   return (
     <CadastroContainer>
@@ -273,8 +294,8 @@ export default function FormularioUsuario({
               rules={{
                 required: {
                   value: true,
-                  message: "Função é obrigatória"
-                }
+                  message: "Função é obrigatória",
+                },
               }}
               render={({ field }) => {
                 return (
@@ -287,16 +308,55 @@ export default function FormularioUsuario({
                     }
                   >
                     <Select
+                      placeholder="USUARIO"
                       filtro={filtroFuncao}
                       opcoes={funcoes}
                       setFiltro={setFiltroFuncao}
-                      placeholder="Usuário"
+                      setValue={setValue}
                       {...{ ...field, ref: null }}
                     />
                   </InputContainer>
                 );
               }}
             />
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  message: "Entidade relacionada é obrigatória",
+                  value: true,
+                },
+              }}
+              name="dados_administrativos.entidade_relacionada"
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="entidade_relacionada"
+                    label="Entidade relacionada"
+                    error={
+                      errors.dados_administrativos &&
+                      errors.dados_administrativos.entidade_relacionada
+                    }
+                  >
+                    <Select
+                      id="entidade_relacionada"
+                      placeholder=""
+                      filtro={filtroEntidade}
+                      opcoes={entidades}
+                      setFiltro={setFiltroEntidade}
+                      setValue={setValue}
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
+            <div className={classesRedirectEntidade}>
+              <LinkButton secundario link="/administracao/entidades/cadastro">
+                <span>Nova entidade</span>
+                <HiArrowTopRightOnSquare />
+              </LinkButton>
+            </div>
           </CadastroInputs>
         </CadastroEtapa>
         <CadastroBotoes>
