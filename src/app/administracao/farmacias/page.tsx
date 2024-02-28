@@ -30,6 +30,7 @@ import FetchAutenticacao from "@/fetch/autenticacao";
 import Alert from "@/components/Alert";
 import Botao from "@/components/Botao";
 import { mascararCnpj } from "@/utils/mascaras";
+import { addSearchParam } from "@/utils/navigation";
 
 interface Filtros {
 	nome_fantasia?: string;
@@ -186,18 +187,6 @@ export default function FarmaciasAdministracao() {
 		setParams(params);
 	};
 
-	function addSearchParam(chave: string, valor?: string) {
-		const params = new URLSearchParams(searchParams);
-
-		if (valor) {
-			params.set(chave, valor);
-		} else {
-			params.delete(chave);
-		}
-
-		setParams(params);
-	}
-
 	async function getFarmacias() {
 		const { estado, municipio, nome_fantasia }: Filtros = {
 			estado: params?.get("estado") || "",
@@ -221,7 +210,7 @@ export default function FarmaciasAdministracao() {
 
 				if (dados.length == 0) {
 					if (documentos_totais != 0) {
-						addSearchParam("pagina", "1");
+						addSearchParam("pagina", "1", searchParams, setParams);
 					} else {
 						setMaxPaginas(0);
 					}
@@ -370,7 +359,7 @@ export default function FarmaciasAdministracao() {
 							pagina={pagina}
 							paginaMax={maxPaginas}
 							setPagina={(v) => {
-								addSearchParam("pagina", v.toString());
+								addSearchParam("pagina", v.toString(), searchParams, setParams);
 							}}
 						/>
 					)}

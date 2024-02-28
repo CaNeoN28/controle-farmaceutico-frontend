@@ -12,4 +12,10 @@ export default class FetchEntidades {
 
 		return response;
 	}
+
+	getEntidade(id?: string) {
+		const response = axios.get(`${API_URL}/entidade/${id}`);
+
+		return response;
+	}
 }

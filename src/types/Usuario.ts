@@ -1,6 +1,16 @@
+export type Funcao =
+	| "ADMINISTRADOR"
+	| "GERENTE"
+	| "USUARIO"
+	| "INATIVO"
+	| "ADMINISTRADOR"
+	| "GERENTE"
+	| "USUARIO"
+	| "INATIVO";
+
 export default interface IUsuario {
 	_id?: string;
-	funcao: "ADMINISTRADOR" | "GERENTE" | "USUARIO" | "INATIVO";
+	funcao: Funcao;
 	entidade_relacionada: string;
 	cpf: string;
 	email: string;
@@ -13,7 +23,7 @@ export default interface IUsuario {
 export interface IUsuarioAPI {
 	_id?: string;
 	dados_administrativos: {
-		funcao?: "ADMINISTRADOR" | "GERENTE" | "USUARIO" | "INATIVO";
+		funcao?: Funcao;
 		entidade_relacionada: string;
 	};
 	cpf: string;
