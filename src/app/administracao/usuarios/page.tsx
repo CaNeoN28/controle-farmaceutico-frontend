@@ -69,10 +69,10 @@ export default function UsuariosAdministracao() {
 	const [usuarios, setUsuarios] = useState<IUsuarioAPI[]>([]);
 
 	const [funcoes, setFuncoes] = useState<Opcao[]>([]);
-	const [filtroFuncao, setFiltroFuncao] = useState<string>(funcao);
-
+	const [filtroFuncao, setFiltroFuncao] = useState<string>(funcao || "");
+ 
 	const [entidades, setEntidades] = useState<Opcao[]>([]);
-	const [filtroEntidade, setFiltroEntidade] = useState<string>(entidade_relacionada);
+	const [filtroEntidade, setFiltroEntidade] = useState<string>("");
 
 	const [params, setParams] = useState<URLSearchParams>(searchParams);
 	const [maxPaginas, setMaxPaginas] = useState<number>(5);
@@ -132,6 +132,21 @@ export default function UsuariosAdministracao() {
 		setParams(params);
 	};
 
+	const getEntidade = async () => {
+		if (entidade_relacionada) {
+			await fEntidades
+				.getEntidade(entidade_relacionada)
+				.then((res) => {
+					const entidade = res.data as IEntidade;
+
+					setFiltroEntidade(entidade.nome_entidade);
+				})
+				.catch(() => {
+					setValue("entidade_relacionada", "");
+				});
+		}
+	};
+
 	const getUsuario = async () => {
 		const token = getCookie("authentication") || "";
 
@@ -159,6 +174,8 @@ export default function UsuariosAdministracao() {
 			newParams.delete(key);
 		});
 
+		setFiltroEntidade("")
+		setFiltroFuncao("")
 		setParams(newParams), router.replace(`${pathname}`);
 	};
 
@@ -202,6 +219,7 @@ export default function UsuariosAdministracao() {
 
 	useEffect(() => {
 		getUsuario();
+		getEntidade();
 	}, []);
 
 	useEffect(() => {
