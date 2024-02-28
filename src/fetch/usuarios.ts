@@ -15,5 +15,15 @@ export function getUsuarios(filtros: FiltrosUsuario, token: string) {
 		params: filtros,
 	});
 
-	return response
+	return response;
+}
+
+export function deleteUsuario(id: string, token?: string) {
+	const response = axios.delete(`${API_URL}/usuario/${id}`, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+
+	return response;
 }
