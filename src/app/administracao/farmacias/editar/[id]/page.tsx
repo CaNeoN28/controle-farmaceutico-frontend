@@ -16,7 +16,7 @@ import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import { CadastroMain } from "@/components/Cadastro";
 import TituloSecao from "@/components/TituloSecao";
 import FetchImagem from "@/fetch/imagens";
-import Farmacias from "@/app/listagem/farmacias/page";
+import FetchAutenticacao from "@/fetch/autenticacao";
 
 interface Params {
 	id: string;
@@ -41,6 +41,8 @@ export default function EditarFarmacia({
 	const [erroEdicao, setErroEdicao] = useState<string>();
 	const [mensagem, setMensagem] = useState<string>();
 
+	const [token, setToken] = useState<string>();
+
 	const getFarmacia = async () => {
 		await fetchFarmacia
 			.getFarmacia(id_farmacia)
@@ -63,7 +65,6 @@ export default function EditarFarmacia({
 	};
 
 	const salvarFarmacia = async (farmacia: IFarmacia) => {
-		const token = getCookie("authentication");
 		const urlImagem = farmacia.imagem_url;
 
 		await fetchFarmacia
@@ -94,9 +95,22 @@ export default function EditarFarmacia({
 			});
 	};
 
+	const getToken = async () => {
+		const token = getCookie("authentication");
+		const getPerfil = new FetchAutenticacao().getPerfil;
+
+		await getPerfil(token)
+			.then((res) => setToken(token))
+			.catch();
+	};
+
+	useEffect(() => {
+		getToken();
+	}, []);
+
 	useEffect(() => {
 		getFarmacia();
-	}, []);
+	}, [token]);
 
 	return (
 		<>
