@@ -16,6 +16,7 @@ import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import { CadastroMain } from "@/components/Cadastro";
 import TituloSecao from "@/components/TituloSecao";
 import FetchImagem from "@/fetch/imagens";
+import FetchAutenticacao from "@/fetch/autenticacao";
 
 interface Params {
 	id: string;
@@ -32,11 +33,15 @@ export default function EditarFarmacia({
 	const fetchFarmacia = new FetchFarmacia();
 	const deleteImagem = new FetchImagem().removeImagem;
 
+	const date = new Date();
+
 	const [farmacia, setFarmacia] = useState<IFarmacia>();
 	const [showAlert, setShowAlert] = useState(false);
 	const [erro, setErro] = useState<string>();
 	const [erroEdicao, setErroEdicao] = useState<string>();
 	const [mensagem, setMensagem] = useState<string>();
+
+	const [token, setToken] = useState<string>();
 
 	const getFarmacia = async () => {
 		await fetchFarmacia
@@ -44,7 +49,13 @@ export default function EditarFarmacia({
 			.then((res) => {
 				const farmacia = res.data as IFarmacia;
 
-				console.log(farmacia);
+				farmacia.plantoes = farmacia.plantoes
+					.filter((p) => {
+						return Number(new Date(p.saida)) >= Number(date);
+					})
+					.sort((a, b) => {
+						return new Date(a.entrada) > new Date(b.entrada) ? 1 : -1;
+					});
 
 				setFarmacia(farmacia);
 			})
@@ -54,7 +65,6 @@ export default function EditarFarmacia({
 	};
 
 	const salvarFarmacia = async (farmacia: IFarmacia) => {
-		const token = getCookie("authentication");
 		const urlImagem = farmacia.imagem_url;
 
 		await fetchFarmacia
@@ -85,9 +95,22 @@ export default function EditarFarmacia({
 			});
 	};
 
+	const getToken = async () => {
+		const token = getCookie("authentication");
+		const getPerfil = new FetchAutenticacao().getPerfil;
+
+		await getPerfil(token)
+			.then((res) => setToken(token))
+			.catch();
+	};
+
+	useEffect(() => {
+		getToken();
+	}, []);
+
 	useEffect(() => {
 		getFarmacia();
-	}, []);
+	}, [token]);
 
 	return (
 		<>
@@ -98,64 +121,64 @@ export default function EditarFarmacia({
 					<FormularioFarmacia
 						salvarFarmacia={salvarFarmacia}
 						farmacia={farmacia}
+						horariosAntigos={farmacia.horarios_servico}
+						plantoesAntigos={farmacia.plantoes}
 					/>
-					<Alert
-						show={showAlert}
-						onClickBackground={() => {
-							if (erro) {
-								setShowAlert(false);
-							} else if (mensagem) {
-								setShowAlert(false);
-								router.push("/administracao");
-							}
-						}}
-					>
-						<div className={styles.alert}>
-							<span className={styles.alert_texto}>
-								{erroEdicao || mensagem}
-							</span>
-							<div className={styles.alert_opcoes}>
-								{erroEdicao ? (
-									<>
-										<Botao
-											fullWidth
-											onClick={() => {
-												setShowAlert(false);
-											}}
-										>
-											Continuar
-										</Botao>
-										<Botao
-											secundario
-											fullWidth
-											onClick={() => {
-												router.push("/administracao");
-											}}
-										>
-											Cancelar
-										</Botao>
-									</>
-								) : (
-									<>
-										<Botao
-											fullWidth
-											onClick={() => {
-												router.push("/administracao/farmacias");
-											}}
-										>
-											Confirmar
-										</Botao>
-									</>
-								)}
-							</div>
-						</div>
-					</Alert>
 				</CadastroMain>
 			) : erro ? (
 				<div className={styles.erro}>{erro}</div>
 			) : (
 				<Carregando />
 			)}
+			<Alert
+				show={showAlert}
+				onClickBackground={() => {
+					if (erro) {
+						setShowAlert(false);
+					} else if (mensagem) {
+						setShowAlert(false);
+						router.back();
+					}
+				}}
+			>
+				<div className={styles.alert}>
+					<span className={styles.alert_texto}>{erroEdicao || mensagem}</span>
+					<div className={styles.alert_opcoes}>
+						{erroEdicao ? (
+							<>
+								<Botao
+									fullWidth
+									onClick={() => {
+										setShowAlert(false);
+									}}
+								>
+									Continuar
+								</Botao>
+								<Botao
+									secundario
+									fullWidth
+									onClick={() => {
+										router.push("/administracao");
+									}}
+								>
+									Cancelar
+								</Botao>
+							</>
+						) : (
+							<>
+								<Botao
+									fullWidth
+									onClick={() => {
+										router.push("/administracao/farmacias");
+									}}
+								>
+									Confirmar
+								</Botao>
+							</>
+						)}
+					</div>
+				</div>
+			</Alert>
 		</>
 	);
 }

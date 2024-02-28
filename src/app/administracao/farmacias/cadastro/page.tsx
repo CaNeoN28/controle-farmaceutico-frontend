@@ -6,7 +6,7 @@ import FormularioFarmacia from "../formulario";
 import FetchFarmacia from "@/fetch/farmacias";
 import { getCookie } from "cookies-next";
 import Alert from "@/components/Alert";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RequestErro } from "@/types/Requests";
 import Botao from "@/components/Botao";
 import { useRouter } from "next/navigation";
@@ -15,9 +15,12 @@ import Menu from "@/components/Menu";
 import { CadastroMain } from "@/components/Cadastro";
 import TituloSecao from "@/components/TituloSecao";
 import FetchImagem from "@/fetch/imagens";
+import FetchAutenticacao from "@/fetch/autenticacao";
 
 export default function CadastroFarmacia() {
 	redirecionarAutenticacao();
+
+	const getPerfil = new FetchAutenticacao().getPerfil;
 
 	const router = useRouter();
 	const postFarmacia = new FetchFarmacia().postFarmacia;
@@ -26,9 +29,19 @@ export default function CadastroFarmacia() {
 	const [showAlert, setShowAlert] = useState(false);
 	const [erro, setErro] = useState<string>();
 	const [mensagem, setMensagem] = useState<string>();
+	const [token, setToken] = useState<string>();
+
+	const getToken = async () => {
+		const token = getCookie("authentication");
+
+		await getPerfil(token)
+			.then(() => {
+				setToken(token);
+			})
+			.catch();
+	};
 
 	const salvarFarmacia = async (farmacia: IFarmacia) => {
-		const token = getCookie("authentication");
 		const urlImagem = farmacia.imagem_url;
 
 		await postFarmacia(farmacia, token)
@@ -57,6 +70,10 @@ export default function CadastroFarmacia() {
 				setShowAlert(true);
 			});
 	};
+
+	useEffect(() => {
+		getToken();
+	}, []);
 
 	return (
 		<>
