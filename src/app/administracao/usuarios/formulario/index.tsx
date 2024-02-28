@@ -22,20 +22,30 @@ import { IUsuarioAPI } from "@/types/Usuario";
 import { ARRAY_FUNCOES } from "@/utils/funcaoAdministrativa";
 import regexValidation from "@/utils/regexValidation";
 import { validarCPF } from "@/utils/validation";
-import { useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import classNames from "classnames";
 
 interface Props {
   usuarioData?: IUsuarioAPI;
+  erroImagem?: string;
   usuarioEditor: IUsuarioAPI;
   fetchUsuario: (data: IUsuarioAPI) => void;
+  setImagem: Dispatch<SetStateAction<File | undefined>>;
 }
 
 export default function FormularioUsuario({
   usuarioData,
   usuarioEditor,
+  erroImagem,
   fetchUsuario,
+  setImagem,
 }: Props) {
   const fEntidades = new FetchEntidades();
 
@@ -70,6 +80,18 @@ export default function FormularioUsuario({
     [styles.link_button]: true,
     [styles.error]: errors.dados_administrativos,
   });
+
+  const handleImagem = (e: ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+
+      setImagem(file);
+    } else {
+      setImagem(undefined);
+    }
+  };
 
   const getFuncoesAdministrativas = () => {
     const funcaoEditor = ARRAY_FUNCOES.findIndex(
@@ -112,7 +134,7 @@ export default function FormularioUsuario({
 
   const onSubmit: SubmitHandler<IUsuarioAPI> = (data) => {
     const newData = { ...data, cpf: data.cpf.replaceAll(/([.-])+/g, "") };
-    
+
     fetchUsuario(newData);
   };
 
@@ -283,7 +305,7 @@ export default function FormularioUsuario({
             <InputContainer id="imagem" label="Imagem de perfil">
               <InputImagem
                 id="imagem"
-                onChange={() => {}}
+                onChange={handleImagem}
                 titulo="Enviar arquivo"
               />
             </InputContainer>

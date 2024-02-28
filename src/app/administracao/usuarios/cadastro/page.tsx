@@ -11,12 +11,15 @@ import { IUsuarioAPI } from "@/types/Usuario";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { getCookie } from "cookies-next";
 import { postUsuario } from "@/fetch/usuario";
+import FetchImagem from "@/fetch/imagens";
 
 export default function CadastroUsuario() {
   redirecionarAutenticacao();
 
   const fAuth = new FetchAutenticacao();
+  const fImagem = new FetchImagem();
 
+  const [imagem, setImagem] = useState<File>();
   const [usuarioEditor, setUsuarioEditor] = useState<IUsuarioAPI>();
   const [token, setToken] = useState("");
 
@@ -32,13 +35,25 @@ export default function CadastroUsuario() {
   };
 
   const fetchUsuario = async (data: IUsuarioAPI) => {
-    const response = postUsuario(data, token)
+    let erroImagem = "";
+
+    if (imagem) {
+      await fImagem
+        .postImagem(imagem)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          erroImagem = "Arquivo inválido"
+        });
+    }
+    /*const response = postUsuario(data, token)
       .then((res) => {
-        console.log(res);
+        return res;
       })
       .catch((err) => {
-        console.log(err);
-      });
+        return;
+      });*/
   };
 
   useEffect(() => {
@@ -51,7 +66,11 @@ export default function CadastroUsuario() {
         <Menu />
         <CadastroMain>
           <TituloSecao>CADASTRO DE USUÁRIO</TituloSecao>
-          <FormularioUsuario usuarioEditor={usuarioEditor} fetchUsuario={fetchUsuario}/>
+          <FormularioUsuario
+            usuarioEditor={usuarioEditor}
+            fetchUsuario={fetchUsuario}
+            setImagem={setImagem}
+          />
         </CadastroMain>
       </>
     );
