@@ -5,6 +5,8 @@ import styles from "./UsuariosAdministracao.module.scss";
 import Menu from "@/components/Menu";
 import {
 	AdministracaoContainer,
+	AdministracaoItem,
+	AdministracaoListagem,
 	AdministracaoMain,
 } from "@/components/Administracao";
 import TituloSecao from "@/components/TituloSecao";
@@ -72,7 +74,37 @@ export default function UsuariosAdministracao() {
 			<Menu />
 			<AdministracaoMain>
 				<TituloSecao>LISTAGEM DE USUÁRIOS</TituloSecao>
-				<AdministracaoContainer></AdministracaoContainer>
+				<AdministracaoContainer>
+					{usuarios.length > 0 && (
+						<AdministracaoListagem>
+							{usuarios.map((f, i) => {
+								const conteudoPrincipal = (
+									<>
+										<span>{f.nome_completo}</span>
+										<span>{f.cpf}</span>
+									</>
+								);
+
+								const conteudoSecundario = (
+									<>
+										<span>{f.dados_administrativos.funcao}</span>
+										<span>{f.email}</span>
+									</>
+								);
+
+								return (
+									<AdministracaoItem
+										id={f._id}
+										key={i}
+										onDelete={() => {}}
+										conteudoPrincipal={conteudoPrincipal}
+										conteudoSecundario={conteudoSecundario}
+									/>
+								);
+							})}
+						</AdministracaoListagem>
+					)}
+				</AdministracaoContainer>
 			</AdministracaoMain>
 		</>
 	);
