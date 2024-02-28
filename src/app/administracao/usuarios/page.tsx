@@ -33,7 +33,7 @@ import IEntidade from "@/types/Entidades";
 interface Filtros {
 	pagina?: number;
 	limite?: number;
-	nome_completo?: string;
+	nome_usuario?: string;
 	entidade_relacionada?: string;
 	funcao?: Funcao | "";
 }
@@ -48,15 +48,18 @@ export default function UsuariosAdministracao() {
 	const fAuth = new FetchAutenticacao();
 	const fEntidades = new FetchEntidades();
 
-	const { pagina }: Filtros = {
+	const { pagina, entidade_relacionada, funcao, nome_usuario }: Filtros = {
 		pagina: Number(searchParams.get("pagina")) || 1,
+		entidade_relacionada: searchParams.get("entidade_relacionada") || "",
+		nome_usuario: searchParams.get("nome_usuario") || "",
+		funcao: searchParams.get("funcao") as Funcao,
 	};
 
-	const { control, handleSubmit, watch, setValue } = useForm<Filtros>({
+	const { control, handleSubmit, setValue } = useForm<Filtros>({
 		defaultValues: {
 			entidade_relacionada: "",
 			funcao: "",
-			nome_completo: "",
+			nome_usuario: "",
 		},
 	});
 
@@ -107,12 +110,26 @@ export default function UsuariosAdministracao() {
 					};
 				});
 
-				setEntidades(opcoes)
-			}).catch();
+				setEntidades(opcoes);
+			})
+			.catch();
 	};
 
-	const onFiltro: SubmitHandler<Filtros> = (data) => {
-		console.log(data);
+	const onFiltro: SubmitHandler<Filtros> = function (data) {
+		const params = new URLSearchParams(searchParams);
+
+		Object.keys(data).map((k) => {
+			const key = k as keyof Filtros;
+			const value = String(data[key]);
+
+			if (value) {
+				params.set(key, value);
+			} else {
+				params.delete(key);
+			}
+		});
+
+		setParams(params);
 	};
 
 	const getUsuario = async () => {
@@ -132,8 +149,18 @@ export default function UsuariosAdministracao() {
 	};
 
 	const fetchUsuarios = async () => {
+		const { pagina, entidade_relacionada, funcao, nome_usuario }: Filtros = {
+			pagina: Number(params.get("pagina")) || 1,
+			entidade_relacionada: params.get("entidade_relacionada") || "",
+			nome_usuario: params.get("nome_usuario") || "",
+			funcao: params.get("funcao") as Funcao,
+		};
+
 		const filtros: Filtros = {
 			pagina,
+			entidade_relacionada,
+			funcao,
+			nome_usuario,
 			limite: 10,
 		};
 
@@ -198,14 +225,14 @@ export default function UsuariosAdministracao() {
 					<AdministracaoContainer>
 						<AdministracaoFiltros onSubmit={handleSubmit(onFiltro)}>
 							<Controller
-								name="nome_completo"
+								name="nome_usuario"
 								control={control}
 								render={({ field }) => {
 									return (
-										<InputContainer id="nome_completo" label="Nome completo">
+										<InputContainer id="nome_usuario" label="Nome de usuario">
 											<Input
-												id="nome_completo"
-												placeholder="Nome completo do usuário"
+												id="nome_usuario"
+												placeholder="Nome do usuário na plataforma"
 												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
@@ -247,7 +274,7 @@ export default function UsuariosAdministracao() {
 												filtro={filtroEntidade}
 												setFiltro={setFiltroEntidade}
 												setValue={setValue}
-												{...{...field, ref: null}}
+												{...{ ...field, ref: null }}
 											/>
 										</InputContainer>
 									);
@@ -263,7 +290,9 @@ export default function UsuariosAdministracao() {
 
 									const conteudoPrincipal = (
 										<>
-											<span>{f.nome_completo}</span>
+											<span>
+												{f.nome_completo} ({f.nome_usuario})
+											</span>
 											<span>{mascararCPF(f.cpf)}</span>
 										</>
 									);
