@@ -378,9 +378,11 @@ export default function FormularioFarmacia({
 							name="endereco.cep"
 							control={controlFarmacia}
 							rules={{
-								minLength: {
-									message: "CEP deve ter 8 digitos",
-									value: 9,
+								validate: (v) => {
+									const cep = v.replace("-", "")
+
+									if(cep.length < 8)
+										return "CEP deve ter 8 digitos"
 								},
 							}}
 							render={({ field }) => {

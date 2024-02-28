@@ -55,6 +55,8 @@ export default function EditarFarmacia({
 						return new Date(a.entrada) > new Date(b.entrada) ? 1 : -1;
 					});
 
+				console.log(farmacia)
+
 				setFarmacia(farmacia);
 			})
 			.catch((err) => {
