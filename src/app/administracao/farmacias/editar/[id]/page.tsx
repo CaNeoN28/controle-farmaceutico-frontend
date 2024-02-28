@@ -16,6 +16,7 @@ import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import { CadastroMain } from "@/components/Cadastro";
 import TituloSecao from "@/components/TituloSecao";
 import FetchImagem from "@/fetch/imagens";
+import Farmacias from "@/app/listagem/farmacias/page";
 
 interface Params {
 	id: string;
@@ -32,6 +33,8 @@ export default function EditarFarmacia({
 	const fetchFarmacia = new FetchFarmacia();
 	const deleteImagem = new FetchImagem().removeImagem;
 
+	const date = new Date();
+
 	const [farmacia, setFarmacia] = useState<IFarmacia>();
 	const [showAlert, setShowAlert] = useState(false);
 	const [erro, setErro] = useState<string>();
@@ -44,7 +47,11 @@ export default function EditarFarmacia({
 			.then((res) => {
 				const farmacia = res.data as IFarmacia;
 
-				console.log(farmacia);
+				farmacia.plantoes = farmacia.plantoes.filter((p) => {
+					return Number(new Date(p.saida)) >= Number(date);
+				}).sort((a, b) => {
+					return new Date(a.entrada) > new Date(b.entrada) ? 1: -1 
+				});
 
 				setFarmacia(farmacia);
 			})
@@ -98,6 +105,8 @@ export default function EditarFarmacia({
 					<FormularioFarmacia
 						salvarFarmacia={salvarFarmacia}
 						farmacia={farmacia}
+						horariosAntigos={farmacia.horarios_servico}
+						plantoesAntigos={farmacia.plantoes}
 					/>
 					<Alert
 						show={showAlert}
