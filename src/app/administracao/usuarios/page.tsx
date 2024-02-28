@@ -17,6 +17,7 @@ import { GetManyRequest } from "@/types/Requests";
 import { getCookie } from "cookies-next";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { mascararCPF } from "@/utils/mascaras";
+import verificarPermissao from "@/utils/verificarPermissao";
 
 interface Filtros {}
 
@@ -66,47 +67,51 @@ export default function UsuariosAdministracao() {
 		if (token) fetchUsuarios();
 	}, [token]);
 
-	useEffect(() => {
-		console.log(usuarios);
-	}, [usuarios]);
+	if (usuario)
+		return (
+			<>
+				<Menu />
+				<AdministracaoMain>
+					<TituloSecao>LISTAGEM DE USUÁRIOS</TituloSecao>
+					<AdministracaoContainer>
+						{usuarios.length > 0 && (
+							<AdministracaoListagem>
+								{usuarios.map((f, i) => {
+									const conteudoPrincipal = (
+										<>
+											<span>{f.nome_completo}</span>
+											<span>{mascararCPF(f.cpf)}</span>
+										</>
+									);
 
-	return (
-		<>
-			<Menu />
-			<AdministracaoMain>
-				<TituloSecao>LISTAGEM DE USUÁRIOS</TituloSecao>
-				<AdministracaoContainer>
-					{usuarios.length > 0 && (
-						<AdministracaoListagem>
-							{usuarios.map((f, i) => {
-								const conteudoPrincipal = (
-									<>
-										<span>{f.nome_completo}</span>
-										<span>{mascararCPF(f.cpf)}</span>
-									</>
-								);
+									const conteudoSecundario = (
+										<>
+											<span>{f.dados_administrativos.funcao}</span>
+											<span>{f.email}</span>
+										</>
+									);
 
-								const conteudoSecundario = (
-									<>
-										<span>{f.dados_administrativos.funcao}</span>
-										<span>{f.email}</span>
-									</>
-								);
+									return (
+										<AdministracaoItem
+											id={f._id}
+											key={i}
+											onDelete={() => {}}
+											conteudoPrincipal={conteudoPrincipal}
+											conteudoSecundario={conteudoSecundario}
+											linkEditar={`/administracao/usuarios/editar/${f._id}`}
+											podeAlterar={verificarPermissao(
+												usuario.dados_administrativos.funcao!,
+												"GERENTE"
+											)}
+										/>
+									);
+								})}
+							</AdministracaoListagem>
+						)}
+					</AdministracaoContainer>
+				</AdministracaoMain>
+			</>
+		);
 
-								return (
-									<AdministracaoItem
-										id={f._id}
-										key={i}
-										onDelete={() => {}}
-										conteudoPrincipal={conteudoPrincipal}
-										conteudoSecundario={conteudoSecundario}
-									/>
-								);
-							})}
-						</AdministracaoListagem>
-					)}
-				</AdministracaoContainer>
-			</AdministracaoMain>
-		</>
-	);
+	return <></>;
 }

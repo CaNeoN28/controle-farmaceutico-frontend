@@ -20,6 +20,7 @@ interface ConfirmarFiltrosProps extends DefaultProps {
 }
 
 interface ItemProps extends DefaultProps {
+	podeAlterar?: boolean;
 	id?: string;
 	imagem_url?: string;
 	linkEditar?: string;
@@ -47,8 +48,8 @@ export function AdministracaoFiltros({ children, onSubmit }: FiltrosProps) {
 		const dropdown = document.getElementById("form_dropdown");
 
 		if (form && dropdown) {
-			form.classList.toggle(styles.ativo)
-			dropdown.classList.toggle(styles.ativo)
+			form.classList.toggle(styles.ativo);
+			dropdown.classList.toggle(styles.ativo);
 		}
 	}, [ativo]);
 
@@ -118,7 +119,7 @@ export function AdministracaoListagem({ children }: DefaultProps) {
 
 export function AdministracaoItem({
 	id,
-	children,
+	podeAlterar,
 	imagem_url,
 	linkEditar,
 	conteudoPrincipal,
@@ -170,16 +171,18 @@ export function AdministracaoItem({
 					<div className={styles.main_content}>{conteudoPrincipal}</div>
 					<div className={styles.secondary_content}>{conteudoSecundario}</div>
 				</div>
-				<div className={styles.acoes}>
-					<LinkButton secundario especial link={linkEditar || ""}>
-						<span>Editar</span>
-						<MdEdit />
-					</LinkButton>
-					<Botao vermelho secundario especial fullWidth onClick={onDelete}>
-						<span>Remover</span>
-						<FaTrash />
-					</Botao>
-				</div>
+				{podeAlterar && (
+					<div className={styles.acoes}>
+						<LinkButton secundario especial link={linkEditar || ""}>
+							<span>Editar</span>
+							<MdEdit />
+						</LinkButton>
+						<Botao vermelho secundario especial fullWidth onClick={onDelete}>
+							<span>Remover</span>
+							<FaTrash />
+						</Botao>
+					</div>
+				)}
 			</div>
 		);
 
@@ -208,16 +211,18 @@ export function AdministracaoItem({
 			<div id={`content_${id}`} className={styles.hidden_content}>
 				<div className={styles.content_box}>
 					<div className={styles.secondary_content}>{conteudoSecundario}</div>
-					<div className={styles.acoes}>
-						<Botao vermelho secundario especial fullWidth onClick={onDelete}>
-							<span>Remover</span>
-							<FaTrash />
-						</Botao>
-						<LinkButton secundario especial link={linkEditar || ""}>
-							<span>Editar</span>
-							<MdEdit />
-						</LinkButton>
-					</div>
+					{podeAlterar && (
+						<div className={styles.acoes}>
+							<Botao vermelho secundario especial fullWidth onClick={onDelete}>
+								<span>Remover</span>
+								<FaTrash />
+							</Botao>
+							<LinkButton secundario especial link={linkEditar || ""}>
+								<span>Editar</span>
+								<MdEdit />
+							</LinkButton>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
