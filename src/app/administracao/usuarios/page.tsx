@@ -77,6 +77,9 @@ export default function UsuariosAdministracao() {
 						{usuarios.length > 0 && (
 							<AdministracaoListagem>
 								{usuarios.map((f, i) => {
+									const funcaoUsuarioE = usuario.dados_administrativos.funcao!;
+									const funcaoUsuario = f.dados_administrativos.funcao!;
+
 									const conteudoPrincipal = (
 										<>
 											<span>{f.nome_completo}</span>
@@ -99,10 +102,10 @@ export default function UsuariosAdministracao() {
 											conteudoPrincipal={conteudoPrincipal}
 											conteudoSecundario={conteudoSecundario}
 											linkEditar={`/administracao/usuarios/editar/${f._id}`}
-											podeAlterar={verificarPermissao(
-												usuario.dados_administrativos.funcao!,
-												"GERENTE"
-											)}
+											podeAlterar={
+												verificarPermissao(funcaoUsuarioE, "GERENTE") &&
+												verificarPermissao(funcaoUsuarioE, funcaoUsuario)
+											}
 										/>
 									);
 								})}
