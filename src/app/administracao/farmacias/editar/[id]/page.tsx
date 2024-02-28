@@ -47,11 +47,13 @@ export default function EditarFarmacia({
 			.then((res) => {
 				const farmacia = res.data as IFarmacia;
 
-				farmacia.plantoes = farmacia.plantoes.filter((p) => {
-					return Number(new Date(p.saida)) >= Number(date);
-				}).sort((a, b) => {
-					return new Date(a.entrada) > new Date(b.entrada) ? 1: -1 
-				});
+				farmacia.plantoes = farmacia.plantoes
+					.filter((p) => {
+						return Number(new Date(p.saida)) >= Number(date);
+					})
+					.sort((a, b) => {
+						return new Date(a.entrada) > new Date(b.entrada) ? 1 : -1;
+					});
 
 				setFarmacia(farmacia);
 			})
@@ -108,63 +110,61 @@ export default function EditarFarmacia({
 						horariosAntigos={farmacia.horarios_servico}
 						plantoesAntigos={farmacia.plantoes}
 					/>
-					<Alert
-						show={showAlert}
-						onClickBackground={() => {
-							if (erro) {
-								setShowAlert(false);
-							} else if (mensagem) {
-								setShowAlert(false);
-								router.push("/administracao");
-							}
-						}}
-					>
-						<div className={styles.alert}>
-							<span className={styles.alert_texto}>
-								{erroEdicao || mensagem}
-							</span>
-							<div className={styles.alert_opcoes}>
-								{erroEdicao ? (
-									<>
-										<Botao
-											fullWidth
-											onClick={() => {
-												setShowAlert(false);
-											}}
-										>
-											Continuar
-										</Botao>
-										<Botao
-											secundario
-											fullWidth
-											onClick={() => {
-												router.push("/administracao");
-											}}
-										>
-											Cancelar
-										</Botao>
-									</>
-								) : (
-									<>
-										<Botao
-											fullWidth
-											onClick={() => {
-												router.push("/administracao/farmacias");
-											}}
-										>
-											Confirmar
-										</Botao>
-									</>
-								)}
-							</div>
-						</div>
-					</Alert>
 				</CadastroMain>
 			) : erro ? (
 				<div className={styles.erro}>{erro}</div>
 			) : (
 				<Carregando />
 			)}
+			<Alert
+				show={showAlert}
+				onClickBackground={() => {
+					if (erro) {
+						setShowAlert(false);
+					} else if (mensagem) {
+						setShowAlert(false);
+						router.push("/administracao");
+					}
+				}}
+			>
+				<div className={styles.alert}>
+					<span className={styles.alert_texto}>{erroEdicao || mensagem}</span>
+					<div className={styles.alert_opcoes}>
+						{erroEdicao ? (
+							<>
+								<Botao
+									fullWidth
+									onClick={() => {
+										setShowAlert(false);
+									}}
+								>
+									Continuar
+								</Botao>
+								<Botao
+									secundario
+									fullWidth
+									onClick={() => {
+										router.push("/administracao");
+									}}
+								>
+									Cancelar
+								</Botao>
+							</>
+						) : (
+							<>
+								<Botao
+									fullWidth
+									onClick={() => {
+										router.push("/administracao/farmacias");
+									}}
+								>
+									Confirmar
+								</Botao>
+							</>
+						)}
+					</div>
+				</div>
+			</Alert>
 		</>
 	);
 }
