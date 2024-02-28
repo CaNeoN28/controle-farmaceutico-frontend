@@ -50,7 +50,7 @@ export default function FormularioEntidade({ entidade }: Props) {
 										label="Nome da entidade"
 										error={errors.nome_entidade}
 									>
-										<Input id="nome_entidade" {...{ ...field }} />
+										<Input id="nome_entidade" {...{ ...field, ref: null }} />
 									</InputContainer>
 								);
 							}}

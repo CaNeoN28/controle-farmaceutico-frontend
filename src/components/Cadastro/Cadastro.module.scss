@@ -21,8 +21,10 @@
 .formulario_cadastro{
   display: flex;
   flex-direction: column;
+	justify-content: space-between;
 
   gap: 40px;
+	min-height: 60vh;
 }
 
 .etapa_cadastro {
