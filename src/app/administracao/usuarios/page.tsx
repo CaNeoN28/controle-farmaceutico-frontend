@@ -55,7 +55,7 @@ export default function UsuariosAdministracao() {
 		funcao: searchParams.get("funcao") as Funcao,
 	};
 
-	const { control, handleSubmit, setValue } = useForm<Filtros>({
+	const { control, handleSubmit, watch, setValue } = useForm<Filtros>({
 		defaultValues: {
 			entidade_relacionada: "",
 			funcao: "",
@@ -146,6 +146,20 @@ export default function UsuariosAdministracao() {
 			.catch((err) => {
 				console.log(err);
 			});
+	};
+
+	const onCleanFiltro = () => {
+		const newParams = new URLSearchParams();
+		const dados = watch();
+
+		Object.keys(dados).map((k) => {
+			const key = k as keyof Filtros;
+
+			setValue(key, "");
+			newParams.delete(key);
+		});
+
+		setParams(newParams), router.replace(`${pathname}`);
 	};
 
 	const fetchUsuarios = async () => {
@@ -280,7 +294,7 @@ export default function UsuariosAdministracao() {
 									);
 								}}
 							/>
-							<AdministracaoConfirmarFiltros onClean={() => {}} />
+							<AdministracaoConfirmarFiltros onClean={onCleanFiltro} />
 						</AdministracaoFiltros>
 						{usuarios.length > 0 && (
 							<AdministracaoListagem>
