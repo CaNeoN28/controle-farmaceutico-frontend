@@ -72,7 +72,7 @@ export default function CadastroFarmacia() {
 						setShowAlert(false);
 					} else if (mensagem) {
 						setShowAlert(false);
-						router.push("/administracao");
+						router.back()
 					}
 				}}
 			>

@@ -31,6 +31,7 @@ import Alert from "@/components/Alert";
 import Botao from "@/components/Botao";
 import { mascararCnpj } from "@/utils/mascaras";
 import { addSearchParam } from "@/utils/navigation";
+import verificarPermissao from "@/utils/verificarPermissao";
 
 interface Filtros {
 	nome_fantasia?: string;
@@ -348,6 +349,7 @@ export default function FarmaciasAdministracao() {
 												setFarmaciaParaRemover(f);
 											}}
 											linkEditar={`/administracao/farmacias/editar/${f._id}`}
+											podeAlterar={true}
 										/>
 									);
 								})}
