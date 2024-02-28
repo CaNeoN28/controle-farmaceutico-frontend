@@ -11,23 +11,30 @@ import InputContainer from "@/components/InputContainer";
 import InputImagem from "@/components/InputImagem";
 import InputMascara from "@/components/InputMascara/indext";
 import InputSenha from "@/components/InputSenha";
+import Select, { Opcao } from "@/components/Select";
 import { IUsuarioAPI } from "@/types/Usuario";
+import { ARRAY_FUNCOES } from "@/utils/funcaoAdministrativa";
 import regexValidation from "@/utils/regexValidation";
 import { validarCPF } from "@/utils/validation";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 interface Props {
-  usuario?: IUsuarioAPI;
+  usuarioData?: IUsuarioAPI;
+  usuarioEditor: IUsuarioAPI;
 }
 
-export default function FormularioUsuario({ usuario }: Props) {
+export default function FormularioUsuario({
+  usuarioData,
+  usuarioEditor,
+}: Props) {
   const {
     formState: { errors },
     control,
     watch,
     handleSubmit,
   } = useForm<IUsuarioAPI>({
-    defaultValues: usuario || {
+    defaultValues: usuarioData || {
       cpf: "",
       email: "",
       dados_administrativos: {
@@ -42,9 +49,56 @@ export default function FormularioUsuario({ usuario }: Props) {
     },
   });
 
+  const [funcoes, setFuncoes] = useState<Opcao[]>([]);
+  const [filtroFuncao, setFiltroFuncao] = useState("INATIVO");
+
+  const getFuncoesAdministrativas = () => {
+    const funcaoEditor = ARRAY_FUNCOES.findIndex(
+      (v) => v === usuarioEditor.dados_administrativos.funcao
+    );
+
+    const funcoes = ARRAY_FUNCOES.filter((v, i) => funcaoEditor <= i);
+
+    const opcoes: Opcao[] = funcoes
+      .map((v) => {
+        let label = "";
+
+        switch (v) {
+          case "ADMINISTRADOR":
+            label = "Administrador";
+            break;
+          case "GERENTE":
+            label = "Gerente";
+            break;
+          case "USUARIO":
+            label = "Usuário";
+            break;
+          case "INATIVO":
+            label = "Inativo";
+            break;
+        }
+        return {
+          label: label,
+          valor: v,
+        };
+      })
+      .filter((f) => new RegExp(filtroFuncao, "i").test(f.label));
+
+    console.log({
+      opcoes,
+      funcoes,
+    });
+
+    setFuncoes(opcoes);
+  };
+
   const onSubmit: SubmitHandler<IUsuarioAPI> = (data) => {
     console.log(data);
   };
+
+  useEffect(() => {
+    getFuncoesAdministrativas();
+  }, [filtroFuncao]);
 
   return (
     <CadastroContainer>
@@ -209,6 +263,40 @@ export default function FormularioUsuario({ usuario }: Props) {
                 titulo="Enviar arquivo"
               />
             </InputContainer>
+          </CadastroInputs>
+        </CadastroEtapa>
+        <CadastroEtapa titulo="Dados administrativos">
+          <CadastroInputs>
+            <Controller
+              control={control}
+              name="dados_administrativos.funcao"
+              rules={{
+                required: {
+                  value: true,
+                  message: "Função é obrigatória"
+                }
+              }}
+              render={({ field }) => {
+                return (
+                  <InputContainer
+                    id="dados_administrativos.funcao"
+                    label="Função"
+                    error={
+                      errors.dados_administrativos &&
+                      errors.dados_administrativos.funcao
+                    }
+                  >
+                    <Select
+                      filtro={filtroFuncao}
+                      opcoes={funcoes}
+                      setFiltro={setFiltroFuncao}
+                      placeholder="Usuário"
+                      {...{ ...field, ref: null }}
+                    />
+                  </InputContainer>
+                );
+              }}
+            />
           </CadastroInputs>
         </CadastroEtapa>
         <CadastroBotoes>
