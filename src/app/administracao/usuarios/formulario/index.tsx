@@ -29,18 +29,19 @@ import classNames from "classnames";
 interface Props {
   usuarioData?: IUsuarioAPI;
   usuarioEditor: IUsuarioAPI;
+  fetchUsuario: (data: IUsuarioAPI) => void;
 }
 
 export default function FormularioUsuario({
   usuarioData,
   usuarioEditor,
+  fetchUsuario,
 }: Props) {
   const fEntidades = new FetchEntidades();
 
   const {
     formState: { errors },
     control,
-    watch,
     setValue,
     handleSubmit,
   } = useForm<IUsuarioAPI>({
@@ -110,7 +111,9 @@ export default function FormularioUsuario({
   };
 
   const onSubmit: SubmitHandler<IUsuarioAPI> = (data) => {
-    console.log(data);
+    const newData = { ...data, cpf: data.cpf.replaceAll(/([.-])+/g, "") };
+    
+    fetchUsuario(newData);
   };
 
   useEffect(() => {

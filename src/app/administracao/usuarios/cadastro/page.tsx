@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { IUsuarioAPI } from "@/types/Usuario";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { getCookie } from "cookies-next";
+import { postUsuario } from "@/fetch/usuario";
 
 export default function CadastroUsuario() {
   redirecionarAutenticacao();
@@ -17,6 +18,7 @@ export default function CadastroUsuario() {
   const fAuth = new FetchAutenticacao();
 
   const [usuarioEditor, setUsuarioEditor] = useState<IUsuarioAPI>();
+  const [token, setToken] = useState("");
 
   const getUsuario = async () => {
     const token = getCookie("authentication") || "";
@@ -24,8 +26,19 @@ export default function CadastroUsuario() {
     await fAuth.getPerfil(token).then((res) => {
       const usuario = res.data as IUsuarioAPI;
 
+      setToken(token);
       setUsuarioEditor(usuario);
     });
+  };
+
+  const fetchUsuario = async (data: IUsuarioAPI) => {
+    const response = postUsuario(data, token)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -38,7 +51,7 @@ export default function CadastroUsuario() {
         <Menu />
         <CadastroMain>
           <TituloSecao>CADASTRO DE USUÁRIO</TituloSecao>
-          <FormularioUsuario usuarioEditor={usuarioEditor} />
+          <FormularioUsuario usuarioEditor={usuarioEditor} fetchUsuario={fetchUsuario}/>
         </CadastroMain>
       </>
     );
