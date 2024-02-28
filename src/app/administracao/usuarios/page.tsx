@@ -16,6 +16,7 @@ import { getUsuarios } from "@/fetch/usuarios";
 import { GetManyRequest } from "@/types/Requests";
 import { getCookie } from "cookies-next";
 import FetchAutenticacao from "@/fetch/autenticacao";
+import { mascararCPF } from "@/utils/mascaras";
 
 interface Filtros {}
 
@@ -81,7 +82,7 @@ export default function UsuariosAdministracao() {
 								const conteudoPrincipal = (
 									<>
 										<span>{f.nome_completo}</span>
-										<span>{f.cpf}</span>
+										<span>{mascararCPF(f.cpf)}</span>
 									</>
 								);
 
