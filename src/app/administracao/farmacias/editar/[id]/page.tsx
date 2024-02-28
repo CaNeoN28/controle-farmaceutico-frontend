@@ -123,7 +123,7 @@ export default function EditarFarmacia({
 						setShowAlert(false);
 					} else if (mensagem) {
 						setShowAlert(false);
-						router.push("/administracao");
+						router.back();
 					}
 				}}
 			>
