@@ -1,4 +1,5 @@
 .secao {
+	overflow: hidden;
 	max-height: 40px;
 
 	transition-duration: 200ms;
@@ -24,10 +25,7 @@
 	}
 
 	.content {
-		overflow: hidden;
-
 		max-height: 0px;
-		padding: 8px;
 	}
 }
 
@@ -38,6 +36,7 @@
 		overflow: visible;
 		
 		max-height: 400vh;
+		padding: 8px;
 	}
 
 	.icone {
