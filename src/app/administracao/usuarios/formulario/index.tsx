@@ -29,12 +29,17 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Controller,
+  FieldError,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import classNames from "classnames";
 
 interface Props {
   usuarioData?: IUsuarioAPI;
-  erroImagem?: string;
+  erroImagem?: FieldError;
   usuarioEditor: IUsuarioAPI;
   fetchUsuario: (data: IUsuarioAPI) => void;
   setImagem: Dispatch<SetStateAction<File | undefined>>;
@@ -302,7 +307,11 @@ export default function FormularioUsuario({
                 );
               }}
             />
-            <InputContainer id="imagem" label="Imagem de perfil">
+            <InputContainer
+              id="imagem"
+              label="Imagem de perfil"
+              error={erroImagem}
+            >
               <InputImagem
                 id="imagem"
                 onChange={handleImagem}
