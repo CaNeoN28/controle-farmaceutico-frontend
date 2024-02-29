@@ -15,6 +15,7 @@ import {
 	AdministracaoMain,
 } from "@/components/Administracao";
 import TituloSecao from "@/components/TituloSecao";
+import Paginacao from "@/components/Paginacao";
 
 interface Filtros {
 	pagina?: number;
@@ -42,7 +43,7 @@ export default function EntidadesAdministracao() {
 
 	const [params, setParams] = useState<URLSearchParams>(searchParams);
 
-	const [maxPagina, setMaxPaginas] = useState(5);
+	const [maxPaginas, setMaxPaginas] = useState(5);
 
 	async function getEntidades() {
 		const { estado, nome_entidade, municipio }: Filtros = {
@@ -119,6 +120,15 @@ export default function EntidadesAdministracao() {
 						</AdministracaoListagem>
 					)}
 				</AdministracaoContainer>
+				{maxPaginas > 0 && (
+					<Paginacao
+						pagina={pagina}
+						paginaMax={maxPaginas}
+						setPagina={(v) => {
+							addSearchParam("pagina", v.toString(), searchParams, setParams);
+						}}
+					/>
+				)}
 			</AdministracaoMain>
 		</>
 	);
