@@ -47,6 +47,24 @@ export default function FormularioEntidade({
 	const [estados, setEstados] = useState<Opcao[]>([]);
 	const [filtroEstado, setFiltroEstado] = useState("");
 
+	const municipioExiste = async () => {
+		const estado = watch("estado");
+		const municipio = watch("municipio");
+		const sigla = getSiglaFromEstado(estado);
+
+		let existe = false;
+
+		await fetchMunicipios(sigla).then((res) => {
+			const municipios = res.data;
+
+			existe = !!municipios.find((m) => m.nome === municipio);
+
+			console.log(existe);
+		});
+
+		return existe;
+	};
+
 	const getMunicipios = async () => {
 		const { estado } = watch();
 		const sigla = getSiglaFromEstado(estado);
@@ -95,10 +113,20 @@ export default function FormularioEntidade({
 	};
 
 	useEffect(() => {
-		getMunicipios();
+		municipioExiste().then((res) => {
+			if (!res) {
+				setValue("municipio", "");
 
-		setFiltroMunicipio("");
-		setValue("municipio", "");
+				getMunicipios();
+
+				setFiltroMunicipio("");
+				setValue("municipio", "");
+			} else {
+				setFiltroMunicipio(watch("municipio"));
+			}
+		});
+
+		setFiltroEstado(watch("estado"));
 	}, [watch("estado")]);
 
 	useEffect(() => {
