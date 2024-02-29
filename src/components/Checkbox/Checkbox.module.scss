@@ -1,0 +1,76 @@
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+
+	min-height: 40px;
+	max-height: 40px;
+
+	width: 100%;
+
+	background-color: var(--white);
+	color: var(--gray);
+
+	border: 1px solid var(--gray);
+	border-radius: 8px;
+
+	padding: 8px;
+
+	transition-property: all;
+	transition-duration: 300ms;
+}
+
+.container:hover {
+	cursor: pointer;
+	filter: brightness(0.95);
+}
+
+.container > input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+.checkmark {
+	display: none;
+
+	min-height: 20px;
+	max-height: 20px;
+
+	font-size: 24px;
+
+	padding: 1px;
+}
+
+.container.ativo .checkmark {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: visible;
+
+	border: 1px solid var(--white);
+
+	min-width: 20px;
+	max-width: 20px;
+}
+
+.container.ativo {
+	gap: 8px;
+
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
+	color: var(--white);
+}
+
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+.container input:checked ~ .checkmark:after {
+	display: block;
+}

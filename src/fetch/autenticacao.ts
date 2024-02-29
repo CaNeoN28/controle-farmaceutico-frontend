@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const url = `${API_URL}`;
 
 export default class FetchAutenticacao {
-	getPerfil(token: string) {
+	getPerfil(token?: string) {
 		const response = axios.get(`${url}/perfil`, {
 			headers: { Authorization: `Bearer ${token}` },
 		});

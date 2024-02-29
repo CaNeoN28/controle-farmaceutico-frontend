@@ -3,8 +3,9 @@
 	overflow: hidden;
 
 	border: 1px solid var(--gray);
-
 	border-radius: 8px;
+
+	background-color: var(--white);
 }
 
 .input {
@@ -16,6 +17,7 @@
 	padding-right: 0;
 	width: 100%;
 	min-height: 40px;
+	max-height: 40px;
 
 	color: var(--gray);
 }

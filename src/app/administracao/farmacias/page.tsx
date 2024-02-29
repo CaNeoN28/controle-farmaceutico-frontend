@@ -2,7 +2,6 @@
 
 import Menu from "@/components/Menu";
 import styles from "./FarmaciasAdministracao.module.scss";
-import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import TituloSecao from "@/components/TituloSecao";
 import Paginacao from "@/components/Paginacao";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -25,10 +24,14 @@ import { Estado } from "@/types/Localizacao";
 import { fetchEstados, fetchMunicipios } from "@/fetch/localizacao";
 import Select, { Opcao } from "@/components/Select";
 import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import Alert from "@/components/Alert";
 import Botao from "@/components/Botao";
+import { mascararCnpj } from "@/utils/mascaras";
+import { addSearchParam } from "@/utils/navigation";
+import verificarPermissao from "@/utils/verificarPermissao";
+import { IUsuarioAPI } from "@/types/Usuario";
 
 interface Filtros {
 	nome_fantasia?: string;
@@ -39,14 +42,12 @@ interface Filtros {
 }
 
 export default function FarmaciasAdministracao() {
-	redirecionarAutenticacao();
-
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const router = useRouter();
 
 	const fFarmacias = new FetchFarmacia();
-	const fAuth = new FetchAutenticacao().getPerfil;
+	const getPerfil = new FetchAutenticacao().getPerfil;
 
 	const { pagina, estado, municipio, nome_fantasia }: Filtros = {
 		pagina: Number(searchParams.get("pagina")) || 1,
@@ -74,10 +75,28 @@ export default function FarmaciasAdministracao() {
 
 	const [farmacias, setFarmacias] = useState<IFarmacia[]>([]);
 
-	const [tokenValido, setTokenValido] = useState("");
+	const [usuario, setUsuario] = useState<IUsuarioAPI>();
+	const [token, setToken] = useState<string>();
+
 	const [farmaciaParaRemover, setFarmaciaParaRemover] = useState<IFarmacia>();
 	const [mensagemRemocao, setMensagemRemocao] = useState("");
 	const [erroAoRemover, setErroAoRemover] = useState("");
+
+	async function getUsuario() {
+		const token = getCookie("authentication");
+
+		await getPerfil(token)
+			.then((res) => {
+				const usuario = res.data;
+
+				setUsuario(usuario);
+				setToken(token);
+			})
+			.catch(() => {
+				deleteCookie("authentication");
+				router.push("/login");
+			});
+	}
 
 	const getEstados = async () => {
 		await fetchEstados()
@@ -125,16 +144,6 @@ export default function FarmaciasAdministracao() {
 		}
 	};
 
-	const validarToken = async () => {
-		const token = getCookie("authentication") || "";
-
-		await fAuth(token)
-			.then((res) => {
-				setTokenValido(token);
-			})
-			.catch(() => {});
-	};
-
 	const cleanFiltros = () => {
 		const newParams = new URLSearchParams();
 		const dados = watch();
@@ -151,9 +160,9 @@ export default function FarmaciasAdministracao() {
 	};
 
 	const removerFarmacia = async () => {
-		if (farmaciaParaRemover && tokenValido) {
+		if (farmaciaParaRemover && token) {
 			await fFarmacias
-				.removeFarmacia(farmaciaParaRemover._id, tokenValido)
+				.removeFarmacia(farmaciaParaRemover._id, token)
 				.then((res) => {
 					setMensagemRemocao("Farmácia removida com sucesso");
 					setErroAoRemover("");
@@ -185,18 +194,6 @@ export default function FarmaciasAdministracao() {
 		setParams(params);
 	};
 
-	function addSearchParam(chave: string, valor?: string) {
-		const params = new URLSearchParams(searchParams);
-
-		if (valor) {
-			params.set(chave, valor);
-		} else {
-			params.delete(chave);
-		}
-
-		setParams(params);
-	}
-
 	async function getFarmacias() {
 		const { estado, municipio, nome_fantasia }: Filtros = {
 			estado: params?.get("estado") || "",
@@ -220,7 +217,7 @@ export default function FarmaciasAdministracao() {
 
 				if (dados.length == 0) {
 					if (documentos_totais != 0) {
-						addSearchParam("pagina", "1");
+						addSearchParam("pagina", "1", searchParams, setParams);
 					} else {
 						setMaxPaginas(0);
 					}
@@ -235,7 +232,7 @@ export default function FarmaciasAdministracao() {
 	}
 
 	useEffect(() => {
-		validarToken();
+		getUsuario();
 	}, []);
 
 	useEffect(() => {
@@ -268,7 +265,7 @@ export default function FarmaciasAdministracao() {
 		}
 	}, [params]);
 
-	if (tokenValido)
+	if (usuario)
 		return (
 			<>
 				<Menu />
@@ -331,17 +328,36 @@ export default function FarmaciasAdministracao() {
 						{farmacias.length > 0 && (
 							<AdministracaoListagem>
 								{farmacias.map((f, i) => {
+									const conteudoPrincipal = (
+										<>
+											<span>{f.nome_fantasia}</span>
+											<span>{mascararCnpj(f.cnpj)}</span>
+										</>
+									);
+
+									const conteudoSecundario = (
+										<>
+											<span>{f.endereco.bairro}</span>
+											<span>
+												{f.endereco.municipio} - {f.endereco.estado}
+											</span>
+										</>
+									);
+
 									return (
 										<AdministracaoItem
+											id={f._id}
 											key={i}
 											imagem_url={f.imagem_url}
+											tipo="farmacia"
+											conteudoPrincipal={conteudoPrincipal}
+											conteudoSecundario={conteudoSecundario}
 											onDelete={() => {
 												setFarmaciaParaRemover(f);
 											}}
 											linkEditar={`/administracao/farmacias/editar/${f._id}`}
-										>
-											{f.nome_fantasia}
-										</AdministracaoItem>
+											podeAlterar={true}
+										/>
 									);
 								})}
 							</AdministracaoListagem>
@@ -352,7 +368,7 @@ export default function FarmaciasAdministracao() {
 							pagina={pagina}
 							paginaMax={maxPaginas}
 							setPagina={(v) => {
-								addSearchParam("pagina", v.toString());
+								addSearchParam("pagina", v.toString(), searchParams, setParams);
 							}}
 						/>
 					)}

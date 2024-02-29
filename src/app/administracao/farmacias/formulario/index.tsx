@@ -1,8 +1,5 @@
-import Botao from "@/components/Botao";
+	import Botao from "@/components/Botao";
 import styles from "./FormularioFarmacia.module.scss";
-import Menu from "@/components/Menu";
-import TituloSecao from "@/components/TituloSecao";
-import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import IFarmacia, { IHorário } from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
@@ -38,15 +35,22 @@ import { EncontrarCoordenada } from "@/utils/geocoder";
 
 interface Props {
 	farmacia?: IFarmacia;
+	plantoesAntigos?: {
+		entrada: string;
+		saida: string;
+	}[];
+	horariosAntigos?: {
+		[dia_semana in DiaSemana]: IHorário;
+	};
 	salvarFarmacia: (farmacia: IFarmacia) => {};
 }
 
 export default function FormularioFarmacia({
 	farmacia,
+	plantoesAntigos,
+	horariosAntigos,
 	salvarFarmacia,
 }: Props) {
-	redirecionarAutenticacao();
-
 	const {
 		formState: { errors: errorsFarmacia },
 		control: controlFarmacia,
@@ -77,11 +81,11 @@ export default function FormularioFarmacia({
 
 	const [horario, setHorario] = useState<{
 		[key: string]: IHorário;
-	}>({});
+	}>(horariosAntigos || {});
 
 	const [plantoes, setPlantoes] = useState<
 		{ entrada: string; saida: string }[]
-	>([]);
+	>(plantoesAntigos || []);
 
 	const [pesquisaEstado, setPesquisaEstado] = useState("");
 	const [estados, setEstados] = useState<Opcao[]>([]);
@@ -93,7 +97,10 @@ export default function FormularioFarmacia({
 		lat: 0,
 		lng: 0,
 	});
-	const [localizacao, setLocalizacao] = useState<Coordenadas>({lat: 0, lng: 0});
+	const [localizacao, setLocalizacao] = useState<Coordenadas>({
+		lat: 0,
+		lng: 0,
+	});
 
 	const getEstados = async () => {
 		await fetchEstados().then((res) => {
@@ -366,9 +373,11 @@ export default function FormularioFarmacia({
 							name="endereco.cep"
 							control={controlFarmacia}
 							rules={{
-								minLength: {
-									message: "CEP deve ter 8 digitos",
-									value: 9,
+								validate: (v) => {
+									const cep = v.replace("-", "")
+
+									if(cep.length < 8)
+										return "CEP deve ter 8 digitos"
 								},
 							}}
 							render={({ field }) => {
@@ -557,10 +566,7 @@ export default function FormularioFarmacia({
 							Selecione a posição no mapa
 						</span>
 						<div className={styles.map}>
-							<Map
-								setLocalizacao={setLocalizacao}
-								map_center={mapCenter}
-							/>
+							<Map setLocalizacao={setLocalizacao} map_center={mapCenter} />
 						</div>
 					</div>
 				</CadastroEtapa>

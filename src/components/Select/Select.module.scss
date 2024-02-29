@@ -1,6 +1,9 @@
 .container {
 	position: relative;
 
+  min-height: 40px;
+  max-height: 40px;
+
 	display: flex;
 	flex-direction: column;
 }
@@ -14,6 +17,7 @@
 	border-radius: 8px;
 
 	color: var(--gray);
+	background-color: var(--white);
 }
 
 .input_ativo {
@@ -44,6 +48,7 @@
 	width: 100%;
 
 	color: var(--gray);
+	background: none;
 }
 
 .input::placeholder{
