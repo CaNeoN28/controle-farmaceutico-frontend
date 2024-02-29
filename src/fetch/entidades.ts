@@ -39,4 +39,14 @@ export default class FetchEntidades {
 
 		return response;
 	}
+
+	deleteEntidade(id: string, token?: string) {
+		const response = axios.delete(`${API_URL}/entidade/${id}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return response;
+	}
 }

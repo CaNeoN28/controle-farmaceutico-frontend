@@ -32,6 +32,8 @@ import {
 } from "@/utils/getOpcoesSelect";
 import municipioExiste from "@/utils/municipioExiste";
 import { limparFiltros } from "@/utils/filtros";
+import Alert from "@/components/Alert";
+import Botao from "@/components/Botao";
 
 interface Filtros {
 	pagina?: number;
@@ -85,6 +87,10 @@ export default function EntidadesAdministracao() {
 
 	const [entidades, setEntidades] = useState<IEntidade[]>([]);
 
+	const [entidadeParaRemover, setEntidadeRemover] = useState<IEntidade>();
+	const [mensagemRemocao, setMensagemRemocao] = useState("");
+	const [erroRemocao, setErroRemocao] = useState("");
+
 	const [usuario, setUsuario] = useState<IUsuarioAPI>();
 	const [token, setToken] = useState<string>();
 
@@ -132,6 +138,21 @@ export default function EntidadesAdministracao() {
 				deleteCookie("authentication");
 				router.push("/login");
 			});
+	}
+
+	async function removerEntidade() {
+		if (entidadeParaRemover)
+			await fEntidades
+				.deleteEntidade(entidadeParaRemover._id, token)
+				.then((res) => {
+					setMensagemRemocao("Entidade removida com sucesso");
+					getEntidades();
+				})
+				.catch((err) => {
+					const data = err.response.data;
+
+					setErroRemocao(`Erro: ${data}`);
+				});
 	}
 
 	async function getEntidades() {
@@ -322,7 +343,9 @@ export default function EntidadesAdministracao() {
 													<span>{e.estado}</span>
 												</>
 											}
-											onDelete={() => {}}
+											onDelete={() => {
+												setEntidadeRemover(e);
+											}}
 											linkEditar={`/administracao/entidades/editar/${e._id}`}
 											podeAlterar={verificarPermissao(
 												usuario.dados_administrativos.funcao!,
@@ -344,6 +367,34 @@ export default function EntidadesAdministracao() {
 						/>
 					)}
 				</AdministracaoMain>
+				<Alert
+					show={!!entidadeParaRemover}
+					onClickBackground={() => {
+						setEntidadeRemover(undefined);
+					}}
+				>
+					<div className={styles.alert}>
+						<span>
+							Deseja remover a entidade {entidadeParaRemover?.nome_entidade}?
+						</span>
+						<div className={styles.alert_botoes}>
+							<Botao fullWidth onClick={removerEntidade}>
+								Confirmar
+							</Botao>
+							<Botao
+								fullWidth
+								secundario
+								onClick={() => {
+									setEntidadeRemover(undefined);
+								}}
+							>
+								Cancelar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
+				<Alert></Alert>
+				<Alert></Alert>
 			</>
 		);
 
