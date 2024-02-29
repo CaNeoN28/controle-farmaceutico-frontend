@@ -29,4 +29,14 @@ export default class FetchEntidades {
 
 		return response;
 	}
+
+	putEntidade(id: string, data?: IEntidade, token?: string) {
+		const response = axios.put(`${API_URL}/entidade/${id}`, data, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return response;
+	}
 }

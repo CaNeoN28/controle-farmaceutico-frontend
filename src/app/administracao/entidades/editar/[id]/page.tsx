@@ -13,6 +13,8 @@ import { deleteCookie, getCookie } from "cookies-next";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { useRouter } from "next/navigation";
 import Carregando from "@/components/Carregando";
+import Alert from "@/components/Alert";
+import Botao from "@/components/Botao";
 
 interface Params {
 	id: string;
@@ -31,10 +33,29 @@ export default function EditarEntidade({
 	const [entidade, setEntidade] = useState<IEntidade>();
 	const [erroEntidade, setErroEntidade] = useState("");
 
+	const [mensagemEdicao, setMensagemEdicao] = useState("");
+	const [erroEdicao, setErroEdicao] = useState("");
+
 	const [usuario, setUsuario] = useState<IUsuarioAPI>();
 	const [token, setToken] = useState<string>();
 
-	async function enviarEntidade(data: IEntidade) {}
+	const redirect = () => {
+		setErroEdicao("");
+		setMensagemEdicao("");
+		router.push("/administracao/entidades");
+	};
+
+	async function enviarEntidade(data: IEntidade) {
+		await fEntidades
+			.putEntidade(id_entidade, data, token)
+			.then((res) => {
+				setMensagemEdicao("Entidade atualizada com sucesso");
+			})
+			.catch((err) => {
+				console.log(err);
+				setErroEdicao("Não foi possível atualizar a entidade");
+			});
+	}
 
 	async function getEntidade() {
 		await fEntidades
@@ -45,7 +66,7 @@ export default function EditarEntidade({
 				setEntidade(entidade);
 			})
 			.catch(() => {
-				setErroEntidade("Entidade não encontrada")
+				setErroEntidade("Entidade não encontrada");
 			});
 	}
 
@@ -87,6 +108,35 @@ export default function EditarEntidade({
 				) : (
 					<Carregando />
 				)}
+				<Alert show={!!mensagemEdicao} onClickBackground={redirect}>
+					<div className={styles.alert}>
+						<span className={styles.alert_texto}>{mensagemEdicao}</span>
+						<Botao onClick={redirect}>Confirmar</Botao>
+					</div>
+				</Alert>
+				<Alert
+					show={!!erroEdicao}
+					onClickBackground={() => {
+						setErroEdicao("");
+					}}
+				>
+					<div className={styles.alert}>
+						<span className={styles.alert_texto}>{erroEdicao}</span>
+						<div className={styles.alert_opcoes}>
+							<Botao
+								fullWidth
+								onClick={() => {
+									setErroEdicao("");
+								}}
+							>
+								Continuar
+							</Botao>
+							<Botao fullWidth secundario onClick={redirect}>
+								Cancelar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
 			</>
 		);
 
