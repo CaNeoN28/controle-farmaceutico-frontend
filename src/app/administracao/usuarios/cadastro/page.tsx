@@ -15,12 +15,14 @@ import { useRouter } from "next/navigation";
 import { FieldError } from "react-hook-form";
 
 export default function CadastroUsuario() {
-  const router = useRouter()
+  const router = useRouter();
   const fAuth = new FetchAutenticacao();
   const fImagem = new FetchImagem();
 
   const [imagem, setImagem] = useState<File>();
   const [erroImagem, setErroImagem] = useState<FieldError>();
+  const [erros, setErros] = useState<{ [key: string]: FieldError }>({});
+
   const [usuarioEditor, setUsuarioEditor] = useState<IUsuarioAPI>();
   const [token, setToken] = useState("");
 
@@ -36,45 +38,67 @@ export default function CadastroUsuario() {
         setUsuarioEditor(usuario);
       })
       .catch(() => {
-        deleteCookie("authentication")
-        router.push("/login")
+        deleteCookie("authentication");
+        router.push("/login");
       });
   };
 
   const fetchUsuario = async (data: IUsuarioAPI) => {
     let erroImagem = "";
+    let urlImagem = "";
 
     if (imagem) {
       await fImagem
         .postImagem(imagem)
         .then((res) => {
-          console.log(res);
+          urlImagem = res.data[0];
+
+          setErroImagem(undefined);
         })
         .catch((err) => {
           erroImagem = "Arquivo inválido";
+
+          setErroImagem({
+            type: "validate",
+            message: erroImagem,
+          });
         });
     }
 
-    setErroImagem({
-      type: "validate",
-      message: erroImagem
-    });
-
     if (!erroImagem) {
-    }
+      await postUsuario(data, token)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          const data = err.response.data;
+          const erros: { [key: string]: FieldError } = {};
 
-    /*const response = postUsuario(data, token)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        return;
-      });*/
+          console.log(data);
+
+          Object.keys(data).map((k) => {
+            if (!erros[k]) {
+              erros[k] = {
+                message: data[k],
+                type: "validate",
+              };
+            }
+          });
+
+          setErros(erros);
+
+          if (urlImagem) fImagem.removeImagem(erroImagem);
+        });
+    }
   };
 
   useEffect(() => {
     getUsuario();
   }, []);
+
+  useEffect(() => {
+    setErroImagem(undefined);
+  }, [imagem]);
 
   if (usuarioEditor)
     return (
@@ -85,6 +109,7 @@ export default function CadastroUsuario() {
           <FormularioUsuario
             usuarioEditor={usuarioEditor}
             erroImagem={erroImagem}
+            erros={erros}
             fetchUsuario={fetchUsuario}
             setImagem={setImagem}
           />

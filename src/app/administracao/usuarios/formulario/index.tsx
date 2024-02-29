@@ -41,6 +41,7 @@ interface Props {
   usuarioData?: IUsuarioAPI;
   erroImagem?: FieldError;
   usuarioEditor: IUsuarioAPI;
+  erros?: { [key: string]: FieldError };
   fetchUsuario: (data: IUsuarioAPI) => void;
   setImagem: Dispatch<SetStateAction<File | undefined>>;
 }
@@ -49,6 +50,7 @@ export default function FormularioUsuario({
   usuarioData,
   usuarioEditor,
   erroImagem,
+  erros,
   fetchUsuario,
   setImagem,
 }: Props) {
@@ -58,6 +60,7 @@ export default function FormularioUsuario({
     formState: { errors },
     control,
     setValue,
+    setError,
     handleSubmit,
   } = useForm<IUsuarioAPI>({
     defaultValues: usuarioData || {
@@ -142,6 +145,14 @@ export default function FormularioUsuario({
 
     fetchUsuario(newData);
   };
+
+  useEffect(() => {
+    if (erros) {
+      Object.keys(erros).map((k: any) => {
+        setError(k, erros[k])
+      })
+    }
+  }, [erros]);
 
   useEffect(() => {
     getFuncoesAdministrativas();
