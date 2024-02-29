@@ -88,6 +88,36 @@ export default function CadastroEntidades() {
 						</Botao>
 					</div>
 				</Alert>
+				<Alert
+					show={!!mensagemErro}
+					onClickBackground={() => {
+						setMensagemErro("");
+					}}
+				>
+					<div className={styles.alert}>
+						<span className={styles.alert_texto}>{mensagemErro}</span>
+						<div className={styles.alert_opcoes}>
+							<Botao
+								fullWidth
+								onClick={() => {
+									setMensagemErro("");
+								}}
+							>
+								Continuar
+							</Botao>
+							<Botao
+								secundario
+								fullWidth
+								onClick={() => {
+									setMensagemErro("");
+									router.back();
+								}}
+							>
+								Cancelar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
 			</>
 		);
 
