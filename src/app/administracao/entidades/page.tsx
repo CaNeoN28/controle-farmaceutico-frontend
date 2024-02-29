@@ -31,6 +31,7 @@ import {
 	getOpcoesFromMunicipios,
 } from "@/utils/getOpcoesSelect";
 import municipioExiste from "@/utils/municipioExiste";
+import { limparFiltros } from "@/utils/filtros";
 
 interface Filtros {
 	pagina?: number;
@@ -94,6 +95,8 @@ export default function EntidadesAdministracao() {
 		params.set("pagina", "1");
 		setParams(params);
 	};
+
+	function cleanFiltros() {}
 
 	function getMunicipios() {
 		const estado = watch("estado");
@@ -185,6 +188,7 @@ export default function EntidadesAdministracao() {
 			}
 		}
 
+		setFiltroEstado(estado || "");
 		getMunicipios();
 	}, [watch("estado")]);
 
@@ -258,7 +262,15 @@ export default function EntidadesAdministracao() {
 									);
 								}}
 							/>
-							<AdministracaoConfirmarFiltros onClean={() => {}} />
+							<AdministracaoConfirmarFiltros
+								onClean={limparFiltros({
+									router,
+									pathname,
+									setParams,
+									setValue,
+									watch,
+								})}
+							/>
 						</AdministracaoFiltros>
 						{entidades.length > 0 && (
 							<AdministracaoListagem>
