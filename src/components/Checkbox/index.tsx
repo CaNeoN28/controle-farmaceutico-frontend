@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useState } from "react";
+import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import styles from "./Checkbox.module.scss";
 import classNames from "classnames";
@@ -10,7 +10,7 @@ interface Props extends ComponentPropsWithoutRef<"input"> {
 export default function Checkbox({ label, ...props }: Props) {
 	const { value, onChange } = props;
 
-	const [checked, setChecked] = useState(false);
+	const [checked, setChecked] = useState<boolean>(false);
 
 	const classesContainer = classNames({
 		[styles.container]: true,
@@ -18,11 +18,19 @@ export default function Checkbox({ label, ...props }: Props) {
 		["box-shadow"]: true,
 	});
 
+	useEffect(() => {
+		if (value == "false") {
+			setChecked(false);
+		} else {
+			setChecked(true);
+		}
+	}, []);
+
 	return (
 		<label className={classesContainer}>
 			{label}
 			<span className={styles.checkmark}>
-				<FaCheck/>
+				<FaCheck />
 			</span>
 			<input
 				type="checkbox"
