@@ -393,8 +393,32 @@ export default function EntidadesAdministracao() {
 						</div>
 					</div>
 				</Alert>
-				<Alert></Alert>
-				<Alert></Alert>
+				<Alert
+					show={!!mensagemRemocao}
+					onClickBackground={() => setMensagemRemocao("")}
+				>
+					<div className={styles.alert}>
+						<span>{mensagemRemocao}</span>
+						<div className={styles.alert_botoes}>
+							<Botao fullWidth onClick={() => setMensagemRemocao("")}>
+								Continuar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
+				<Alert
+					show={!!erroRemocao}
+					onClickBackground={() => setErroRemocao("")}
+				>
+					<div className={styles.alert}>
+						<span>{erroRemocao}</span>
+						<div className={styles.alert_botoes}>
+							<Botao fullWidth onClick={() => setErroRemocao("")}>
+								Continuar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
 			</>
 		);
 
