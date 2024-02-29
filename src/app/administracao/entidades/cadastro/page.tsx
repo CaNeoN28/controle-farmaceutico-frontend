@@ -12,14 +12,21 @@ import FetchAutenticacao from "@/fetch/autenticacao";
 import { deleteCookie, getCookie } from "cookies-next";
 import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import { useRouter } from "next/navigation";
+import FetchEntidades from "@/fetch/entidades";
+import Alert from "@/components/Alert";
+import Botao from "@/components/Botao";
 
 export default function CadastroEntidades() {
-	const router = useRouter()
+	const router = useRouter();
 
 	const fAuth = new FetchAutenticacao();
+	const fEntidades = new FetchEntidades().postEntidade;
 
 	const [usuario, setUsuario] = useState<IUsuarioAPI>();
 	const [token, setToken] = useState<string>();
+
+	const [mensagemCadastro, setMensagemCadastro] = useState("");
+	const [mensagemErro, setMensagemErro] = useState("");
 
 	const getToken = async () => {
 		const token = getCookie("authentication");
@@ -33,13 +40,20 @@ export default function CadastroEntidades() {
 				setUsuario(usuario);
 			})
 			.catch(() => {
-				deleteCookie("authentication")
-				router.push("/login")
+				deleteCookie("authentication");
+				router.push("/login");
 			});
 	};
 
-	function enviarEntidade(data: IEntidade) {
-		console.log(data);
+	async function enviarEntidade(data: IEntidade) {
+		await fEntidades(data, token)
+			.then((res) => {
+				setMensagemCadastro("Entidade cadastrada com sucesso");
+			})
+			.catch((err) => {
+				console.log(err);
+				setMensagemErro("Não foi possível cadastrar entidade");
+			});
 	}
 
 	useEffect(() => {
@@ -54,6 +68,26 @@ export default function CadastroEntidades() {
 					<TituloSecao>CADASTRO DE ENTIDADE</TituloSecao>
 					<FormularioEntidade enviarEntidade={enviarEntidade} />
 				</CadastroMain>
+				<Alert
+					show={!!mensagemCadastro}
+					onClickBackground={() => {
+						setMensagemCadastro("");
+						router.back();
+					}}
+				>
+					<div className={styles.alert}>
+						<span className={styles.alert_texto}>{mensagemCadastro}</span>
+						<Botao
+							fullWidth
+							onClick={() => {
+								setMensagemCadastro("");
+								router.back();
+							}}
+						>
+							Confirmar
+						</Botao>
+					</div>
+				</Alert>
 			</>
 		);
 
