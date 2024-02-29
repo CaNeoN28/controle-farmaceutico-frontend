@@ -25,6 +25,8 @@ import verificarPermissao from "@/utils/verificarPermissao";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
+import Select, { Opcao } from "@/components/Select";
+import { getOpcoesFromEstados } from "@/utils/getOpcoesSelect";
 
 interface Filtros {
 	pagina?: number;
@@ -60,6 +62,9 @@ export default function EntidadesAdministracao() {
 	const [params, setParams] = useState<URLSearchParams>(searchParams);
 	const [maxPaginas, setMaxPaginas] = useState(5);
 
+	const [estados, setEstados] = useState<Opcao[]>([]);
+	const [filtroEstado, setFiltroEstado] = useState(estado);
+
 	const [entidades, setEntidades] = useState<IEntidade[]>([]);
 
 	const [usuario, setUsuario] = useState<IUsuarioAPI>();
@@ -82,6 +87,10 @@ export default function EntidadesAdministracao() {
 		params.set("pagina", "1");
 		setParams(params);
 	};
+
+	function getEstados() {
+		getOpcoesFromEstados(filtroEstado, setEstados);
+	}
 
 	async function getUsuario() {
 		const token = getCookie("authentication");
@@ -136,6 +145,10 @@ export default function EntidadesAdministracao() {
 	}, []);
 
 	useEffect(() => {
+		getEstados();
+	}, [filtroEstado]);
+
+	useEffect(() => {
 		getEntidades();
 	}, [pagina]);
 
@@ -164,6 +177,24 @@ export default function EntidadesAdministracao() {
 									return (
 										<InputContainer id="nome_entidade" label="Nome da entidade">
 											<Input id="nome_entidade" {...{ ...field, ref: null }} />
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								control={control}
+								name="estado"
+								render={({ field }) => {
+									return (
+										<InputContainer id="estado" label="Estado">
+											<Select
+												filtro={filtroEstado}
+												opcoes={estados}
+												placeholder="Rondônia"
+												setFiltro={setFiltroEstado}
+												setValue={setValue}
+												{...{ ...field, ref: null }}
+											/>
 										</InputContainer>
 									);
 								}}
