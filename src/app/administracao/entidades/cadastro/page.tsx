@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { IUsuarioAPI } from "@/types/Usuario";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { deleteCookie, getCookie } from "cookies-next";
-import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import { useRouter } from "next/navigation";
 import FetchEntidades from "@/fetch/entidades";
 import Alert from "@/components/Alert";
