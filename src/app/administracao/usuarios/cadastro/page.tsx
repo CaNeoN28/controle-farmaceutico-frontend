@@ -13,6 +13,8 @@ import { postUsuario } from "@/fetch/usuario";
 import FetchImagem from "@/fetch/imagens";
 import { useRouter } from "next/navigation";
 import { FieldError } from "react-hook-form";
+import Alert from "@/components/Alert";
+import Botao from "@/components/Botao";
 
 export default function CadastroUsuario() {
   const router = useRouter();
@@ -22,6 +24,9 @@ export default function CadastroUsuario() {
   const [imagem, setImagem] = useState<File>();
   const [erroImagem, setErroImagem] = useState<FieldError>();
   const [erros, setErros] = useState<{ [key: string]: FieldError }>({});
+
+  const [mensagemCriacao, setMensagemCriacao] = useState("");
+  const [erroCriacao, setErroCriacao] = useState("");
 
   const [usuarioEditor, setUsuarioEditor] = useState<IUsuarioAPI>();
   const [token, setToken] = useState("");
@@ -68,13 +73,11 @@ export default function CadastroUsuario() {
     if (!erroImagem) {
       await postUsuario(data, token)
         .then((res) => {
-          console.log(res);
+          setMensagemCriacao("Usuário cadastrado com sucesso")
         })
         .catch((err) => {
           const data = err.response.data;
           const erros: { [key: string]: FieldError } = {};
-
-          console.log(data);
 
           Object.keys(data).map((k) => {
             if (!erros[k]) {
@@ -86,6 +89,7 @@ export default function CadastroUsuario() {
           });
 
           setErros(erros);
+          setErroCriacao("Não foi possível criar o usuário")
 
           if (urlImagem) fImagem.removeImagem(erroImagem);
         });
@@ -114,6 +118,57 @@ export default function CadastroUsuario() {
             setImagem={setImagem}
           />
         </CadastroMain>
+        <Alert
+          show={!!mensagemCriacao}
+          onClickBackground={() => {
+            setMensagemCriacao("");
+            router.back();
+          }}
+        >
+          <div className={styles.alert}>
+            <span className={styles.alert_texto}>{mensagemCriacao}</span>
+            <Botao
+              fullWidth
+              onClick={() => {
+                setMensagemCriacao("");
+                router.back();
+              }}
+            >
+              Confirmar
+            </Botao>
+          </div>
+        </Alert>
+        <Alert
+          show={!!erroCriacao}
+          onClickBackground={() => {
+            setErroCriacao("");
+            router.back();
+          }}
+        >
+          <div className={styles.alert}>
+            <span className={styles.alert_texto}>{erroCriacao}</span>
+            <div className={styles.alert_opcoes}>
+              <Botao
+                fullWidth
+                onClick={() => {
+                  setErroCriacao("");
+                }}
+              >
+                Continuar
+              </Botao>
+              <Botao
+                secundario
+                fullWidth
+                onClick={() => {
+                  setErroCriacao("");
+                  router.back();
+                }}
+              >
+                Cancelar
+              </Botao>
+            </div>
+          </div>
+        </Alert>
       </>
     );
 

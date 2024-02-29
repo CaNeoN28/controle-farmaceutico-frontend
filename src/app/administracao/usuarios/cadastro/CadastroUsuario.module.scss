@@ -1,0 +1,23 @@
+.alert {
+	display: flex;
+	flex-direction: column;
+
+	text-align: center;
+
+	gap: 40px;
+
+	font-size: 16px;
+}
+
+.alert_opcoes {
+	display: flex;
+	flex-direction: row-reverse;
+
+	gap: 24px;
+}
+
+@media screen and (max-width: 672px) {
+	.alert_opcoes{
+		flex-direction: column;
+	}
+}
