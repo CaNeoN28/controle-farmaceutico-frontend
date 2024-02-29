@@ -1,4 +1,4 @@
-import Botao from "@/components/Botao";
+	import Botao from "@/components/Botao";
 import styles from "./FormularioFarmacia.module.scss";
 import Menu from "@/components/Menu";
 import TituloSecao from "@/components/TituloSecao";

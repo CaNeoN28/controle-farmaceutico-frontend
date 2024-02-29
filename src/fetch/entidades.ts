@@ -1,3 +1,4 @@
+import IEntidade from "@/types/Entidades";
 import { FiltrosEntidade } from "@/types/fetchEntidades";
 import axios from "axios";
 
@@ -15,6 +16,26 @@ export default class FetchEntidades {
 
 	getEntidade(id?: string) {
 		const response = axios.get(`${API_URL}/entidade/${id}`);
+
+		return response;
+	}
+
+	postEntidade(data?: IEntidade, token?: string) {
+		const response = axios.post(`${API_URL}/entidade`, data, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return response;
+	}
+
+	putEntidade(id: string, data?: IEntidade, token?: string) {
+		const response = axios.put(`${API_URL}/entidade/${id}`, data, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 
 		return response;
 	}
