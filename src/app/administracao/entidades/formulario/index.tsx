@@ -16,6 +16,7 @@ import Select, { Opcao } from "@/components/Select";
 import { fetchEstados, fetchMunicipios } from "@/fetch/localizacao";
 import { Estado, Municipio } from "@/types/Localizacao";
 import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
+import Checkbox from "@/components/Checkbox";
 
 interface Props {
 	entidade?: IEntidade;
@@ -30,7 +31,6 @@ export default function FormularioEntidade({ entidade }: Props) {
 		setValue,
 	} = useForm<IEntidade>({
 		defaultValues: entidade || {
-			ativo: true,
 			estado: "",
 			municipio: "",
 			nome_entidade: "",
@@ -92,7 +92,7 @@ export default function FormularioEntidade({ entidade }: Props) {
 
 	useEffect(() => {
 		getMunicipios();
-		
+
 		setFiltroMunicipio("");
 		setValue("municipio", "");
 	}, [watch("estado")]);
@@ -165,6 +165,15 @@ export default function FormularioEntidade({ entidade }: Props) {
 											{...{ ...field, ref: null }}
 										/>
 									</InputContainer>
+								);
+							}}
+						/>
+						<Controller
+							control={control}
+							name="ativo"
+							render={({ field }) => {
+								return (
+									<Checkbox label="Ativo" {...{...field, ref: null}}/>
 								);
 							}}
 						/>
