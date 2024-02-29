@@ -26,7 +26,11 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import Select, { Opcao } from "@/components/Select";
-import { getOpcoesFromEstados } from "@/utils/getOpcoesSelect";
+import {
+	getOpcoesFromEstados,
+	getOpcoesFromMunicipios,
+} from "@/utils/getOpcoesSelect";
+import municipioExiste from "@/utils/municipioExiste";
 
 interface Filtros {
 	pagina?: number;
@@ -65,6 +69,9 @@ export default function EntidadesAdministracao() {
 	const [estados, setEstados] = useState<Opcao[]>([]);
 	const [filtroEstado, setFiltroEstado] = useState(estado);
 
+	const [municipios, setMunicipios] = useState<Opcao[]>([]);
+	const [filtroMunicipio, setFiltroMunicipio] = useState(municipio);
+
 	const [entidades, setEntidades] = useState<IEntidade[]>([]);
 
 	const [usuario, setUsuario] = useState<IUsuarioAPI>();
@@ -87,6 +94,14 @@ export default function EntidadesAdministracao() {
 		params.set("pagina", "1");
 		setParams(params);
 	};
+
+	function getMunicipios() {
+		const estado = watch("estado");
+
+		if (estado) {
+			getOpcoesFromMunicipios(estado, filtroMunicipio, setMunicipios);
+		}
+	}
 
 	function getEstados() {
 		getOpcoesFromEstados(filtroEstado, setEstados);
@@ -145,8 +160,33 @@ export default function EntidadesAdministracao() {
 	}, []);
 
 	useEffect(() => {
+		getMunicipios();
+	}, [filtroMunicipio]);
+
+	useEffect(() => {
 		getEstados();
 	}, [filtroEstado]);
+
+	useEffect(() => {
+		const estado = watch("estado");
+		const municipio = watch("municipio");
+
+		if (!estado) {
+			setValue("municipio", "");
+			setFiltroMunicipio("");
+		} else {
+			if (municipio) {
+				municipioExiste(estado, municipio).then((res) => {
+					if (!res) {
+						setValue("municipio", "");
+						setFiltroMunicipio("");
+					}
+				});
+			}
+		}
+
+		getMunicipios();
+	}, [watch("estado")]);
 
 	useEffect(() => {
 		getEntidades();
@@ -192,6 +232,25 @@ export default function EntidadesAdministracao() {
 												opcoes={estados}
 												placeholder="Rondônia"
 												setFiltro={setFiltroEstado}
+												setValue={setValue}
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								control={control}
+								name="municipio"
+								render={({ field }) => {
+									return (
+										<InputContainer id="municipio" label="Município">
+											<Select
+												disabled={!watch("estado")}
+												filtro={filtroMunicipio}
+												opcoes={municipios}
+												placeholder="Vilhena"
+												setFiltro={setFiltroMunicipio}
 												setValue={setValue}
 												{...{ ...field, ref: null }}
 											/>

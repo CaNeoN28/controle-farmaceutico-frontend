@@ -1,6 +1,7 @@
 import { Opcao } from "@/components/Select";
-import { fetchEstados } from "@/fetch/localizacao";
+import { fetchEstados, fetchMunicipios } from "@/fetch/localizacao";
 import { Dispatch, SetStateAction } from "react";
+import { getSiglaFromEstado } from "./estadosParaSigla";
 
 export async function getOpcoesFromEstados(
 	filtroEstado: string,
@@ -25,4 +26,28 @@ export async function getOpcoesFromEstados(
 		.catch((err) => {
 			console.log(err);
 		});
+}
+
+export async function getOpcoesFromMunicipios(
+	estado: string,
+	filtroMunicipio: string,
+	setMunicipios: Dispatch<SetStateAction<Opcao[]>>
+) {
+	const siglaEstado = getSiglaFromEstado(estado);
+
+	await fetchMunicipios(siglaEstado).then((res) => {
+		const municipios = res.data;
+
+		const fMunicipios: Opcao[] = municipios
+			.filter((m) => new RegExp(filtroMunicipio, "i").test(m.nome))
+			.sort((a, b) => (a.nome > b.nome ? 1 : -1))
+			.map((m) => {
+				return {
+					label: m.nome,
+					valor: m.nome,
+				};
+			});
+
+		setMunicipios(fMunicipios);
+	});
 }
