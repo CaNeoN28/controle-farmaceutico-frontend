@@ -1,10 +1,7 @@
 	import Botao from "@/components/Botao";
 import styles from "./FormularioFarmacia.module.scss";
-import Menu from "@/components/Menu";
-import TituloSecao from "@/components/TituloSecao";
-import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import IFarmacia, { IFarmaciaPlantao, IHorário } from "@/types/Farmacia";
+import IFarmacia, { IHorário } from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
@@ -54,8 +51,6 @@ export default function FormularioFarmacia({
 	horariosAntigos,
 	salvarFarmacia,
 }: Props) {
-	redirecionarAutenticacao();
-
 	const {
 		formState: { errors: errorsFarmacia },
 		control: controlFarmacia,

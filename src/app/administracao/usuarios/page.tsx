@@ -1,6 +1,4 @@
 "use client";
-
-import redirecionarAutenticacao from "@/utils/redirecionarAutenticacao";
 import styles from "./UsuariosAdministracao.module.scss";
 import Menu from "@/components/Menu";
 import {
@@ -16,7 +14,7 @@ import { useEffect, useState } from "react";
 import { Funcao, IUsuarioAPI } from "@/types/Usuario";
 import { deleteUsuario, getUsuarios } from "@/fetch/usuarios";
 import { GetManyRequest } from "@/types/Requests";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { mascararCPF } from "@/utils/mascaras";
 import verificarPermissao from "@/utils/verificarPermissao";
@@ -41,20 +39,18 @@ interface Filtros {
 }
 
 export default function UsuariosAdministracao() {
-	redirecionarAutenticacao();
-
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const router = useRouter();
 
-	const fAuth = new FetchAutenticacao();
+	const getPerfil = new FetchAutenticacao().getPerfil;
 	const fEntidades = new FetchEntidades();
 
 	const { pagina, entidade_relacionada, funcao, nome_usuario }: Filtros = {
 		pagina: Number(searchParams.get("pagina")) || 1,
 		entidade_relacionada: searchParams.get("entidade_relacionada") || "",
 		nome_usuario: searchParams.get("nome_usuario") || "",
-		funcao: searchParams.get("funcao") as Funcao,
+		funcao: searchParams.get("funcao") as Funcao || "",
 	};
 
 	const { control, handleSubmit, watch, setValue } = useForm<Filtros>({
@@ -66,7 +62,7 @@ export default function UsuariosAdministracao() {
 	});
 
 	const [usuario, setUsuario] = useState<IUsuarioAPI>();
-	const [token, setToken] = useState("");
+	const [token, setToken] = useState<string>();
 
 	const [usuarios, setUsuarios] = useState<IUsuarioAPI[]>([]);
 	const [usuarioParaRemover, setUsuarioParaRemover] = useState<IUsuarioAPI>();
@@ -152,21 +148,21 @@ export default function UsuariosAdministracao() {
 		}
 	};
 
-	const getUsuario = async () => {
-		const token = getCookie("authentication") || "";
+	async function getUsuario() {
+		const token = getCookie("authentication");
 
-		await fAuth
-			.getPerfil(token)
+		await getPerfil(token)
 			.then((res) => {
-				const usuario = res.data as IUsuarioAPI;
+				const usuario = res.data;
 
 				setUsuario(usuario);
 				setToken(token);
 			})
-			.catch((err) => {
-				console.log(err);
+			.catch(() => {
+				deleteCookie("authentication");
+				router.push("/login");
 			});
-	};
+	}
 
 	const onCleanFiltro = () => {
 		const newParams = new URLSearchParams();
@@ -200,7 +196,7 @@ export default function UsuariosAdministracao() {
 			limite: 10,
 		};
 
-		if (usuario)
+		if (usuario && token)
 			await getUsuarios(filtros, token)
 				.then((res) => {
 					const { dados, paginas_totais, documentos_totais } =
