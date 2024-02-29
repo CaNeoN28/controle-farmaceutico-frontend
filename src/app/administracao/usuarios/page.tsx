@@ -361,6 +361,7 @@ export default function UsuariosAdministracao() {
 											onDelete={() => {
 												setUsuarioParaRemover(f);
 											}}
+											tipo="usuario"
 											conteudoPrincipal={conteudoPrincipal}
 											conteudoSecundario={conteudoSecundario}
 											linkEditar={`/administracao/usuarios/editar/${f._id}`}

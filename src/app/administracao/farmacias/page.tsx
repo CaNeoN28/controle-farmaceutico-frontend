@@ -349,6 +349,7 @@ export default function FarmaciasAdministracao() {
 											id={f._id}
 											key={i}
 											imagem_url={f.imagem_url}
+											tipo="farmacia"
 											conteudoPrincipal={conteudoPrincipal}
 											conteudoSecundario={conteudoSecundario}
 											onDelete={() => {

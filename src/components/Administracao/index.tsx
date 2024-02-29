@@ -1,11 +1,14 @@
 import { FormEventHandler, ReactNode, useEffect, useState } from "react";
-import { MdLocalPharmacy, MdEdit } from "react-icons/md";
-import { FaChevronDown } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
+import {
+	MdLocalPharmacy,
+	MdEdit,
+	MdLocationCity,
+	MdPerson,
+} from "react-icons/md";
+import { FaChevronDown, FaTrash } from "react-icons/fa";
 import styles from "./Administracao.module.scss";
 import Botao from "../Botao";
 import LinkButton from "../LinkButton";
-import classNames from "classnames";
 
 interface DefaultProps {
 	children?: ReactNode;
@@ -24,6 +27,7 @@ interface ItemProps extends DefaultProps {
 	id?: string;
 	imagem_url?: string;
 	linkEditar?: string;
+	tipo?: "farmacia" | "entidade" | "usuario";
 	conteudoPrincipal?: ReactNode;
 	conteudoSecundario?: ReactNode;
 	onDelete: () => void;
@@ -121,6 +125,7 @@ export function AdministracaoItem({
 	id,
 	podeAlterar,
 	imagem_url,
+	tipo,
 	linkEditar,
 	conteudoPrincipal,
 	conteudoSecundario,
@@ -163,7 +168,13 @@ export function AdministracaoItem({
 						<img src={`${API_URL}${imagem_url}`} />
 					) : (
 						<div className={styles.placeholder}>
-							<MdLocalPharmacy />
+							{tipo === "farmacia" ? (
+								<MdLocalPharmacy />
+							) : tipo === "usuario" ? (
+								<MdPerson />
+							) : (
+								<MdLocationCity />
+							)}
 						</div>
 					)}
 				</div>
