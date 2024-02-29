@@ -3,5 +3,5 @@ export default interface IEntidade {
 	nome_entidade: string;
 	estado: string;
 	municipio: string;
-	ativo?: string;
+	ativo?: boolean;
 }

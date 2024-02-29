@@ -14,15 +14,18 @@ import Input from "@/components/Input";
 import { useEffect, useState } from "react";
 import Select, { Opcao } from "@/components/Select";
 import { fetchEstados, fetchMunicipios } from "@/fetch/localizacao";
-import { Estado, Municipio } from "@/types/Localizacao";
 import { getSiglaFromEstado } from "@/utils/estadosParaSigla";
 import Checkbox from "@/components/Checkbox";
 
 interface Props {
 	entidade?: IEntidade;
+	enviarEntidade: (data: IEntidade) => void;
 }
 
-export default function FormularioEntidade({ entidade }: Props) {
+export default function FormularioEntidade({
+	entidade,
+	enviarEntidade,
+}: Props) {
 	const {
 		control,
 		formState: { errors },
@@ -31,6 +34,7 @@ export default function FormularioEntidade({ entidade }: Props) {
 		setValue,
 	} = useForm<IEntidade>({
 		defaultValues: entidade || {
+			ativo: false,
 			estado: "",
 			municipio: "",
 			nome_entidade: "",
@@ -87,7 +91,7 @@ export default function FormularioEntidade({ entidade }: Props) {
 	};
 
 	const onSubmit: SubmitHandler<IEntidade> = (data) => {
-		console.log(data);
+		enviarEntidade(data);
 	};
 
 	useEffect(() => {
@@ -198,7 +202,12 @@ export default function FormularioEntidade({ entidade }: Props) {
 							control={control}
 							name="ativo"
 							render={({ field }) => {
-								return <Checkbox label="Ativo" {...{ ...field, ref: null }} />;
+								return (
+									<Checkbox
+										label="Ativo"
+										{...{ ...field, ref: null, value: String(field.value) }}
+									/>
+								);
 							}}
 						/>
 					</CadastroInputs>
