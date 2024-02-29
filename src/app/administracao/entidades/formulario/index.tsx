@@ -113,6 +113,16 @@ export default function FormularioEntidade({ entidade }: Props) {
 						<Controller
 							control={control}
 							name="nome_entidade"
+							rules={{
+								required: {
+									message: "Nome da entidade é obrigatório",
+									value: true,
+								},
+								minLength: {
+									message: "Nome da entidade deve ter 3 carácteres",
+									value: 3,
+								},
+							}}
 							render={({ field }) => {
 								return (
 									<InputContainer
@@ -128,6 +138,12 @@ export default function FormularioEntidade({ entidade }: Props) {
 						<Controller
 							control={control}
 							name="estado"
+							rules={{
+								required: {
+									message: "Estado é obrigatório",
+									value: true,
+								},
+							}}
 							render={({ field }) => {
 								return (
 									<InputContainer
@@ -151,9 +167,19 @@ export default function FormularioEntidade({ entidade }: Props) {
 						<Controller
 							control={control}
 							name="municipio"
+							rules={{
+								required: {
+									message: "Município é obrigatório",
+									value: true,
+								},
+							}}
 							render={({ field }) => {
 								return (
-									<InputContainer id="municipio" label="Municipio">
+									<InputContainer
+										id="municipio"
+										label="Municipio"
+										error={errors.municipio}
+									>
 										<Select
 											id="municipio"
 											placeholder="Município"
@@ -172,9 +198,7 @@ export default function FormularioEntidade({ entidade }: Props) {
 							control={control}
 							name="ativo"
 							render={({ field }) => {
-								return (
-									<Checkbox label="Ativo" {...{...field, ref: null}}/>
-								);
+								return <Checkbox label="Ativo" {...{ ...field, ref: null }} />;
 							}}
 						/>
 					</CadastroInputs>
