@@ -39,6 +39,7 @@ interface Filtros {
 	nome_entidade?: string;
 	estado?: string;
 	municipio?: string;
+	ativo: "SIM" | "NAO" | "TODOS";
 }
 
 export default function EntidadesAdministracao() {
@@ -49,11 +50,12 @@ export default function EntidadesAdministracao() {
 	const getPerfil = new FetchAutenticacao().getPerfil;
 	const fEntidades = new FetchEntidades();
 
-	const { estado, municipio, nome_entidade, pagina }: Filtros = {
+	const { estado, municipio, nome_entidade, pagina, ativo }: Filtros = {
 		pagina: Number(searchParams.get("pagina")) || 1,
 		estado: searchParams.get("estado") || "",
 		municipio: searchParams.get("municipio") || "",
 		nome_entidade: searchParams.get("nome_entidade") || "",
+		ativo: (searchParams.get("ativo") as "SIM" | "NAO" | "TODOS") || "SIM",
 	};
 
 	const { control, watch, handleSubmit, setValue } = useForm<Filtros>({
@@ -61,6 +63,7 @@ export default function EntidadesAdministracao() {
 			estado: estado || "",
 			municipio: municipio || "",
 			nome_entidade: nome_entidade || "",
+			ativo: ativo || "SIM",
 		},
 	});
 
@@ -72,6 +75,13 @@ export default function EntidadesAdministracao() {
 
 	const [municipios, setMunicipios] = useState<Opcao[]>([]);
 	const [filtroMunicipio, setFiltroMunicipio] = useState(municipio);
+
+	const [opcoesAtivo] = useState<Opcao[]>([
+		{ label: "SIM", valor: "SIM" },
+		{ label: "NAO", valor: "NAO" },
+		{ label: "TODOS", valor: "TODOS" },
+	]);
+	const [opcaoAtivo, setOpcaoAtivo] = useState(ativo);
 
 	const [entidades, setEntidades] = useState<IEntidade[]>([]);
 
@@ -95,8 +105,6 @@ export default function EntidadesAdministracao() {
 		params.set("pagina", "1");
 		setParams(params);
 	};
-
-	function cleanFiltros() {}
 
 	function getMunicipios() {
 		const estado = watch("estado");
@@ -127,16 +135,18 @@ export default function EntidadesAdministracao() {
 	}
 
 	async function getEntidades() {
-		const { estado, nome_entidade, municipio }: Filtros = {
+		const { estado, nome_entidade, municipio, ativo }: Filtros = {
 			estado: params.get("estado") || "",
 			municipio: params.get("municipio") || "",
 			nome_entidade: params.get("nome_entidade") || "",
+			ativo: (params.get("ativo") as "SIM" | "NAO" | "TODOS") || "SIM",
 		};
 
 		const filtros: Filtros = {
 			estado,
 			municipio,
 			nome_entidade,
+			ativo,
 			limite: 10,
 			pagina,
 		};
@@ -169,6 +179,11 @@ export default function EntidadesAdministracao() {
 	useEffect(() => {
 		getEstados();
 	}, [filtroEstado]);
+
+	useEffect(() => {
+		const ativo = watch("ativo");
+		setOpcaoAtivo(ativo);
+	}, [watch("ativo")]);
 
 	useEffect(() => {
 		const estado = watch("estado");
@@ -257,6 +272,27 @@ export default function EntidadesAdministracao() {
 												setFiltro={setFiltroMunicipio}
 												setValue={setValue}
 												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								control={control}
+								name="ativo"
+								render={({ field }) => {
+									return (
+										<InputContainer id="ativo" label="Ativo?">
+											<Select
+												filtro={opcaoAtivo}
+												placeholder="SIM"
+												opcoes={opcoesAtivo}
+												setFiltro={() => {}}
+												setValue={setValue}
+												{...{
+													...field,
+													ref: null,
+												}}
 											/>
 										</InputContainer>
 									);
