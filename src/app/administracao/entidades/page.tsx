@@ -16,6 +16,10 @@ import {
 } from "@/components/Administracao";
 import TituloSecao from "@/components/TituloSecao";
 import Paginacao from "@/components/Paginacao";
+import { IUsuarioAPI } from "@/types/Usuario";
+import FetchAutenticacao from "@/fetch/autenticacao";
+import { deleteCookie, getCookie } from "cookies-next";
+import verificarPermissao from "@/utils/verificarPermissao";
 
 interface Filtros {
 	pagina?: number;
@@ -30,6 +34,7 @@ export default function EntidadesAdministracao() {
 	const pathname = usePathname();
 	const router = useRouter();
 
+	const getPerfil = new FetchAutenticacao().getPerfil;
 	const fEntidades = new FetchEntidades();
 
 	const { estado, municipio, nome_entidade, pagina }: Filtros = {
@@ -39,11 +44,29 @@ export default function EntidadesAdministracao() {
 		nome_entidade: searchParams.get("nome_entidade") || "",
 	};
 
+	const [params, setParams] = useState<URLSearchParams>(searchParams);
+	const [maxPaginas, setMaxPaginas] = useState(5);
+
 	const [entidades, setEntidades] = useState<IEntidade[]>([]);
 
-	const [params, setParams] = useState<URLSearchParams>(searchParams);
+	const [usuario, setUsuario] = useState<IUsuarioAPI>();
+	const [token, setToken] = useState<string>();
 
-	const [maxPaginas, setMaxPaginas] = useState(5);
+	async function getUsuario() {
+		const token = getCookie("authentication");
+
+		await getPerfil(token)
+			.then((res) => {
+				const usuario = res.data;
+
+				setUsuario(usuario);
+				setToken(token);
+			})
+			.catch(() => {
+				deleteCookie("authentication");
+				router.push("/login");
+			});
+	}
 
 	async function getEntidades() {
 		const { estado, nome_entidade, municipio }: Filtros = {
@@ -78,6 +101,10 @@ export default function EntidadesAdministracao() {
 	}
 
 	useEffect(() => {
+		getUsuario();
+	}, []);
+
+	useEffect(() => {
 		getEntidades();
 	}, [pagina]);
 
@@ -91,45 +118,51 @@ export default function EntidadesAdministracao() {
 		}
 	}, [params]);
 
-	return (
-		<>
-			<Menu />
-			<AdministracaoMain>
-				<TituloSecao>LISTAGEM DE ENTIDADES</TituloSecao>
-				<AdministracaoContainer>
-					{entidades.length > 0 && (
-						<AdministracaoListagem>
-							{entidades.map((e, i) => {
-								return (
-									<AdministracaoItem
-										id={e._id}
-										key={i}
-										conteudoPrincipal={<span>{e.nome_entidade}</span>}
-										conteudoSecundario={
-											<>
-												<span>{e.municipio}</span>
-												<span>{e.estado}</span>
-											</>
-										}
-										onDelete={() => {}}
-										linkEditar={`/administracao/entidades/editar/${e._id}`}
-										podeAlterar={true}
-									/>
-								);
-							})}
-						</AdministracaoListagem>
+	if (usuario)
+		return (
+			<>
+				<Menu />
+				<AdministracaoMain>
+					<TituloSecao>LISTAGEM DE ENTIDADES</TituloSecao>
+					<AdministracaoContainer>
+						{entidades.length > 0 && (
+							<AdministracaoListagem>
+								{entidades.map((e, i) => {
+									return (
+										<AdministracaoItem
+											id={e._id}
+											key={i}
+											conteudoPrincipal={<span>{e.nome_entidade}</span>}
+											conteudoSecundario={
+												<>
+													<span>{e.municipio}</span>
+													<span>{e.estado}</span>
+												</>
+											}
+											onDelete={() => {}}
+											linkEditar={`/administracao/entidades/editar/${e._id}`}
+											podeAlterar={verificarPermissao(
+												usuario.dados_administrativos.funcao!,
+												"GERENTE"
+											)}
+										/>
+									);
+								})}
+							</AdministracaoListagem>
+						)}
+					</AdministracaoContainer>
+					{maxPaginas > 0 && (
+						<Paginacao
+							pagina={pagina}
+							paginaMax={maxPaginas}
+							setPagina={(v) => {
+								addSearchParam("pagina", v.toString(), searchParams, setParams);
+							}}
+						/>
 					)}
-				</AdministracaoContainer>
-				{maxPaginas > 0 && (
-					<Paginacao
-						pagina={pagina}
-						paginaMax={maxPaginas}
-						setPagina={(v) => {
-							addSearchParam("pagina", v.toString(), searchParams, setParams);
-						}}
-					/>
-				)}
-			</AdministracaoMain>
-		</>
-	);
+				</AdministracaoMain>
+			</>
+		);
+
+	return <></>;
 }
