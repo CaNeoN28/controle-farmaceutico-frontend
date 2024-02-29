@@ -9,7 +9,9 @@ import IEntidade from "@/types/Entidades";
 import { addSearchParam } from "@/utils/navigation";
 import Menu from "@/components/Menu";
 import {
+	AdministracaoConfirmarFiltros,
 	AdministracaoContainer,
+	AdministracaoFiltros,
 	AdministracaoItem,
 	AdministracaoListagem,
 	AdministracaoMain,
@@ -20,6 +22,9 @@ import { IUsuarioAPI } from "@/types/Usuario";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { deleteCookie, getCookie } from "cookies-next";
 import verificarPermissao from "@/utils/verificarPermissao";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import InputContainer from "@/components/InputContainer";
+import Input from "@/components/Input";
 
 interface Filtros {
 	pagina?: number;
@@ -44,6 +49,14 @@ export default function EntidadesAdministracao() {
 		nome_entidade: searchParams.get("nome_entidade") || "",
 	};
 
+	const { control, watch, handleSubmit, setValue } = useForm<Filtros>({
+		defaultValues: {
+			estado: estado || "",
+			municipio: municipio || "",
+			nome_entidade: nome_entidade || "",
+		},
+	});
+
 	const [params, setParams] = useState<URLSearchParams>(searchParams);
 	const [maxPaginas, setMaxPaginas] = useState(5);
 
@@ -51,6 +64,24 @@ export default function EntidadesAdministracao() {
 
 	const [usuario, setUsuario] = useState<IUsuarioAPI>();
 	const [token, setToken] = useState<string>();
+
+	const applyFiltros: SubmitHandler<Filtros> = function (data) {
+		const params = new URLSearchParams(searchParams);
+
+		Object.keys(data).map((k) => {
+			const key = k as keyof Filtros;
+			const value = String(data[key]);
+
+			if (value) {
+				params.set(key, value);
+			} else {
+				params.delete(key);
+			}
+		});
+
+		params.set("pagina", "1");
+		setParams(params);
+	};
 
 	async function getUsuario() {
 		const token = getCookie("authentication");
@@ -125,6 +156,20 @@ export default function EntidadesAdministracao() {
 				<AdministracaoMain>
 					<TituloSecao>LISTAGEM DE ENTIDADES</TituloSecao>
 					<AdministracaoContainer>
+						<AdministracaoFiltros onSubmit={handleSubmit(applyFiltros)}>
+							<Controller
+								control={control}
+								name="nome_entidade"
+								render={({ field }) => {
+									return (
+										<InputContainer id="nome_entidade" label="Nome da entidade">
+											<Input id="nome_entidade" {...{ ...field, ref: null }} />
+										</InputContainer>
+									);
+								}}
+							/>
+							<AdministracaoConfirmarFiltros onClean={() => {}} />
+						</AdministracaoFiltros>
 						{entidades.length > 0 && (
 							<AdministracaoListagem>
 								{entidades.map((e, i) => {
