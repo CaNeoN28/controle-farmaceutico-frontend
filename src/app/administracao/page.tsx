@@ -83,7 +83,7 @@ export default function Administracao() {
 								tipo="usuario"
 								url_destino="/administracao/usuarios/cadastro"
 							>
-								Cadastro de Usuários
+								Cadastro de Usuário
 							</OpcaoAdministrativa>
 						</div>
 						<div className={styles.conjunto}>
@@ -97,7 +97,7 @@ export default function Administracao() {
 								tipo="entidade"
 								url_destino="/administracao/entidades/cadastro"
 							>
-								Cadastro de Entidades
+								Cadastro de Entidade
 							</OpcaoAdministrativa>
 						</div>
 					</div>
