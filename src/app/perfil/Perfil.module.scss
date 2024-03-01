@@ -31,12 +31,17 @@
 	border: 1px solid var(--gray);
 	border-radius: 8px;
 
+	gap: 16px;
 	height: 340px;
+
+	.input_imagem{
+		width: 200px;
+	}
 }
 
 .imagem {
 	overflow: hidden;
-	
+
 	border: 1px solid var(--gray);
 	border-radius: 8px;
 

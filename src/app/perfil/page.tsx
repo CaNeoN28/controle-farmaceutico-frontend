@@ -19,6 +19,7 @@ import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
 import InputSenha from "@/components/InputSenha";
 import Botao from "@/components/Botao";
+import InputImagem from "@/components/InputImagem";
 
 export default function Perfil() {
 	const router = useRouter();
@@ -142,7 +143,7 @@ export default function Perfil() {
 							<Controller
 								control={control}
 								name="nome_usuario"
-								disabled
+								disabled={!editar}
 								render={({ field }) => {
 									return (
 										<InputContainer
@@ -158,7 +159,7 @@ export default function Perfil() {
 							<Controller
 								control={control}
 								name="email"
-								disabled
+								disabled={!editar}
 								render={({ field }) => {
 									return (
 										<InputContainer
@@ -171,22 +172,44 @@ export default function Perfil() {
 									);
 								}}
 							/>
-							<Controller
-								control={control}
-								name="senha"
-								disabled
-								render={({ field }) => {
-									return (
-										<InputContainer
-											id="senha"
-											label="Senha"
-											error={errors.senha}
-										>
-											<InputSenha id="senha" {...{ ...field, ref: null }} />
-										</InputContainer>
-									);
-								}}
-							/>
+							{editar && (
+								<>
+									<Controller
+										control={control}
+										name="senha"
+										disabled={!editar}
+										render={({ field }) => {
+											return (
+												<InputContainer
+													id="senha"
+													label="Senha"
+													error={errors.senha}
+												>
+													<InputSenha id="senha" {...{ ...field, ref: null }} />
+												</InputContainer>
+											);
+										}}
+									/>
+									<Controller
+										control={control}
+										name="confirmacao_senha"
+										render={({ field }) => {
+											return (
+												<InputContainer
+													id="confirmacao_senha"
+													label="Confirmar senha"
+													error={errors.confirmacao_senha}
+												>
+													<InputSenha
+														id="confirmacao_senha"
+														{...{ ...field, ref: null }}
+													/>
+												</InputContainer>
+											);
+										}}
+									/>
+								</>
+							)}
 							<div className={styles.imagem_container}>
 								<div className={styles.imagem}>
 									{usuario.imagem_url ? (
@@ -197,10 +220,39 @@ export default function Perfil() {
 										</div>
 									)}
 								</div>
+								{editar && (
+									<div className={styles.input_imagem}>
+										<InputImagem onChange={() => {}} titulo="Enviar imagem" />
+									</div>
+								)}
 							</div>
 						</div>
 						<CadastroBotoes>
-							<Botao fullWidth>Editar</Botao>
+							{editar ? (
+								<>
+									<Botao fullWidth type="submit">
+										Salvar
+									</Botao>
+									<Botao
+										fullWidth
+										secundario
+										onClick={() => {
+											setEditar(false);
+										}}
+									>
+										Cancelar
+									</Botao>
+								</>
+							) : (
+								<Botao
+									fullWidth
+									onClick={() => {
+										setEditar(true);
+									}}
+								>
+									Editar
+								</Botao>
+							)}
 						</CadastroBotoes>
 					</CadastroContainer>
 				</main>
