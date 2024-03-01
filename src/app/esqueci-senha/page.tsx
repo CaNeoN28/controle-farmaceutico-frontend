@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import regexValidation from "@/utils/regexValidation";
 import FetchAutenticacao from "@/fetch/autenticacao";
+import { useEffect, useState } from "react";
 
 export default function EsqueciSenha() {
 	const router = useRouter();
@@ -25,6 +26,8 @@ export default function EsqueciSenha() {
 		},
 	});
 
+	const [erro, setErro] = useState("");
+
 	const onCancel = () => {
 		router.back();
 	};
@@ -35,9 +38,19 @@ export default function EsqueciSenha() {
 				console.log(res);
 			})
 			.catch((err) => {
-				console.log(err);
+				const erro = err.response.data as string;
+
+				setErro(erro);
 			});
 	};
+
+	useEffect(() => {
+		if (erro) {
+			setTimeout(() => {
+				setErro("");
+			}, 5000);
+		}
+	}, [erro]);
 
 	return (
 		<>
@@ -71,6 +84,7 @@ export default function EsqueciSenha() {
 							);
 						}}
 					/>
+					{erro && <span className={styles.erro}>{erro}</span>}
 				</CenterBox>
 			</main>
 		</>
