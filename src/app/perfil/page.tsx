@@ -2,7 +2,7 @@
 
 import Menu from "@/components/Menu";
 import styles from "./Perfil.module.scss";
-import { CadastroContainer, CadastroForm } from "@/components/Cadastro";
+import { CadastroContainer } from "@/components/Cadastro";
 import { useEffect, useState } from "react";
 import IUsuarioGet, {
 	IUsuarioAPI,
@@ -13,6 +13,7 @@ import FetchAutenticacao from "@/fetch/autenticacao";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { FaUser } from "react-icons/fa";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
@@ -185,7 +186,17 @@ export default function Perfil() {
 									}}
 								/>
 							</div>
-							<div className={styles.imagem}></div>
+							<div className={styles.imagem_container}>
+								<div className={styles.imagem}>
+									{usuario.imagem_url ? (
+										<img src={usuario.imagem_url} />
+									) : (
+										<div className={styles.placeholder}>
+											<FaUser />
+										</div>
+									)}
+								</div>
+							</div>
 						</div>
 					</CadastroContainer>
 				</main>
