@@ -56,7 +56,11 @@ export default function CadastroUsuario() {
       await fImagem
         .postImagem(imagem)
         .then((res) => {
-          urlImagem = res.data[0];
+          urlImagem = Object.keys(res.data).map((k) => {
+            const imagem = res.data[k];
+
+            return imagem
+          })[0];
 
           setErroImagem(undefined);
         })
@@ -73,7 +77,7 @@ export default function CadastroUsuario() {
     if (!erroImagem) {
       await postUsuario(data, token)
         .then((res) => {
-          setMensagemCriacao("Usuário cadastrado com sucesso")
+          setMensagemCriacao("Usuário cadastrado com sucesso");
         })
         .catch((err) => {
           const data = err.response.data;
@@ -89,7 +93,7 @@ export default function CadastroUsuario() {
           });
 
           setErros(erros);
-          setErroCriacao("Não foi possível criar o usuário")
+          setErroCriacao("Não foi possível criar o usuário");
 
           if (urlImagem) fImagem.removeImagem(erroImagem);
         });

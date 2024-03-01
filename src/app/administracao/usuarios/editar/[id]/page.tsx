@@ -7,7 +7,7 @@ import FetchImagem from "@/fetch/imagens";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { IUsuarioAPI } from "@/types/Usuario";
-import { getUsuario } from "@/fetch/usuarios";
+import { getUsuario, putUsuario } from "@/fetch/usuarios";
 import Menu from "@/components/Menu";
 import Carregando from "@/components/Carregando";
 import { CadastroMain } from "@/components/Cadastro";
@@ -38,7 +38,11 @@ export default function EditarUsuario({ params }: { params: Params }) {
 
   const [nomeEntidade, setNomeEntidade] = useState("");
   const [usuario, setUsuario] = useState<IUsuarioAPI>();
+  const [erros, setErros] = useState<{ [key: string]: FieldError }>({});
+
+  const [mensagemEdicao, setMensagemEdicao] = useState("");
   const [erro, setErro] = useState("");
+  const [erroEdicao, setErroEdicao] = useState("");
 
   async function getUsuarioLogado() {
     const token = getCookie("authentication");
@@ -90,7 +94,79 @@ export default function EditarUsuario({ params }: { params: Params }) {
   }
 
   async function fetchUsuario(data: IUsuarioAPI) {
-    console.log(data);
+    let erroImagem = "";
+    let urlImagemNova = "";
+    let urlImagemVelha = usuario?.imagem_url;
+
+    if (imagem) {
+      await fetchImagem
+        .postImagem(imagem)
+        .then((res) => {
+          urlImagemNova = Object.keys(res.data).map((k) => {
+            const imagem = res.data[k];
+
+            return imagem
+          })[0];
+
+          data.imagem_url = urlImagemNova
+        })
+        .catch((err) => {
+          erroImagem = "Arquivo inválido";
+
+          setErroImagem({
+            type: "validate",
+            message: erroImagem,
+          });
+        });
+    }
+
+    console.log({
+      urlImagemNova,
+      urlImagemVelha
+    })
+
+    if (!erroImagem) {
+      await putUsuario(id_usuario, data, token)
+        .then((res) => {
+          if (urlImagemNova && urlImagemVelha) {
+            fetchImagem
+              .removeImagem(urlImagemVelha)
+              .then((res) => {
+                console.log("Removeu imagem velha");
+              })
+              .catch(() => {});
+          }
+
+          setMensagemEdicao("Usuário alterado com sucesso");
+        })
+        .catch((err) => {
+          const data = err.response.data;
+          const erros: { [key: string]: FieldError } = {};
+
+          Object.keys(data).map((k) => {
+            if (!erros[k]) {
+              erros[k] = {
+                message: data[k],
+                type: "validate",
+              };
+            }
+          });
+
+          setErros(erros);
+          setErroEdicao("Não foi possível criar o usuário");
+
+          if (urlImagemNova) {
+            fetchImagem
+              .removeImagem(urlImagemNova)
+              .then(() => {
+                console.log("Removeu imagem nova");
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        });
+    }
   }
 
   useEffect(() => {
@@ -102,8 +178,8 @@ export default function EditarUsuario({ params }: { params: Params }) {
   }, [token]);
 
   useEffect(() => {
-    getEntidade()
-  }, [usuario])
+    getEntidade();
+  }, [usuario]);
 
   if (usuarioLogado) {
     return (
