@@ -2,7 +2,7 @@
 
 import Menu from "@/components/Menu";
 import styles from "./Perfil.module.scss";
-import { CadastroContainer } from "@/components/Cadastro";
+import { CadastroBotoes, CadastroContainer } from "@/components/Cadastro";
 import { useEffect, useState } from "react";
 import IUsuarioGet, {
 	IUsuarioAPI,
@@ -18,6 +18,7 @@ import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
 import InputMascara from "@/components/InputMascara/indext";
 import InputSenha from "@/components/InputSenha";
+import Botao from "@/components/Botao";
 
 export default function Perfil() {
 	const router = useRouter();
@@ -44,6 +45,8 @@ export default function Perfil() {
 
 	const [usuario, setUsuario] = useState<IUsuarioGet>();
 	const [token, setToken] = useState<string>();
+
+	const [editar, setEditar] = useState(false);
 
 	async function getUsuario() {
 		const token = getCookie("authentication");
@@ -196,6 +199,9 @@ export default function Perfil() {
 								</div>
 							</div>
 						</div>
+						<CadastroBotoes>
+							<Botao fullWidth>Editar</Botao>
+						</CadastroBotoes>
 					</CadastroContainer>
 				</main>
 			</>
