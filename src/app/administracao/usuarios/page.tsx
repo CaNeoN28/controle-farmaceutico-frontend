@@ -11,7 +11,7 @@ import {
 } from "@/components/Administracao";
 import TituloSecao from "@/components/TituloSecao";
 import { useEffect, useState } from "react";
-import { Funcao, IUsuarioAPI } from "@/types/Usuario";
+import IUsuarioGet, { Funcao, IUsuarioAPI } from "@/types/Usuario";
 import { deleteUsuario, getUsuarios } from "@/fetch/usuarios";
 import { GetManyRequest } from "@/types/Requests";
 import { deleteCookie, getCookie } from "cookies-next";
@@ -64,8 +64,8 @@ export default function UsuariosAdministracao() {
 	const [usuario, setUsuario] = useState<IUsuarioAPI>();
 	const [token, setToken] = useState<string>();
 
-	const [usuarios, setUsuarios] = useState<IUsuarioAPI[]>([]);
-	const [usuarioParaRemover, setUsuarioParaRemover] = useState<IUsuarioAPI>();
+	const [usuarios, setUsuarios] = useState<IUsuarioGet[]>([]);
+	const [usuarioParaRemover, setUsuarioParaRemover] = useState<IUsuarioGet>();
 	const [erroAoRemover, setErroAoRemover] = useState("");
 	const [mensagemRemocao, setMensagemRemocao] = useState("");
 
@@ -200,7 +200,7 @@ export default function UsuariosAdministracao() {
 			await getUsuarios(filtros, token)
 				.then((res) => {
 					const { dados, paginas_totais, documentos_totais } =
-						res.data as GetManyRequest<IUsuarioAPI[]>;
+						res.data as GetManyRequest<IUsuarioGet[]>;
 
 					if (dados.length == 0) {
 						if (documentos_totais != 0) {
@@ -349,7 +349,7 @@ export default function UsuariosAdministracao() {
 
 									const conteudoSecundario = (
 										<>
-											<span>{f.dados_administrativos.funcao}</span>
+											<span>{f.dados_administrativos.funcao} ({f.dados_administrativos.entidade_relacionada.nome_entidade})</span>
 											<span>{f.email}</span>
 										</>
 									);
