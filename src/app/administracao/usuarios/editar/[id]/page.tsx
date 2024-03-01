@@ -16,6 +16,8 @@ import FormularioUsuario from "../../formulario";
 import { FieldError } from "react-hook-form";
 import FetchEntidades from "@/fetch/entidades";
 import IEntidade from "@/types/Entidades";
+import Alert from "@/components/Alert";
+import Botao from "@/components/Botao";
 
 interface Params {
   id: string;
@@ -105,10 +107,10 @@ export default function EditarUsuario({ params }: { params: Params }) {
           urlImagemNova = Object.keys(res.data).map((k) => {
             const imagem = res.data[k];
 
-            return imagem
+            return imagem;
           })[0];
 
-          data.imagem_url = urlImagemNova
+          data.imagem_url = urlImagemNova;
         })
         .catch((err) => {
           erroImagem = "Arquivo inválido";
@@ -120,20 +122,13 @@ export default function EditarUsuario({ params }: { params: Params }) {
         });
     }
 
-    console.log({
-      urlImagemNova,
-      urlImagemVelha
-    })
-
     if (!erroImagem) {
       await putUsuario(id_usuario, data, token)
         .then((res) => {
           if (urlImagemNova && urlImagemVelha) {
             fetchImagem
               .removeImagem(urlImagemVelha)
-              .then((res) => {
-                console.log("Removeu imagem velha");
-              })
+              .then(() => {})
               .catch(() => {});
           }
 
@@ -153,7 +148,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
           });
 
           setErros(erros);
-          setErroEdicao("Não foi possível criar o usuário");
+          setErroEdicao("Não foi possível editar o usuário");
 
           if (urlImagemNova) {
             fetchImagem
@@ -202,6 +197,57 @@ export default function EditarUsuario({ params }: { params: Params }) {
         ) : (
           <Carregando />
         )}
+        <Alert
+          show={!!erroEdicao}
+          onClickBackground={() => {
+            setErroEdicao("");
+            router.back();
+          }}
+        >
+          <div className={styles.alert}>
+            <span className={styles.alert_texto}>{erroEdicao}</span>
+            <div className={styles.alert_opcoes}>
+              <Botao
+                fullWidth
+                onClick={() => {
+                  setErroEdicao("");
+                }}
+              >
+                Continuar
+              </Botao>
+              <Botao
+                fullWidth
+                secundario
+                onClick={() => {
+                  setErroEdicao("");
+                  router.back();
+                }}
+              >
+                Cancelar
+              </Botao>
+            </div>
+          </div>
+        </Alert>
+        <Alert
+          show={!!mensagemEdicao}
+          onClickBackground={() => {
+            setMensagemEdicao("");
+            router.back();
+          }}
+        >
+          <div className={styles.alert}>
+            <span className={styles.alert_texto}>{mensagemEdicao}</span>
+            <Botao
+              fullWidth
+              onClick={() => {
+                setMensagemEdicao("");
+                router.back();
+              }}
+            >
+              Confirmar
+            </Botao>
+          </div>
+        </Alert>
       </>
     );
   }
