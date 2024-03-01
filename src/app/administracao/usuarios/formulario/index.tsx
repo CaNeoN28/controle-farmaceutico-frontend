@@ -42,6 +42,7 @@ interface Props {
   erroImagem?: FieldError;
   usuarioEditor: IUsuarioAPI;
   erros?: { [key: string]: FieldError };
+  nome_entidade?: string
   fetchUsuario: (data: IUsuarioAPI) => void;
   setImagem: Dispatch<SetStateAction<File | undefined>>;
 }
@@ -51,6 +52,7 @@ export default function FormularioUsuario({
   usuarioEditor,
   erroImagem,
   erros,
+  nome_entidade,
   fetchUsuario,
   setImagem,
 }: Props) {
@@ -82,7 +84,7 @@ export default function FormularioUsuario({
   const [filtroFuncao, setFiltroFuncao] = useState("INATIVO");
 
   const [entidades, setEntidades] = useState<Opcao[]>([]);
-  const [filtroEntidade, setFiltroEntidade] = useState("");
+  const [filtroEntidade, setFiltroEntidade] = useState(nome_entidade || "");
 
   const classesRedirectEntidade = classNames({
     [styles.link_button]: true,
@@ -303,7 +305,7 @@ export default function FormularioUsuario({
               rules={{
                 required: {
                   message: "Senha é obrigatória",
-                  value: true,
+                  value: !usuarioData,
                 },
                 pattern: {
                   message: "Senha inválida",

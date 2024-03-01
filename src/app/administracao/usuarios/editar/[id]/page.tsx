@@ -14,6 +14,8 @@ import { CadastroMain } from "@/components/Cadastro";
 import TituloSecao from "@/components/TituloSecao";
 import FormularioUsuario from "../../formulario";
 import { FieldError } from "react-hook-form";
+import FetchEntidades from "@/fetch/entidades";
+import IEntidade from "@/types/Entidades";
 
 interface Params {
   id: string;
@@ -26,6 +28,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
 
   const getPerfil = new FetchAutenticacao().getPerfil;
   const fetchImagem = new FetchImagem();
+  const fetchEntidade = new FetchEntidades();
 
   const [token, setToken] = useState<string>();
   const [usuarioLogado, setUsuarioLogado] = useState<IUsuarioAPI>();
@@ -33,6 +36,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
   const [imagem, setImagem] = useState<File>();
   const [erroImagem, setErroImagem] = useState<FieldError>();
 
+  const [nomeEntidade, setNomeEntidade] = useState("");
   const [usuario, setUsuario] = useState<IUsuarioAPI>();
   const [erro, setErro] = useState("");
 
@@ -64,6 +68,27 @@ export default function EditarUsuario({ params }: { params: Params }) {
       });
   }
 
+  async function getEntidade() {
+    if (usuario) {
+      await fetchEntidade
+        .getEntidade(usuario.dados_administrativos.entidade_relacionada)
+        .then((res) => {
+          const entidade = res.data as IEntidade;
+
+          setNomeEntidade(entidade.nome_entidade);
+        })
+        .catch((err) => {
+          setUsuario({
+            ...usuario,
+            dados_administrativos: {
+              ...usuario.dados_administrativos,
+              entidade_relacionada: "",
+            },
+          });
+        });
+    }
+  }
+
   async function fetchUsuario(data: IUsuarioAPI) {
     console.log(data);
   }
@@ -75,6 +100,10 @@ export default function EditarUsuario({ params }: { params: Params }) {
   useEffect(() => {
     getUsuarioEdicao();
   }, [token]);
+
+  useEffect(() => {
+    getEntidade()
+  }, [usuario])
 
   if (usuarioLogado) {
     return (
@@ -89,6 +118,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
               usuarioEditor={usuario}
               erroImagem={erroImagem}
               usuarioData={usuario}
+              nome_entidade={nomeEntidade}
             />
           </CadastroMain>
         ) : erro ? (
@@ -99,5 +129,6 @@ export default function EditarUsuario({ params }: { params: Params }) {
       </>
     );
   }
+
   return <></>;
 }
