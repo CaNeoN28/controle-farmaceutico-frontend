@@ -1,3 +1,4 @@
+import { IUsuarioAPI } from "@/types/Usuario";
 import axios from "axios";
 
 interface FiltrosUsuario {
@@ -16,6 +17,26 @@ export function getUsuarios(filtros: FiltrosUsuario, token: string) {
 	});
 
 	return response;
+}
+
+export function getUsuario(id: string, token?: string) {
+  const response = axios.get(`${API_URL}/usuario/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return response
+}
+
+export function postUsuario(dados: IUsuarioAPI, token?: string) {
+  const response = axios.post(`${API_URL}/usuario`, dados, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response
 }
 
 export function deleteUsuario(id: string, token?: string) {

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { IUsuarioAPI } from "@/types/Usuario";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { deleteCookie, getCookie } from "cookies-next";
-import { postUsuario } from "@/fetch/usuario";
+import { postUsuario } from "@/fetch/usuarios";
 import FetchImagem from "@/fetch/imagens";
 import { useRouter } from "next/navigation";
 import { FieldError } from "react-hook-form";
