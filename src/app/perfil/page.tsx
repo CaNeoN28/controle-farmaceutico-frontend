@@ -249,7 +249,7 @@ export default function Perfil() {
 										return (
 											<InputContainer id="cpf" label="CPF">
 												<InputMascara
-													mask="000.000.000-00"
+													mask="999.999.999-99"
 													id="cpf"
 													{...{ ...field, ref: null }}
 												/>
