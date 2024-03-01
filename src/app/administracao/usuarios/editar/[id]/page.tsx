@@ -190,6 +190,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
               erroImagem={erroImagem}
               usuarioData={usuario}
               nome_entidade={nomeEntidade}
+							erros={erros}
             />
           </CadastroMain>
         ) : erro ? (
