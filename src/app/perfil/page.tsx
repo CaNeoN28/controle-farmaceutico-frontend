@@ -136,56 +136,54 @@ export default function Perfil() {
 							/>
 						</div>
 						<div className={styles.dados}>
-							<div className={styles.inputs}>
-								<Controller
-									control={control}
-									name="nome_usuario"
-									disabled
-									render={({ field }) => {
-										return (
-											<InputContainer
-												id="nome_usuario"
-												label="Nome de usuário"
-												error={errors.nome_usuario}
-											>
-												<Input id="nome_usuario" {...{ ...field, ref: null }} />
-											</InputContainer>
-										);
-									}}
-								/>
-								<Controller
-									control={control}
-									name="email"
-									disabled
-									render={({ field }) => {
-										return (
-											<InputContainer
-												id="email"
-												label="Email"
-												error={errors.email}
-											>
-												<Input id="email" {...{ ...field, ref: null }} />
-											</InputContainer>
-										);
-									}}
-								/>
-								<Controller
-									control={control}
-									name="senha"
-									disabled
-									render={({ field }) => {
-										return (
-											<InputContainer
-												id="senha"
-												label="Senha"
-												error={errors.senha}
-											>
-												<InputSenha id="senha" {...{ ...field, ref: null }} />
-											</InputContainer>
-										);
-									}}
-								/>
-							</div>
+							<Controller
+								control={control}
+								name="nome_usuario"
+								disabled
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="nome_usuario"
+											label="Nome de usuário"
+											error={errors.nome_usuario}
+										>
+											<Input id="nome_usuario" {...{ ...field, ref: null }} />
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								control={control}
+								name="email"
+								disabled
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="email"
+											label="Email"
+											error={errors.email}
+										>
+											<Input id="email" {...{ ...field, ref: null }} />
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								control={control}
+								name="senha"
+								disabled
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="senha"
+											label="Senha"
+											error={errors.senha}
+										>
+											<InputSenha id="senha" {...{ ...field, ref: null }} />
+										</InputContainer>
+									);
+								}}
+							/>
 							<div className={styles.imagem_container}>
 								<div className={styles.imagem}>
 									{usuario.imagem_url ? (
