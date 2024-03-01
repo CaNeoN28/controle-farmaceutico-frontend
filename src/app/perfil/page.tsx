@@ -20,6 +20,7 @@ import InputMascara from "@/components/InputMascara/indext";
 import InputSenha from "@/components/InputSenha";
 import Botao from "@/components/Botao";
 import InputImagem from "@/components/InputImagem";
+import regexValidation from "@/utils/regexValidation";
 
 export default function Perfil() {
 	const router = useRouter();
@@ -90,171 +91,217 @@ export default function Perfil() {
 			<>
 				<Menu />
 				<main className={styles.main}>
-					<CadastroContainer>
-						<div className={styles.dados_fixos}>
-							<Controller
-								control={control}
-								name="nome_completo"
-								disabled
-								render={({ field }) => {
-									return (
-										<InputContainer id="nome_completo" label="Nome completo">
-											<Input id="nome_completo" {...{ ...field, ref: null }} />
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								control={control}
-								name="cpf"
-								disabled
-								render={({ field }) => {
-									return (
-										<InputContainer id="cpf" label="CPF">
-											<InputMascara
-												mask="000.000.000-00"
-												id="cpf"
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								control={control}
-								name="numero_registro"
-								disabled
-								render={({ field }) => {
-									return (
-										<InputContainer
-											id="numero_registro"
-											label="Número de registro"
-										>
-											<Input
+					<form onSubmit={handleSubmit(onUpdate)}>
+						<CadastroContainer>
+							<div className={styles.dados_fixos}>
+								<Controller
+									control={control}
+									name="nome_completo"
+									disabled
+									render={({ field }) => {
+										return (
+											<InputContainer id="nome_completo" label="Nome completo">
+												<Input
+													id="nome_completo"
+													{...{ ...field, ref: null }}
+												/>
+											</InputContainer>
+										);
+									}}
+								/>
+								<Controller
+									control={control}
+									name="cpf"
+									disabled
+									render={({ field }) => {
+										return (
+											<InputContainer id="cpf" label="CPF">
+												<InputMascara
+													mask="000.000.000-00"
+													id="cpf"
+													{...{ ...field, ref: null }}
+												/>
+											</InputContainer>
+										);
+									}}
+								/>
+								<Controller
+									control={control}
+									name="numero_registro"
+									disabled
+									render={({ field }) => {
+										return (
+											<InputContainer
 												id="numero_registro"
-												{...{ ...field, ref: null }}
-											/>
-										</InputContainer>
-									);
-								}}
-							/>
-						</div>
-						<div className={styles.dados}>
-							<Controller
-								control={control}
-								name="nome_usuario"
-								disabled={!editar}
-								render={({ field }) => {
-									return (
-										<InputContainer
-											id="nome_usuario"
-											label="Nome de usuário"
-											error={errors.nome_usuario}
-										>
-											<Input id="nome_usuario" {...{ ...field, ref: null }} />
-										</InputContainer>
-									);
-								}}
-							/>
-							<Controller
-								control={control}
-								name="email"
-								disabled={!editar}
-								render={({ field }) => {
-									return (
-										<InputContainer
-											id="email"
-											label="Email"
-											error={errors.email}
-										>
-											<Input id="email" {...{ ...field, ref: null }} />
-										</InputContainer>
-									);
-								}}
-							/>
-							{editar && (
-								<>
-									<Controller
-										control={control}
-										name="senha"
-										disabled={!editar}
-										render={({ field }) => {
-											return (
-												<InputContainer
-													id="senha"
-													label="Senha"
-													error={errors.senha}
-												>
-													<InputSenha id="senha" {...{ ...field, ref: null }} />
-												</InputContainer>
-											);
-										}}
-									/>
-									<Controller
-										control={control}
-										name="confirmacao_senha"
-										render={({ field }) => {
-											return (
-												<InputContainer
-													id="confirmacao_senha"
-													label="Confirmar senha"
-													error={errors.confirmacao_senha}
-												>
-													<InputSenha
+												label="Número de registro"
+											>
+												<Input
+													id="numero_registro"
+													{...{ ...field, ref: null }}
+												/>
+											</InputContainer>
+										);
+									}}
+								/>
+							</div>
+							<div className={styles.dados}>
+								<Controller
+									control={control}
+									name="nome_usuario"
+									rules={{
+										required: {
+											message: "Nome de usuário é obrigatório",
+											value: true,
+										},
+										pattern: {
+											message: "Nome de usuário inválido",
+											value: regexValidation.NOME_USUARIO,
+										},
+									}}
+									disabled={!editar}
+									render={({ field }) => {
+										return (
+											<InputContainer
+												id="nome_usuario"
+												label="Nome de usuário"
+												error={errors.nome_usuario}
+											>
+												<Input id="nome_usuario" {...{ ...field, ref: null }} />
+											</InputContainer>
+										);
+									}}
+								/>
+								<Controller
+									control={control}
+									name="email"
+									disabled={!editar}
+									rules={{
+										required: {
+											message: "Email é obrigatório",
+											value: true,
+										},
+										pattern: {
+											message: "Email inválido",
+											value: regexValidation.EMAIL,
+										},
+									}}
+									render={({ field }) => {
+										return (
+											<InputContainer
+												id="email"
+												label="Email"
+												error={errors.email}
+											>
+												<Input id="email" {...{ ...field, ref: null }} />
+											</InputContainer>
+										);
+									}}
+								/>
+								{editar && (
+									<>
+										<Controller
+											control={control}
+											name="senha"
+											disabled={!editar}
+											rules={{
+												pattern: {
+													message: "Senha de confirmação inválida",
+													value: regexValidation.SENHA,
+												},
+											}}
+											render={({ field }) => {
+												return (
+													<InputContainer
+														id="senha"
+														label="Senha"
+														error={errors.senha}
+													>
+														<InputSenha
+															id="senha"
+															{...{ ...field, ref: null }}
+														/>
+													</InputContainer>
+												);
+											}}
+										/>
+										<Controller
+											control={control}
+											name="confirmacao_senha"
+											rules={{
+												pattern: {
+													message: "Senha de confirmação inválida",
+													value: regexValidation.SENHA,
+												},
+												validate: (v: string) => {
+													if (watch("senha") !== v) {
+														return "As senhas não correspondem";
+													}
+												},
+											}}
+											render={({ field }) => {
+												return (
+													<InputContainer
 														id="confirmacao_senha"
-														{...{ ...field, ref: null }}
-													/>
-												</InputContainer>
-											);
-										}}
-									/>
-								</>
-							)}
-							<div className={styles.imagem_container}>
-								<div className={styles.imagem}>
-									{usuario.imagem_url ? (
-										<img src={usuario.imagem_url} />
-									) : (
-										<div className={styles.placeholder}>
-											<FaUser />
+														label="Confirmar senha"
+														error={errors.confirmacao_senha}
+													>
+														<InputSenha
+															id="confirmacao_senha"
+															{...{ ...field, ref: null }}
+														/>
+													</InputContainer>
+												);
+											}}
+										/>
+									</>
+								)}
+								<div className={styles.imagem_container}>
+									<div className={styles.imagem}>
+										{usuario.imagem_url ? (
+											<img src={usuario.imagem_url} />
+										) : (
+											<div className={styles.placeholder}>
+												<FaUser />
+											</div>
+										)}
+									</div>
+									{editar && (
+										<div className={styles.input_imagem}>
+											<InputImagem onChange={() => {}} titulo="Enviar imagem" />
 										</div>
 									)}
 								</div>
-								{editar && (
-									<div className={styles.input_imagem}>
-										<InputImagem onChange={() => {}} titulo="Enviar imagem" />
-									</div>
-								)}
 							</div>
-						</div>
-						<CadastroBotoes>
-							{editar ? (
-								<>
-									<Botao fullWidth type="submit">
-										Salvar
-									</Botao>
+							<CadastroBotoes>
+								{editar ? (
+									<>
+										<Botao fullWidth type="submit">
+											Salvar
+										</Botao>
+										<Botao
+											fullWidth
+											secundario
+											onClick={() => {
+												setEditar(false);
+											}}
+										>
+											Cancelar
+										</Botao>
+									</>
+								) : (
 									<Botao
 										fullWidth
-										secundario
-										onClick={() => {
-											setEditar(false);
+										onClick={(e) => {
+											e.preventDefault();
+											setEditar(true);
 										}}
 									>
-										Cancelar
+										Editar
 									</Botao>
-								</>
-							) : (
-								<Botao
-									fullWidth
-									onClick={() => {
-										setEditar(true);
-									}}
-								>
-									Editar
-								</Botao>
-							)}
-						</CadastroBotoes>
-					</CadastroContainer>
+								)}
+							</CadastroBotoes>
+						</CadastroContainer>
+					</form>
 				</main>
 			</>
 		);
