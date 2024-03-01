@@ -32,6 +32,7 @@ export default function Perfil() {
 		formState: { errors },
 		watch,
 		setValue,
+		clearErrors,
 		handleSubmit,
 	} = useForm<IUsuarioCadastro>({
 		defaultValues: {
@@ -57,7 +58,6 @@ export default function Perfil() {
 			.getPerfil(token)
 			.then((res) => {
 				const usuario = res.data as IUsuarioGet;
-				console.log(usuario);
 
 				setUsuario(usuario);
 				setToken(token);
@@ -66,6 +66,23 @@ export default function Perfil() {
 				deleteCookie("authentication");
 				router.push("/login");
 			});
+	}
+
+	async function atribuirUsuario() {
+		if (usuario) {
+			setValue("nome_completo", usuario.nome_completo);
+			setValue("cpf", usuario.cpf);
+			setValue("numero_registro", usuario.numero_registro);
+			setValue("nome_usuario", usuario.nome_usuario);
+			setValue("email", usuario.email);
+		}
+	}
+
+	async function cancelarEdicao() {
+		setEditar(false);
+
+		getUsuario();
+		clearErrors();
 	}
 
 	const onUpdate: SubmitHandler<IUsuarioCadastro> = async function (data) {
@@ -77,13 +94,7 @@ export default function Perfil() {
 	}, []);
 
 	useEffect(() => {
-		if (usuario) {
-			setValue("nome_completo", usuario.nome_completo);
-			setValue("cpf", usuario.cpf);
-			setValue("numero_registro", usuario.numero_registro);
-			setValue("nome_usuario", usuario.nome_usuario);
-			setValue("email", usuario.email);
-		}
+		atribuirUsuario();
 	}, [usuario]);
 
 	if (usuario)
@@ -278,13 +289,7 @@ export default function Perfil() {
 										<Botao fullWidth type="submit">
 											Salvar
 										</Botao>
-										<Botao
-											fullWidth
-											secundario
-											onClick={() => {
-												setEditar(false);
-											}}
-										>
+										<Botao fullWidth secundario onClick={cancelarEdicao}>
 											Cancelar
 										</Botao>
 									</>
