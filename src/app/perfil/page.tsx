@@ -8,6 +8,7 @@ import IUsuarioGet, {
 	IUsuarioAPI,
 	IUsuarioCadastro,
 	IUsuarioPost,
+	IUsuarioPut,
 } from "@/types/Usuario";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { deleteCookie, getCookie } from "cookies-next";
@@ -86,7 +87,25 @@ export default function Perfil() {
 	}
 
 	const onUpdate: SubmitHandler<IUsuarioCadastro> = async function (data) {
-		console.log(data);
+		const usuario: IUsuarioPut = {
+			email: data.email,
+			nome_usuario: data.nome_usuario
+		}
+
+		if(data.senha){
+			usuario.senha = data.senha
+		}
+
+		await fAuth
+			.updatePerfil(usuario, token)
+			.then((res) => {
+				console.log(res);
+
+				setEditar(false);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	useEffect(() => {
