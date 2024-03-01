@@ -1,4 +1,4 @@
-import { IUsuarioAPI } from "@/types/Usuario";
+import { IUsuarioAPI, IUsuarioPost, IUsuarioPut } from "@/types/Usuario";
 import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -8,6 +8,16 @@ export default class FetchAutenticacao {
 	getPerfil(token?: string) {
 		const response = axios.get(`${url}/perfil`, {
 			headers: { Authorization: `Bearer ${token}` },
+		});
+
+		return response;
+	}
+
+	updatePerfil(data: IUsuarioPut, token?: string) {
+		const response = axios.put(`${url}/perfil/atualizar`, data, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
 		});
 
 		return response;

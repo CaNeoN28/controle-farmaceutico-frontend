@@ -39,6 +39,13 @@ export interface IUsuarioAPI {
 	senha?: string;
 }
 
+export interface IUsuarioPut {
+	email?: string;
+	nome_usuario?: string;
+	senha?: string;
+	imagem_url?: string;
+}
+
 export interface IUsuarioPost extends IUsuarioAPI {
 	senha: string;
 }
