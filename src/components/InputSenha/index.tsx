@@ -6,36 +6,42 @@ import classNames from "classnames";
 interface Props extends React.ComponentPropsWithoutRef<"input"> {}
 
 export default function InputSenha({ ...props }: Props) {
-  const [ativo, setAtivo] = useState(true);
-  const [contador, setContador] = useState(1);
+	const { disabled } = props;
+	
+	const [ativo, setAtivo] = useState(true);
+	const [contador, setContador] = useState(1);
 
-  const alterarAtivo = (e: React.MouseEvent) => {
-    e.preventDefault();
+	const alterarAtivo = (e: React.MouseEvent) => {
+		e.preventDefault();
 
-    if (contador != 0) setContador(contador - 1);
+		if (contador != 0) setContador(contador - 1);
 
-    setAtivo(!ativo);
-  };
+		setAtivo(!ativo);
+	};
 
-  const classAtivo = classNames({
-    [styles.icone]: true,
-    [styles.ativo]: ativo,
-    [styles.inativo]: !ativo,
-  });
+	const classAtivo = classNames({
+		[styles.icone]: true,
+		[styles.ativo]: ativo,
+		[styles.inativo]: !ativo,
+	});
 
-  const classInativo = classNames({
-    [styles.icone]: true,
-    [styles.ativo]: !ativo,
-    [styles.inativo]: contador == 0 && ativo,
-  });
+	const classInativo = classNames({
+		[styles.icone]: true,
+		[styles.ativo]: !ativo,
+		[styles.inativo]: contador == 0 && ativo,
+	});
 
-  return (
-    <div className={styles.container}>
-      <input className={styles.input} type={ativo ? "password" : "text"} {...props}/>
-      <button className={styles.button} onClick={alterarAtivo}>
-        <FaEye className={classAtivo} />
-        <FaEyeSlash className={classInativo} />
-      </button>
-    </div>
-  );
+	return (
+		<div className={styles.container}>
+			<input
+				className={styles.input}
+				type={ativo ? "password" : "text"}
+				{...props}
+			/>
+			<button disabled={disabled} className={styles.button} onClick={alterarAtivo}>
+				<FaEye className={classAtivo} />
+				<FaEyeSlash className={classInativo} />
+			</button>
+		</div>
+	);
 }

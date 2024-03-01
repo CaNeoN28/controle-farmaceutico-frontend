@@ -1,6 +1,7 @@
 .input {
   outline: none;
 
+  max-height: 40px;
   min-height: 40px;
   padding: 12px 8px;
   border-radius: 8px;
@@ -9,6 +10,10 @@
   color: var(--gray);
   border: 1px solid var(--gray);
   background-color: var(--white);
+}
+
+.input:disabled{
+	background-color: var(--lighter-gray);
 }
 
 .input::placeholder{

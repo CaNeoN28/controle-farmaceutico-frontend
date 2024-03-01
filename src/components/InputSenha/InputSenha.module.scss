@@ -23,6 +23,10 @@
   color: var(--gray);
 }
 
+.input:disabled{
+	background-color: var(--lighter-gray);
+}
+
 .button {
   background: none;
   border: none;
@@ -33,6 +37,13 @@
   font-size: 24px;
 
   color: var(--primary-color);
+}
+
+.button:disabled{
+	cursor: default;
+
+	color: var(--gray);
+	background-color: var(--lighter-gray);
 }
 
 @keyframes ativar {
