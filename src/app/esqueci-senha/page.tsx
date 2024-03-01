@@ -8,9 +8,12 @@ import Input from "@/components/Input";
 import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import regexValidation from "@/utils/regexValidation";
+import FetchAutenticacao from "@/fetch/autenticacao";
 
 export default function EsqueciSenha() {
 	const router = useRouter();
+
+	const esqueciSenha = new FetchAutenticacao().esqueciSenha;
 
 	const {
 		control,
@@ -26,8 +29,14 @@ export default function EsqueciSenha() {
 		router.back();
 	};
 
-	const onSubmit: SubmitHandler<{ email: string }> = (data) => {
-		console.log(data);
+	const onSubmit: SubmitHandler<{ email: string }> = async (data) => {
+		await esqueciSenha(data.email)
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	return (

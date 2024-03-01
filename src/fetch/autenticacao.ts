@@ -37,4 +37,10 @@ export default class FetchAutenticacao {
 
 		return response;
 	}
+
+	esqueciSenha(email: string) {
+		const response = axios.post(`${API_URL}/esqueceu-senha`, { email });
+
+		return response;
+	}
 }
