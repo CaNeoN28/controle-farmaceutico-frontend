@@ -10,17 +10,19 @@ export default function EsqueciSenha() {
 	return (
 		<>
 			<Menu />
-			<CenterBox
-				titulo="ESQUECEU A SENHA"
-				cancelText="Cancelar"
-				onCancel={() => {}}
-				submitText="Enviar email"
-				onSubmit={() => {}}
-			>
-				<InputContainer id="email" label="Email">
-					<Input id="email" />
-				</InputContainer>
-			</CenterBox>
+			<main className={styles.main}>
+				<CenterBox
+					titulo="ESQUECEU A SENHA"
+					cancelText="Cancelar"
+					onCancel={() => {}}
+					submitText="Enviar email"
+					onSubmit={() => {}}
+				>
+					<InputContainer id="email" label="Email">
+						<Input id="email" />
+					</InputContainer>
+				</CenterBox>
+			</main>
 		</>
 	);
 }
