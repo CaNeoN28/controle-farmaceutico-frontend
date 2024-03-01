@@ -7,23 +7,22 @@
 	padding: 40px 92px;
 }
 
-.container_cadastro{
+.container_cadastro {
 	display: flex;
 	flex-direction: column;
-	
+
 	gap: 40px;
 	padding: 40px 24px;
 
-	border: 1px solid var(--primary-color);
 	border-radius: 8px;
 }
 
-.formulario_cadastro{
-  display: flex;
-  flex-direction: column;
+.formulario_cadastro {
+	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
 
-  gap: 40px;
+	gap: 40px;
 	min-height: 60vh;
 }
 
@@ -58,6 +57,12 @@
 	}
 }
 
+@media screen and (min-width: 672px) {
+	.container_cadastro {
+		border: 1px solid var(--primary-color);
+	}
+}
+
 @media screen and (max-width: 740px) {
 	.inputs_cadastro {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -65,18 +70,18 @@
 }
 
 @media screen and (max-width: 620px) {
-	.inputs_cadastro{
+	.inputs_cadastro {
 		display: flex;
 		flex-direction: column;
 	}
 }
 
 @media screen and (max-width: 520px) {
-	.main_cadastro{
+	.main_cadastro {
 		padding: 64px 20px;
 	}
 
-	.container_cadastro{
+	.container_cadastro {
 		padding: 0;
 		border: none;
 	}
