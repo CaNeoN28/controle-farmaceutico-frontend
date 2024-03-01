@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
+import InputMascara from "@/components/InputMascara/indext";
 
 export default function Perfil() {
 	const router = useRouter();
@@ -84,21 +85,54 @@ export default function Perfil() {
 				<Menu />
 				<main className={styles.main}>
 					<CadastroContainer>
-						<Controller
-							control={control}
-							name="nome_completo"
-							disabled
-							render={({ field }) => {
-								return (
-									<InputContainer
-										id="nome_completo"
-										label="Nome completo"
-									>
-										<Input id="nome_completo" {...{ ...field, ref: null }} />
-									</InputContainer>
-								);
-							}}
-						/>
+						<div className={styles.dados_fixos}>
+							<Controller
+								control={control}
+								name="nome_completo"
+								disabled
+								render={({ field }) => {
+									return (
+										<InputContainer id="nome_completo" label="Nome completo">
+											<Input id="nome_completo" {...{ ...field, ref: null }} />
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								control={control}
+								name="cpf"
+								disabled
+								render={({ field }) => {
+									return (
+										<InputContainer id="cpf" label="CPF">
+											<InputMascara
+												mask="000.000.000-00"
+												id="cpf"
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+							<Controller
+								control={control}
+								name="numero_registro"
+								disabled
+								render={({ field }) => {
+									return (
+										<InputContainer
+											id="numero_registro"
+											label="Número de registro"
+										>
+											<Input
+												id="numero_registro"
+												{...{ ...field, ref: null }}
+											/>
+										</InputContainer>
+									);
+								}}
+							/>
+						</div>
 					</CadastroContainer>
 				</main>
 			</>
