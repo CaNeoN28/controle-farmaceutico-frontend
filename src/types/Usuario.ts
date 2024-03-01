@@ -1,3 +1,5 @@
+import IEntidade from "./Entidades";
+
 export type Funcao =
 	| "ADMINISTRADOR"
 	| "GERENTE"
@@ -8,10 +10,12 @@ export type Funcao =
 	| "USUARIO"
 	| "INATIVO";
 
-export default interface IUsuario {
+export default interface IUsuarioGet {
 	_id?: string;
-	funcao: Funcao;
-	entidade_relacionada: string;
+	dados_administrativos: {
+		entidade_relacionada: IEntidade;
+		funcao: Funcao;
+	};
 	cpf: string;
 	email: string;
 	imagem_url: string;

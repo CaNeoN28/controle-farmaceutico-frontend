@@ -6,7 +6,7 @@ import FetchAutenticacao from "@/fetch/autenticacao";
 import FetchImagem from "@/fetch/imagens";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
-import { IUsuarioAPI } from "@/types/Usuario";
+import IUsuarioGet, { IUsuarioAPI } from "@/types/Usuario";
 import { getUsuario, putUsuario } from "@/fetch/usuarios";
 import Menu from "@/components/Menu";
 import Carregando from "@/components/Carregando";
@@ -20,238 +20,220 @@ import Alert from "@/components/Alert";
 import Botao from "@/components/Botao";
 
 interface Params {
-  id: string;
+	id: string;
 }
 
 export default function EditarUsuario({ params }: { params: Params }) {
-  const { id: id_usuario } = params;
+	const { id: id_usuario } = params;
 
-  const router = useRouter();
+	const router = useRouter();
 
-  const getPerfil = new FetchAutenticacao().getPerfil;
-  const fetchImagem = new FetchImagem();
-  const fetchEntidade = new FetchEntidades();
+	const getPerfil = new FetchAutenticacao().getPerfil;
+	const fetchImagem = new FetchImagem();
 
-  const [token, setToken] = useState<string>();
-  const [usuarioLogado, setUsuarioLogado] = useState<IUsuarioAPI>();
+	const [token, setToken] = useState<string>();
+	const [usuarioLogado, setUsuarioLogado] = useState<IUsuarioAPI>();
 
-  const [imagem, setImagem] = useState<File>();
-  const [erroImagem, setErroImagem] = useState<FieldError>();
+	const [imagem, setImagem] = useState<File>();
+	const [erroImagem, setErroImagem] = useState<FieldError>();
 
-  const [nomeEntidade, setNomeEntidade] = useState("");
-  const [usuario, setUsuario] = useState<IUsuarioAPI>();
-  const [erros, setErros] = useState<{ [key: string]: FieldError }>({});
+	const [nomeEntidade, setNomeEntidade] = useState("");
+	const [usuario, setUsuario] = useState<IUsuarioAPI>();
+	const [erros, setErros] = useState<{ [key: string]: FieldError }>({});
 
-  const [mensagemEdicao, setMensagemEdicao] = useState("");
-  const [erro, setErro] = useState("");
-  const [erroEdicao, setErroEdicao] = useState("");
+	const [mensagemEdicao, setMensagemEdicao] = useState("");
+	const [erro, setErro] = useState("");
+	const [erroEdicao, setErroEdicao] = useState("");
 
-  async function getUsuarioLogado() {
-    const token = getCookie("authentication");
+	async function getUsuarioLogado() {
+		const token = getCookie("authentication");
 
-    await getPerfil(token)
-      .then((res) => {
-        const usuario = res.data;
+		await getPerfil(token)
+			.then((res) => {
+				const usuario = res.data;
 
-        setUsuarioLogado(usuario);
-        setToken(token);
-      })
-      .catch(() => {
-        deleteCookie("authentication");
-        router.push("/login");
-      });
-  }
+				setUsuarioLogado(usuario);
+				setToken(token);
+			})
+			.catch(() => {
+				deleteCookie("authentication");
+				router.push("/login");
+			});
+	}
 
-  async function getUsuarioEdicao() {
-    await getUsuario(id_usuario, token)
-      .then((res) => {
-        const usuario = res.data;
+	async function getUsuarioEdicao() {
+		await getUsuario(id_usuario, token)
+			.then((res) => {
+				const usuario = res.data as IUsuarioGet;
+				const entidade = usuario.dados_administrativos.entidade_relacionada;
 
-        setUsuario(usuario);
-      })
-      .catch(() => {
-        setErro("Usuário não foi encontrado");
-      });
-  }
+				setNomeEntidade(entidade.nome_entidade);
+				setUsuario({
+					...usuario,
+					dados_administrativos: {
+						entidade_relacionada: entidade._id,
+						funcao: usuario.dados_administrativos.funcao,
+					},
+				});
+			})
+			.catch(() => {
+				setErro("Usuário não foi encontrado");
+			});
+	}
 
-  async function getEntidade() {
-    if (usuario) {
-      await fetchEntidade
-        .getEntidade(usuario.dados_administrativos.entidade_relacionada)
-        .then((res) => {
-          const entidade = res.data as IEntidade;
+	async function fetchUsuario(data: IUsuarioAPI) {
+		let erroImagem = "";
+		let urlImagemNova = "";
+		let urlImagemVelha = usuario?.imagem_url;
 
-          setNomeEntidade(entidade.nome_entidade);
-        })
-        .catch((err) => {
-          setUsuario({
-            ...usuario,
-            dados_administrativos: {
-              ...usuario.dados_administrativos,
-              entidade_relacionada: "",
-            },
-          });
-        });
-    }
-  }
+		if (imagem) {
+			await fetchImagem
+				.postImagem(imagem)
+				.then((res) => {
+					urlImagemNova = Object.keys(res.data).map((k) => {
+						const imagem = res.data[k];
 
-  async function fetchUsuario(data: IUsuarioAPI) {
-    let erroImagem = "";
-    let urlImagemNova = "";
-    let urlImagemVelha = usuario?.imagem_url;
+						return imagem;
+					})[0];
 
-    if (imagem) {
-      await fetchImagem
-        .postImagem(imagem)
-        .then((res) => {
-          urlImagemNova = Object.keys(res.data).map((k) => {
-            const imagem = res.data[k];
+					data.imagem_url = urlImagemNova;
+				})
+				.catch((err) => {
+					erroImagem = "Arquivo inválido";
 
-            return imagem;
-          })[0];
+					setErroImagem({
+						type: "validate",
+						message: erroImagem,
+					});
+				});
+		}
 
-          data.imagem_url = urlImagemNova;
-        })
-        .catch((err) => {
-          erroImagem = "Arquivo inválido";
+		if (!erroImagem) {
+			await putUsuario(id_usuario, data, token)
+				.then((res) => {
+					if (urlImagemNova && urlImagemVelha) {
+						fetchImagem
+							.removeImagem(urlImagemVelha)
+							.then(() => {})
+							.catch(() => {});
+					}
 
-          setErroImagem({
-            type: "validate",
-            message: erroImagem,
-          });
-        });
-    }
+					setMensagemEdicao("Usuário alterado com sucesso");
+				})
+				.catch((err) => {
+					const data = err.response.data;
+					const erros: { [key: string]: FieldError } = {};
 
-    if (!erroImagem) {
-      await putUsuario(id_usuario, data, token)
-        .then((res) => {
-          if (urlImagemNova && urlImagemVelha) {
-            fetchImagem
-              .removeImagem(urlImagemVelha)
-              .then(() => {})
-              .catch(() => {});
-          }
+					Object.keys(data).map((k) => {
+						if (!erros[k]) {
+							erros[k] = {
+								message: data[k],
+								type: "validate",
+							};
+						}
+					});
 
-          setMensagemEdicao("Usuário alterado com sucesso");
-        })
-        .catch((err) => {
-          const data = err.response.data;
-          const erros: { [key: string]: FieldError } = {};
+					setErros(erros);
+					setErroEdicao("Não foi possível editar o usuário");
 
-          Object.keys(data).map((k) => {
-            if (!erros[k]) {
-              erros[k] = {
-                message: data[k],
-                type: "validate",
-              };
-            }
-          });
+					if (urlImagemNova) {
+						fetchImagem
+							.removeImagem(urlImagemNova)
+							.then(() => {
+								console.log("Removeu imagem nova");
+							})
+							.catch((err) => {
+								console.log(err);
+							});
+					}
+				});
+		}
+	}
 
-          setErros(erros);
-          setErroEdicao("Não foi possível editar o usuário");
+	useEffect(() => {
+		getUsuarioLogado();
+	}, []);
 
-          if (urlImagemNova) {
-            fetchImagem
-              .removeImagem(urlImagemNova)
-              .then(() => {
-                console.log("Removeu imagem nova");
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          }
-        });
-    }
-  }
+	useEffect(() => {
+		getUsuarioEdicao();
+	}, [token]);
 
-  useEffect(() => {
-    getUsuarioLogado();
-  }, []);
-
-  useEffect(() => {
-    getUsuarioEdicao();
-  }, [token]);
-
-  useEffect(() => {
-    getEntidade();
-  }, [usuario]);
-
-  if (usuarioLogado) {
-    return (
-      <>
-        <Menu />
-        {usuario ? (
-          <CadastroMain>
-            <TituloSecao>EDIÇÃO DE USUÁRIO</TituloSecao>
-            <FormularioUsuario
-              fetchUsuario={fetchUsuario}
-              setImagem={setImagem}
-              usuarioEditor={usuario}
-              erroImagem={erroImagem}
-              usuarioData={usuario}
-              nome_entidade={nomeEntidade}
+	if (usuarioLogado) {
+		return (
+			<>
+				<Menu />
+				{usuario ? (
+					<CadastroMain>
+						<TituloSecao>EDIÇÃO DE USUÁRIO</TituloSecao>
+						<FormularioUsuario
+							fetchUsuario={fetchUsuario}
+							setImagem={setImagem}
+							usuarioEditor={usuario}
+							erroImagem={erroImagem}
+							usuarioData={usuario}
+							nome_entidade={nomeEntidade}
 							erros={erros}
-            />
-          </CadastroMain>
-        ) : erro ? (
-          <div className={styles.erro}>{erro}</div>
-        ) : (
-          <Carregando />
-        )}
-        <Alert
-          show={!!erroEdicao}
-          onClickBackground={() => {
-            setErroEdicao("");
-            router.back();
-          }}
-        >
-          <div className={styles.alert}>
-            <span className={styles.alert_texto}>{erroEdicao}</span>
-            <div className={styles.alert_opcoes}>
-              <Botao
-                fullWidth
-                onClick={() => {
-                  setErroEdicao("");
-                }}
-              >
-                Continuar
-              </Botao>
-              <Botao
-                fullWidth
-                secundario
-                onClick={() => {
-                  setErroEdicao("");
-                  router.back();
-                }}
-              >
-                Cancelar
-              </Botao>
-            </div>
-          </div>
-        </Alert>
-        <Alert
-          show={!!mensagemEdicao}
-          onClickBackground={() => {
-            setMensagemEdicao("");
-            router.back();
-          }}
-        >
-          <div className={styles.alert}>
-            <span className={styles.alert_texto}>{mensagemEdicao}</span>
-            <Botao
-              fullWidth
-              onClick={() => {
-                setMensagemEdicao("");
-                router.back();
-              }}
-            >
-              Confirmar
-            </Botao>
-          </div>
-        </Alert>
-      </>
-    );
-  }
+						/>
+					</CadastroMain>
+				) : erro ? (
+					<div className={styles.erro}>{erro}</div>
+				) : (
+					<Carregando />
+				)}
+				<Alert
+					show={!!erroEdicao}
+					onClickBackground={() => {
+						setErroEdicao("");
+						router.back();
+					}}
+				>
+					<div className={styles.alert}>
+						<span className={styles.alert_texto}>{erroEdicao}</span>
+						<div className={styles.alert_opcoes}>
+							<Botao
+								fullWidth
+								onClick={() => {
+									setErroEdicao("");
+								}}
+							>
+								Continuar
+							</Botao>
+							<Botao
+								fullWidth
+								secundario
+								onClick={() => {
+									setErroEdicao("");
+									router.back();
+								}}
+							>
+								Cancelar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
+				<Alert
+					show={!!mensagemEdicao}
+					onClickBackground={() => {
+						setMensagemEdicao("");
+						router.back();
+					}}
+				>
+					<div className={styles.alert}>
+						<span className={styles.alert_texto}>{mensagemEdicao}</span>
+						<Botao
+							fullWidth
+							onClick={() => {
+								setMensagemEdicao("");
+								router.back();
+							}}
+						>
+							Confirmar
+						</Botao>
+					</div>
+				</Alert>
+			</>
+		);
+	}
 
-  return <></>;
+	return <></>;
 }
