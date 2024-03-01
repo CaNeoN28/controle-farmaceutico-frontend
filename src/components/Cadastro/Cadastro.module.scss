@@ -48,16 +48,23 @@
 
 .botoes_cadastro {
 	display: flex;
-	flex-direction: row-reverse;
+	flex-direction: column;
 
 	gap: 24px;
+}
 
-	button {
-		max-width: 180px;
+@media screen and (min-width: 480px) {
+	.botoes_cadastro {
+		flex-direction: row-reverse;
 	}
 }
 
 @media screen and (min-width: 672px) {
+	.botoes_cadastro {
+		button {
+			max-width: 180px;
+		}
+	}
 	.container_cadastro {
 		border: 1px solid var(--primary-color);
 	}
