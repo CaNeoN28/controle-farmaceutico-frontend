@@ -17,6 +17,7 @@ import TituloSecao from "@/components/TituloSecao";
 import FetchImagem from "@/fetch/imagens";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { IUsuarioAPI } from "@/types/Usuario";
+import { FieldError } from "react-hook-form";
 
 interface Params {
 	id: string;
@@ -32,8 +33,12 @@ export default function EditarFarmacia({
 	const getPerfil = new FetchAutenticacao().getPerfil;
 	const fetchFarmacia = new FetchFarmacia();
 	const deleteImagem = new FetchImagem().removeImagem;
+	const fetchImagem = new FetchImagem().postImagem;
 
 	const date = new Date();
+
+	const [imagem, setImagem] = useState<File>();
+	const [erroImagem, setErroImagem] = useState<FieldError>();
 
 	const [farmacia, setFarmacia] = useState<IFarmacia>();
 	const [showAlert, setShowAlert] = useState(false);
@@ -81,35 +86,77 @@ export default function EditarFarmacia({
 			});
 	};
 
-	const salvarFarmacia = async (farmacia: IFarmacia) => {
-		const urlImagem = farmacia.imagem_url;
+	const salvarFarmacia = async (data: IFarmacia) => {
+		let urlImagemNova = "";
+		let urlImagemVelha = farmacia?.imagem_url;
+		let erroImagem = "";
 
-		await fetchFarmacia
-			.updateFarmacia(farmacia, id_farmacia, token)
-			.then((res) => {
-				setErroEdicao(undefined);
-				setMensagem("Farmácia atualizada com sucesso");
-				setShowAlert(true);
-			})
+		if (imagem) {
+			if (imagem) {
+				await fetchImagem(imagem)
+					.then((res) => {
+						const imagens = res.data as { [key: string]: string };
 
-			.catch((err: RequestErro<any>) => {
-				const {
-					response: { data },
-				} = err;
+						const imagensArray: string[] = [];
 
-				if (urlImagem) {
-					deleteImagem(urlImagem).then().catch();
-				}
+						Object.keys(imagens).map((k: string) => {
+							imagensArray.push(imagens[k]);
+						});
 
-				if (typeof data === "string") {
-					setErroEdicao(data);
-				} else {
-					setErroEdicao("Não foi possível atualizar farmácia");
-					console.error(err.response);
-				}
+						urlImagemNova = imagensArray[0];
+						erroImagem = "";
+					})
+					.catch((err) => {
+						erroImagem = "Extensão inválida de arquivo";
 
-				setShowAlert(true);
-			});
+						setErroImagem({
+							type: "validate",
+							message: erroImagem,
+						});
+					});
+			}
+		}
+
+		if (!erroImagem) {
+			if (urlImagemNova && urlImagemVelha) {
+				data.imagem_url = urlImagemNova;
+			}
+
+			await fetchFarmacia
+				.updateFarmacia(data, id_farmacia, token)
+				.then((res) => {
+					if (urlImagemNova && urlImagemVelha) {
+						deleteImagem(urlImagemVelha)
+							.then(() => {})
+							.catch(() => {});
+					}
+
+					setErroEdicao(undefined);
+					setMensagem("Farmácia atualizada com sucesso");
+					setShowAlert(true);
+				})
+
+				.catch((err: RequestErro<any>) => {
+					const {
+						response: { data },
+					} = err;
+
+					if (urlImagemNova) {
+						deleteImagem(urlImagemNova)
+							.then(() => {})
+							.catch(() => {});
+					}
+
+					if (typeof data === "string") {
+						setErroEdicao(data);
+					} else {
+						setErroEdicao("Não foi possível atualizar farmácia");
+						console.error(err.response);
+					}
+
+					setShowAlert(true);
+				});
+		}
 	};
 
 	useEffect(() => {
@@ -129,6 +176,8 @@ export default function EditarFarmacia({
 						<TituloSecao>EDIÇÃO DE FARMÁCIA</TituloSecao>
 						<FormularioFarmacia
 							salvarFarmacia={salvarFarmacia}
+							setImagem={setImagem}
+							erroImagem={erroImagem}
 							farmacia={farmacia}
 							horariosAntigos={farmacia.horarios_servico}
 							plantoesAntigos={farmacia.plantoes}

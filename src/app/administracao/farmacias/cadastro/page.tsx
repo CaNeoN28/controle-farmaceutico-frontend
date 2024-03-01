@@ -16,13 +16,19 @@ import TituloSecao from "@/components/TituloSecao";
 import FetchImagem from "@/fetch/imagens";
 import FetchAutenticacao from "@/fetch/autenticacao";
 import { IUsuarioAPI } from "@/types/Usuario";
+import { FieldError } from "react-hook-form";
 
 export default function CadastroFarmacia() {
 	const getPerfil = new FetchAutenticacao().getPerfil;
 
 	const router = useRouter();
+
+	const fetchImagem = new FetchImagem().postImagem;
 	const postFarmacia = new FetchFarmacia().postFarmacia;
 	const deleteImagem = new FetchImagem().removeImagem;
+
+	const [imagem, setImagem] = useState<File>();
+	const [erroImagem, setErroImagem] = useState<FieldError>();
 
 	const [showAlert, setShowAlert] = useState(false);
 	const [erro, setErro] = useState<string>();
@@ -49,37 +55,72 @@ export default function CadastroFarmacia() {
 
 	const salvarFarmacia = async (farmacia: IFarmacia) => {
 		const urlImagem = farmacia.imagem_url;
+		let erroImagem = "";
 
-		await postFarmacia(farmacia, token)
-			.then((res) => {
-				setErro(undefined);
-				setMensagem("Farmácia cadastrada com sucesso");
-				setShowAlert(true);
-			})
+		if (imagem) {
+			if (imagem) {
+				await fetchImagem(imagem)
+					.then((res) => {
+						const imagens = res.data as { [key: string]: string };
 
-			.catch((err: RequestErro<any>) => {
-				const {
-					response: { data },
-				} = err;
+						const imagensArray: string[] = [];
 
-				if (urlImagem) {
-					deleteImagem(urlImagem).then().catch();
-				}
+						Object.keys(imagens).map((k: string) => {
+							imagensArray.push(imagens[k]);
+						});
 
-				if (typeof data === "string") {
-					setErro(data);
-				} else {
-					setErro("Não foi possível cadastrar farmácia");
-					console.error(err.response);
-				}
+						farmacia.imagem_url = imagensArray[0];
+						erroImagem = "";
+					})
+					.catch((err) => {
+						erroImagem = "Extensão inválida de arquivo";
 
-				setShowAlert(true);
-			});
+						setErroImagem({
+							type: "validate",
+							message: erroImagem,
+						});
+					});
+			}
+		}
+
+		if (!erroImagem) {
+			await postFarmacia(farmacia, token)
+				.then((res) => {
+					setErro(undefined);
+					setMensagem("Farmácia cadastrada com sucesso");
+					setShowAlert(true);
+				})
+
+				.catch((err: RequestErro<any>) => {
+					const {
+						response: { data },
+					} = err;
+
+					if (urlImagem) {
+						deleteImagem(urlImagem)
+							.then(() => {})
+							.catch(() => {});
+					}
+
+					if (typeof data === "string") {
+						setErro(data);
+					} else {
+						setErro("Não foi possível cadastrar farmácia");
+						console.error(err.response);
+					}
+
+					setShowAlert(true);
+				});
+		}
 	};
 
 	useEffect(() => {
 		getUsuario();
 	}, []);
+
+	useEffect(() => {
+		setErroImagem(undefined);
+	}, [imagem]);
 
 	if (usuario)
 		return (
@@ -87,7 +128,11 @@ export default function CadastroFarmacia() {
 				<Menu />
 				<CadastroMain>
 					<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>
-					<FormularioFarmacia salvarFarmacia={salvarFarmacia} />
+					<FormularioFarmacia
+						erroImagem={erroImagem}
+						setImagem={setImagem}
+						salvarFarmacia={salvarFarmacia}
+					/>
 				</CadastroMain>
 				<Alert
 					show={showAlert}
@@ -117,7 +162,7 @@ export default function CadastroFarmacia() {
 										secundario
 										fullWidth
 										onClick={() => {
-											router.push("/administracao");
+											router.back()
 										}}
 									>
 										Cancelar
@@ -128,7 +173,7 @@ export default function CadastroFarmacia() {
 									<Botao
 										fullWidth
 										onClick={() => {
-											router.push("/administracao/farmacias");
+											router.back();
 										}}
 									>
 										Confirmar

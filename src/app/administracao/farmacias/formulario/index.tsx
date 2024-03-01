@@ -1,6 +1,6 @@
-	import Botao from "@/components/Botao";
+import Botao from "@/components/Botao";
 import styles from "./FormularioFarmacia.module.scss";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, FieldError, SubmitHandler, useForm } from "react-hook-form";
 import IFarmacia, { IHorário } from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
@@ -15,7 +15,14 @@ import {
 	CadastroContainer,
 } from "@/components/Cadastro";
 import { validarCNPJ } from "@/utils/validation";
-import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
+import {
+	ChangeEvent,
+	Dispatch,
+	SetStateAction,
+	useEffect,
+	useLayoutEffect,
+	useState,
+} from "react";
 import {
 	fetchEstados,
 	fetchMunicipios,
@@ -30,7 +37,6 @@ import Secao from "@/components/Secao";
 import HorariosServico from "../horarios-servico";
 import Plantoes from "../plantoes";
 import DiaSemana from "@/types/DiasSemana";
-import FetchImagem from "@/fetch/imagens";
 import { EncontrarCoordenada } from "@/utils/geocoder";
 
 interface Props {
@@ -42,14 +48,18 @@ interface Props {
 	horariosAntigos?: {
 		[dia_semana in DiaSemana]: IHorário;
 	};
+	erroImagem?: FieldError;
 	salvarFarmacia: (farmacia: IFarmacia) => {};
+	setImagem: Dispatch<SetStateAction<File | undefined>>;
 }
 
 export default function FormularioFarmacia({
 	farmacia,
 	plantoesAntigos,
 	horariosAntigos,
+	erroImagem,
 	salvarFarmacia,
+	setImagem,
 }: Props) {
 	const {
 		formState: { errors: errorsFarmacia },
@@ -73,11 +83,6 @@ export default function FormularioFarmacia({
 			},
 		},
 	});
-
-	const fetchImagem = new FetchImagem().postImagem;
-
-	const [imagem, setImagem] = useState<File>();
-	const [erroImagem, setErroImagem] = useState<string>("");
 
 	const [horario, setHorario] = useState<{
 		[key: string]: IHorário;
@@ -149,6 +154,21 @@ export default function FormularioFarmacia({
 		}
 	};
 
+	const onSubmit: SubmitHandler<IFarmacia> = (data) => {
+		const horarios_servico = horario as { [key in DiaSemana]: IHorário };
+
+		data.endereco.cep = data.endereco.cep.replaceAll("-", "");
+		data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "");
+
+		const farmacia: IFarmacia = {
+			...data,
+			plantoes,
+			horarios_servico,
+		};
+
+		salvarFarmacia(farmacia);
+	};
+
 	const getMunicipios = async () => {
 		const estado = watchFarmacia("endereco.estado");
 
@@ -201,46 +221,6 @@ export default function FormularioFarmacia({
 					setValueFarmacia("endereco.estado", estado);
 				}
 			});
-		}
-	};
-
-	const onSubmitFarmacia: SubmitHandler<IFarmacia> = async (data) => {
-		let erroImagem = "";
-
-		if (imagem) {
-			await fetchImagem(imagem)
-				.then((res) => {
-					const imagens = res.data as { [key: string]: string };
-
-					const imagensArray: string[] = [];
-
-					Object.keys(imagens).map((k: string) => {
-						imagensArray.push(imagens[k]);
-					});
-
-					data.imagem_url = imagensArray[0];
-					erroImagem = "";
-				})
-				.catch((err) => {
-					erroImagem = "Extensão inválida de arquivo";
-				});
-
-			setErroImagem(erroImagem);
-		}
-
-		if (!erroImagem) {
-			const horarios_servico = horario as { [key in DiaSemana]: IHorário };
-
-			data.endereco.cep = data.endereco.cep.replaceAll("-", "");
-			data.cnpj = data.cnpj.replaceAll(/([./-])+/g, "");
-
-			const farmacia: IFarmacia = {
-				...data,
-				plantoes,
-				horarios_servico,
-			};
-
-			salvarFarmacia(farmacia);
 		}
 	};
 
@@ -355,15 +335,12 @@ export default function FormularioFarmacia({
 								);
 							}}
 						/>
-						<InputContainer id="imagem" label="Imagem">
+						<InputContainer id="imagem" label="Imagem" error={erroImagem}>
 							<InputImagem
 								id="imagem"
 								onChange={sendImagem}
 								titulo="Enviar imagem"
 							/>
-							{erroImagem && (
-								<span className={styles.erro_imagem}>{erroImagem}</span>
-							)}
 						</InputContainer>
 					</CadastroInputs>
 				</CadastroEtapa>
@@ -374,10 +351,9 @@ export default function FormularioFarmacia({
 							control={controlFarmacia}
 							rules={{
 								validate: (v) => {
-									const cep = v.replace("-", "")
+									const cep = v.replace("-", "");
 
-									if(cep.length < 8)
-										return "CEP deve ter 8 digitos"
+									if (cep.length < 8) return "CEP deve ter 8 digitos";
 								},
 							}}
 							render={({ field }) => {
@@ -579,7 +555,7 @@ export default function FormularioFarmacia({
 			</Secao>
 			<CadastroBotoes>
 				<Botao
-					onClick={handleSubmitFarmacia(onSubmitFarmacia)}
+					onClick={handleSubmitFarmacia(onSubmit)}
 					fullWidth
 					type="submit"
 				>
