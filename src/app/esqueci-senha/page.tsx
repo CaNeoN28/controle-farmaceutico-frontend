@@ -48,7 +48,7 @@ export default function EsqueciSenha() {
 		if (erro) {
 			setTimeout(() => {
 				setErro("");
-			}, 5000);
+			}, 3000);
 		}
 	}, [erro]);
 
