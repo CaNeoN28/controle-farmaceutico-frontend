@@ -1,0 +1,44 @@
+.center_box {
+	display: flex;
+	flex-direction: column;
+
+	margin-top: 50%;
+
+	gap: 40px;
+}
+
+.botoes {
+	display: flex;
+	flex-direction: column;
+
+	gap: 16px;
+}
+
+.titulo {
+	text-align: center;
+
+	font-size: 24px;
+	color: var(--primary-color);
+}
+
+@media screen and (min-width: 672px) {
+	.center_box {
+		position: fixed;
+
+		width: 640px;
+
+		margin-top: 0;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+
+		border: 1px solid var(--primary-color);
+		border-radius: 8px;
+
+		padding: 120px 140px;
+	}
+
+	.botoes {
+		flex-direction: row-reverse;
+	}
+}

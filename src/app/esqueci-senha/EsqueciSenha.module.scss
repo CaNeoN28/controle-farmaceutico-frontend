@@ -1,0 +1,27 @@
+@media screen and (max-width: 672px) {
+	.main {
+		padding: 20px;
+	}
+}
+
+@keyframes error-animation {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+.erro {
+	display: flex;
+	justify-content: center;
+
+	margin-top: 8px;
+
+	color: var(--red);
+
+	animation: error-animation 3s;
+	animation-delay: 1s;
+}
