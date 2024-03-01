@@ -6,7 +6,7 @@ import InputImagem from "@/components/InputImagem";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import IUsuario, { IUsuarioCadastro, IUsuarioPost } from "@/types/Usuario";
+import { IUsuarioCadastro, IUsuarioPost } from "@/types/Usuario";
 import Botao from "@/components/Botao";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
@@ -47,7 +47,10 @@ export default function AutoCadastro() {
 			numero_registro: "",
 			senha: "",
 			confirmacao_senha: "",
-			entidade_relacionada: "",
+			dados_administrativos:{
+				entidade_relacionada: "",
+				funcao: "INATIVO"
+			}
 		},
 	});
 
@@ -62,8 +65,7 @@ export default function AutoCadastro() {
 		let {
 			cpf,
 			email,
-			entidade_relacionada,
-			funcao,
+			dados_administrativos,
 			imagem_url,
 			nome_completo,
 			nome_usuario,
@@ -76,10 +78,7 @@ export default function AutoCadastro() {
 		const usuario = {
 			cpf,
 			email,
-			dados_administrativos: {
-				entidade_relacionada,
-			},
-			funcao,
+			dados_administrativos,
 			imagem_url,
 			nome_completo,
 			nome_usuario,
@@ -197,14 +196,14 @@ export default function AutoCadastro() {
 					<div className={styles.cadastro}>
 						<div className={styles.form_inputs}>
 							<Controller
-								name="entidade_relacionada"
+								name="dados_administrativos.entidade_relacionada"
 								control={control}
 								render={({ field }) => {
 									return (
 										<InputContainer
 											id="entidade_relacionada"
 											label="Entidade relacionada"
-											error={validationErros.entidade_relacionada}
+											error={validationErros.dados_administrativos && validationErros.dados_administrativos.entidade_relacionada}
 										>
 											<Select
 												filtro={pesquisaEntidade}

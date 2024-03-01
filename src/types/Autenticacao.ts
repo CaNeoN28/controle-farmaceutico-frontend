@@ -1,4 +1,4 @@
-import IUsuario from "./Usuario";
+import { IUsuarioAPI } from "./Usuario";
 
 export interface ILogin {
 	nome_usuario: string;
@@ -7,5 +7,5 @@ export interface ILogin {
 
 export interface ILoginResponse {
 	token: string;
-	usuario: IUsuario;
+	usuario: IUsuarioAPI;
 }

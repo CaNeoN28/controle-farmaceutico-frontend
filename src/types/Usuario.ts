@@ -35,7 +35,7 @@ export interface IUsuarioAPI {
 	senha?: string;
 }
 
-export interface IUsuarioPost extends IUsuario {
+export interface IUsuarioPost extends IUsuarioAPI {
 	senha: string;
 }
 
