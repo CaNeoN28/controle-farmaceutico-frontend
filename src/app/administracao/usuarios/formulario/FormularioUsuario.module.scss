@@ -1,0 +1,14 @@
+.link_button {
+  display: flex;
+  align-items: end;
+
+  width: 100%;
+
+  a {
+    width: 100%;
+  }
+}
+
+.link_button.error {
+  align-items: center;
+}
