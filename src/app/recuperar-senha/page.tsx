@@ -64,8 +64,6 @@ export default function RecuperarSenha({
 					setMensagem("Por favor prossiga para entrar na plataforma");
 				})
 				.catch((err) => {
-					const erro = err.response.data;
-
 					setErroToken("Não foi possível alterar a senha");
 				});
 	};

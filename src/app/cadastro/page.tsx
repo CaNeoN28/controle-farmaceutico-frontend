@@ -6,7 +6,7 @@ import InputImagem from "@/components/InputImagem";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { IUsuarioCadastro, IUsuarioPost } from "@/types/Usuario";
+import { IUsuarioAPI, IUsuarioCadastro, IUsuarioPost } from "@/types/Usuario";
 import Botao from "@/components/Botao";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
@@ -47,10 +47,10 @@ export default function AutoCadastro() {
 			numero_registro: "",
 			senha: "",
 			confirmacao_senha: "",
-			dados_administrativos:{
+			dados_administrativos: {
 				entidade_relacionada: "",
-				funcao: "INATIVO"
-			}
+				funcao: "INATIVO",
+			},
 		},
 	});
 
@@ -90,7 +90,7 @@ export default function AutoCadastro() {
 
 		if (imagem) {
 			await fetchImagem
-				.postImagem(imagem)
+				.postImagem(imagem, "usuario")
 				.then((res) => {
 					const imagens = res.data as { [key: string]: string };
 
@@ -119,6 +119,24 @@ export default function AutoCadastro() {
 		if (!erroImagem) {
 			await fetchCadastro(usuario)
 				.then((res) => {
+					const usuario = res.data as IUsuarioAPI;
+					const imagem_url = usuario.imagem_url
+					console.log(usuario)
+
+					if (imagem) {
+						fetchImagem
+							.confirmarImagem(
+								imagem,
+								"usuario",
+								usuario._id!,
+								imagem_url
+							)
+							.then(() => {})
+							.catch((err) => {
+								console.log(err);
+							});
+					}
+
 					router.push(`/cadastro-finalizado`);
 				})
 				.catch((err: RequestErro<{ [key: string]: string }>) => {
@@ -133,8 +151,6 @@ export default function AutoCadastro() {
 							setError(key, { message: erro[key], type: "server" });
 						});
 					}
-
-					if (usuario.imagem_url) fetchImagem.removeImagem(usuario.imagem_url);
 				});
 		}
 	};
@@ -203,7 +219,11 @@ export default function AutoCadastro() {
 										<InputContainer
 											id="entidade_relacionada"
 											label="Entidade relacionada"
-											error={validationErros.dados_administrativos && validationErros.dados_administrativos.entidade_relacionada}
+											error={
+												validationErros.dados_administrativos &&
+												validationErros.dados_administrativos
+													.entidade_relacionada
+											}
 										>
 											<Select
 												filtro={pesquisaEntidade}

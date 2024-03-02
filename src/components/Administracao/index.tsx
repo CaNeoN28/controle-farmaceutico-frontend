@@ -165,7 +165,7 @@ export function AdministracaoItem({
 			<div id={`item_${id}`} className={styles.item_administracao}>
 				<div className={styles.item_imagem}>
 					{imagem_url ? (
-						<img src={`${API_URL}${imagem_url}`} />
+						<img src={`${API_URL}/imagem/${imagem_url}`} />
 					) : (
 						<div className={styles.placeholder}>
 							{tipo === "farmacia" ? (
