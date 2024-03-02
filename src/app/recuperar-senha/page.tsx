@@ -5,9 +5,9 @@ import styles from "./RecuperarSenha.module.scss";
 import CenterBox from "@/components/CenterBox";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InputContainer from "@/components/InputContainer";
-import Input from "@/components/Input";
 import regexValidation from "@/utils/regexValidation";
 import InputSenha from "@/components/InputSenha";
+import { useRouter } from "next/navigation";
 
 interface Params {
   token?: string;
@@ -20,6 +20,8 @@ interface Data {
 
 export default function RecuperarSenha({ params }: { params: Params }) {
   const { token } = params;
+
+  const router = useRouter()
 
   const {
     control,
@@ -43,7 +45,10 @@ export default function RecuperarSenha({ params }: { params: Params }) {
       <main className={styles.main}>
         <CenterBox
           cancelText="Cancelar"
-          onCancel={() => {}}
+          onCancel={(e) => {
+            e.preventDefault()
+            router.push("/")
+          }}
           submitText="Salvar"
           onSubmit={handleSubmit(onSubmit)}
           titulo="Recuperação de senha"
