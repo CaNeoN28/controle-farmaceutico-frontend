@@ -6,7 +6,7 @@ interface Props {
 	titulo?: string;
 	children?: ReactNode;
 	cancelText?: string;
-	onCancel?: () => void;
+	onCancel?: FormEventHandler;
 	submitText?: string;
 	onSubmit?: FormEventHandler;
 }
