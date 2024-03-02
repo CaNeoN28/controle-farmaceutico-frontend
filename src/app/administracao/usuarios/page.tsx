@@ -364,6 +364,7 @@ export default function UsuariosAdministracao() {
 											tipo="usuario"
 											conteudoPrincipal={conteudoPrincipal}
 											conteudoSecundario={conteudoSecundario}
+											imagem_url={f.imagem_url}
 											linkEditar={`/administracao/usuarios/editar/${f._id}`}
 											podeAlterar={
 												verificarPermissao(funcaoUsuarioE, "GERENTE") &&
