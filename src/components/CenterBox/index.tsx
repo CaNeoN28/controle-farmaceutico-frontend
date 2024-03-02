@@ -1,6 +1,6 @@
 import Botao from "../Botao";
 import styles from "./CenterBox.module.scss";
-import { ReactNode } from "react";
+import { FormEventHandler, ReactNode } from "react";
 
 interface Props {
 	titulo?: string;
@@ -8,7 +8,7 @@ interface Props {
 	cancelText?: string;
 	onCancel?: () => void;
 	submitText?: string;
-	onSubmit?: () => void;
+	onSubmit?: FormEventHandler;
 }
 
 export default function CenterBox({
