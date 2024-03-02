@@ -28,10 +28,10 @@ export default function RecuperarSenha({
 	const { token } = searchParams;
 
 	const router = useRouter();
-	const recuperarSenha = new FetchAutenticacao().recuperarSenha;
+	const fAuth = new FetchAutenticacao();
 
 	const [mensagem, setMensagem] = useState("");
-	const [erro, setErro] = useState("");
+	const [erroToken, setErroToken] = useState("");
 
 	const {
 		control,
@@ -45,11 +45,21 @@ export default function RecuperarSenha({
 		},
 	});
 
+	const verificarToken = async () => {
+		await fAuth
+			.verificarToken(token)
+			.then((res) => {})
+			.catch((err) => {
+				setErroToken("Token inválido ou expirado");
+			});
+	};
+
 	const onSubmit: SubmitHandler<Data> = async (data) => {
 		const senha = data.senha;
 
 		if (senha && token)
-			await recuperarSenha(token, senha)
+			await fAuth
+				.recuperarSenha(token, senha)
 				.then((res) => {
 					setMensagem("Por favor prossiga para entrar na plataforma");
 				})
@@ -58,11 +68,15 @@ export default function RecuperarSenha({
 
 					console.log(erro);
 
-					setErro("Não foi possível alterar a senha");
+					setErroToken("Não foi possível alterar a senha");
 				});
 	};
 
-	if (token && !erro)
+	useEffect(() => {
+		verificarToken();
+	}, []);
+
+	if (token && !erroToken)
 		return (
 			<>
 				<Menu />
@@ -169,7 +183,7 @@ export default function RecuperarSenha({
 					}}
 				>
 					<span className={styles.mensagem}>
-						{erro || "Token inválido, não foi possível alterar sua senha"}
+						{erroToken || "Token inválido, não foi possível alterar sua senha"}
 					</span>
 				</CenterBox>
 			</main>
