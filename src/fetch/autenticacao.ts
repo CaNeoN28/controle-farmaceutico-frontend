@@ -56,9 +56,17 @@ export default class FetchAutenticacao {
 
 	recuperarSenha(token: string, senha: string) {
 		console.log(token);
-		const response = axios.put(`${API_URL}/recuperar-senha/${token}`, {
-			senha,
-		});
+		const response = axios.put(
+			`${API_URL}/recuperar-senha`,
+			{
+				senha,
+			},
+			{
+				headers: {
+					Authorization: token,
+				},
+			}
+		);
 
 		return response;
 	}

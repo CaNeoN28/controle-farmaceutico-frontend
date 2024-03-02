@@ -66,8 +66,6 @@ export default function RecuperarSenha({
 				.catch((err) => {
 					const erro = err.response.data;
 
-					console.log(erro);
-
 					setErroToken("Não foi possível alterar a senha");
 				});
 	};
