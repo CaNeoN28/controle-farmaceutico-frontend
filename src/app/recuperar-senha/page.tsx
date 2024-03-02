@@ -30,6 +30,7 @@ export default function RecuperarSenha({
   const router = useRouter();
   const recuperarSenha = new FetchAutenticacao().recuperarSenha;
 
+  const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
 
   const {
@@ -45,102 +46,115 @@ export default function RecuperarSenha({
   });
 
   const onSubmit: SubmitHandler<Data> = async (data) => {
-    const senha = watch("senha");
+    const senha = data.senha
 
     if (senha && token)
       await recuperarSenha(token, senha)
         .then((res) => {
-          console.log(res);
+          const mensagem = res.data;
+
+          setMensagem(mensagem);
         })
         .catch((err) => {
           const erro = err.response.data;
 
-          setErro(erro);
+          console.log(erro)
+
+          setErro("Não foi possível alterar a senha");
         });
   };
-
-  useEffect(() => {
-    console.log(searchParams);
-  }, []);
 
   if (token && !erro)
     return (
       <>
         <Menu />
         <main className={styles.main}>
-          <CenterBox
-            cancelText="Cancelar"
-            onCancel={(e) => {
-              e.preventDefault();
-              router.push("/");
-            }}
-            submitText="Salvar"
-            onSubmit={handleSubmit(onSubmit)}
-            titulo="Recuperação de senha"
-          >
-            <div className={styles.inputs}>
-              <Controller
-                control={control}
-                name="senha"
-                rules={{
-                  required: {
-                    message: "Senha é obrigatória",
-                    value: true,
-                  },
-                  pattern: {
-                    message: "Senha inválida",
-                    value: regexValidation.SENHA,
-                  },
-                }}
-                render={({ field }) => {
-                  return (
-                    <InputContainer
-                      id="senha"
-                      label="Nova senha"
-                      error={errors.senha}
-                    >
-                      <InputSenha id="senha" {...{ ...field, ref: null }} />
-                    </InputContainer>
-                  );
-                }}
-              />
-              <Controller
-                control={control}
-                name="confirmar_senha"
-                rules={{
-                  required: {
-                    message: "Senha de confirmação é obrigatória",
-                    value: true,
-                  },
-                  pattern: {
-                    message: "Senha de confirmação inválida",
-                    value: regexValidation.SENHA,
-                  },
-                  validate: (v: string) => {
-                    const senha = watch("senha");
+          {!mensagem ? (
+            <CenterBox
+              cancelText="Cancelar"
+              onCancel={(e) => {
+                e.preventDefault();
+                router.push("/");
+              }}
+              submitText="Salvar"
+              onSubmit={handleSubmit(onSubmit)}
+              titulo="Recuperação de senha"
+            >
+              <div className={styles.inputs}>
+                <Controller
+                  control={control}
+                  name="senha"
+                  rules={{
+                    required: {
+                      message: "Senha é obrigatória",
+                      value: true,
+                    },
+                    pattern: {
+                      message: "Senha inválida",
+                      value: regexValidation.SENHA,
+                    },
+                  }}
+                  render={({ field }) => {
+                    return (
+                      <InputContainer
+                        id="senha"
+                        label="Nova senha"
+                        error={errors.senha}
+                      >
+                        <InputSenha id="senha" {...{ ...field, ref: null }} />
+                      </InputContainer>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="confirmar_senha"
+                  rules={{
+                    required: {
+                      message: "Senha de confirmação é obrigatória",
+                      value: true,
+                    },
+                    pattern: {
+                      message: "Senha de confirmação inválida",
+                      value: regexValidation.SENHA,
+                    },
+                    validate: (v: string) => {
+                      const senha = watch("senha");
 
-                    if (senha != v) {
-                      return "As senhas não correspondem";
-                    }
-                  },
-                }}
-                render={({ field }) => {
-                  return (
-                    <InputContainer
-                      id="confirmar_senha"
-                      label="Confirmar senha"
-                      error={errors.confirmar_senha}
-                    >
-                      <InputSenha
+                      if (senha != v) {
+                        return "As senhas não correspondem";
+                      }
+                    },
+                  }}
+                  render={({ field }) => {
+                    return (
+                      <InputContainer
                         id="confirmar_senha"
-                        {...{ ...field, ref: null }}
-                      />
-                    </InputContainer>
-                  );
-                }}
-              />
-            </div>
-          </CenterBox>
+                        label="Confirmar senha"
+                        error={errors.confirmar_senha}
+                      >
+                        <InputSenha
+                          id="confirmar_senha"
+                          {...{ ...field, ref: null }}
+                        />
+                      </InputContainer>
+                    );
+                  }}
+                />
+              </div>
+            </CenterBox>
+          ) : (
+            <CenterBox
+              submitText="Ir para login"
+              onSubmit={(e) => {
+                e.preventDefault();
+                router.push("/login");
+              }}
+              titulo="SENHA ALTERADA COM SUCESSO"
+            >
+              <span className={styles.mensagem}>{mensagem}</span>
+            </CenterBox>
+          )}
         </main>
       </>
     );
@@ -153,10 +167,10 @@ export default function RecuperarSenha({
           submitText="Confirmar"
           onSubmit={(e) => {
             e.preventDefault();
-            redirect("/");
+            router.push("/");
           }}
         >
-          <span className={styles.erro}>
+          <span className={styles.mensagem}>
             {erro || "Token inválido, não foi possível alterar sua senha"}
           </span>
         </CenterBox>
