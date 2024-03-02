@@ -8,7 +8,8 @@ import InputContainer from "@/components/InputContainer";
 import regexValidation from "@/utils/regexValidation";
 import InputSenha from "@/components/InputSenha";
 import { redirect, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import FetchAutenticacao from "@/fetch/autenticacao";
 
 interface Params {
   token?: string;
@@ -19,10 +20,15 @@ interface Data {
   confirmar_senha: string;
 }
 
-export default function RecuperarSenha({ params }: { params: Params }) {
-  const { token } = params;
+export default function RecuperarSenha({
+  searchParams,
+}: {
+  searchParams: Params;
+}) {
+  const { token } = searchParams;
 
   const router = useRouter();
+  const recuperarSenha = new FetchAutenticacao().recuperarSenha;
 
   const [erro, setErro] = useState("");
 
@@ -38,9 +44,24 @@ export default function RecuperarSenha({ params }: { params: Params }) {
     },
   });
 
-  const onSubmit: SubmitHandler<Data> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<Data> = async (data) => {
+    const senha = watch("senha");
+
+    if (senha && token)
+      await recuperarSenha(token, senha)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          const erro = err.response.data;
+
+          setErro(erro);
+        });
   };
+
+  useEffect(() => {
+    console.log(searchParams);
+  }, []);
 
   if (token && !erro)
     return (
@@ -136,7 +157,7 @@ export default function RecuperarSenha({ params }: { params: Params }) {
           }}
         >
           <span className={styles.erro}>
-            Token inválido, não foi possível alterar sua senha
+            {erro || "Token inválido, não foi possível alterar sua senha"}
           </span>
         </CenterBox>
       </main>
