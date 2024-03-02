@@ -123,8 +123,11 @@ export default function Login() {
 					</div>
 					{erro && <span className={styles.erro}>{erro}</span>}
 					<div className={styles.botoes}>
-						<Botao fullWidth>Login</Botao>
-						<Botao fullWidth secundario>
+						<Botao fullWidth type="submit">Login</Botao>
+						<Botao fullWidth secundario onClick={(e) => {
+              e.preventDefault()
+              router.push("/esqueci-senha")
+            }}>
 							Esqueci a senha
 						</Botao>
 					</div>
