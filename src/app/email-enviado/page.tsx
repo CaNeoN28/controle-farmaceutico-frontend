@@ -15,7 +15,8 @@ export default function EmailEnviado() {
 				<CenterBox
 					titulo="EMAIL ENVIADO"
 					submitText="Confirmar"
-					onSubmit={() => {
+					onSubmit={(e) => {
+            e.preventDefault()
 						router.push("/");
 					}}
 				>
