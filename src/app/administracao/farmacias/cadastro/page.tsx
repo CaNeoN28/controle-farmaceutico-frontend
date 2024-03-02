@@ -23,7 +23,7 @@ export default function CadastroFarmacia() {
 
 	const router = useRouter();
 
-	const fetchImagem = new FetchImagem().postImagem;
+	const fetchImagem = new FetchImagem();
 	const postFarmacia = new FetchFarmacia().postFarmacia;
 	const deleteImagem = new FetchImagem().removeImagem;
 
@@ -58,34 +58,45 @@ export default function CadastroFarmacia() {
 		let erroImagem = "";
 
 		if (imagem) {
-			if (imagem) {
-				await fetchImagem(imagem)
-					.then((res) => {
-						const imagens = res.data as { [key: string]: string };
+			await fetchImagem
+				.postImagem(imagem, "farmacia")
+				.then((res) => {
+					const imagens = res.data as { [key: string]: string };
 
-						const imagensArray: string[] = [];
+					const imagensArray: string[] = [];
 
-						Object.keys(imagens).map((k: string) => {
-							imagensArray.push(imagens[k]);
-						});
-
-						farmacia.imagem_url = imagensArray[0];
-						erroImagem = "";
-					})
-					.catch((err) => {
-						erroImagem = "Extensão inválida de arquivo";
-
-						setErroImagem({
-							type: "validate",
-							message: erroImagem,
-						});
+					Object.keys(imagens).map((k: string) => {
+						imagensArray.push(imagens[k]);
 					});
-			}
+
+					farmacia.imagem_url = imagensArray[0];
+					erroImagem = "";
+				})
+				.catch((err) => {
+					erroImagem = "Extensão inválida de arquivo";
+
+					setErroImagem({
+						type: "validate",
+						message: erroImagem,
+					});
+				});
 		}
 
 		if (!erroImagem) {
 			await postFarmacia(farmacia, token)
 				.then((res) => {
+					const farmacia = res.data as IFarmacia;
+
+					if (imagem && farmacia.imagem_url)
+						fetchImagem
+							.confirmarImagem(
+								imagem,
+								"farmacia",
+								farmacia._id,
+								farmacia.imagem_url
+							)
+							.then(() => {})
+							.catch(() => {});
 					setErro(undefined);
 					setMensagem("Farmácia cadastrada com sucesso");
 					setShowAlert(true);
@@ -95,12 +106,6 @@ export default function CadastroFarmacia() {
 					const {
 						response: { data },
 					} = err;
-
-					if (urlImagem) {
-						deleteImagem(urlImagem)
-							.then(() => {})
-							.catch(() => {});
-					}
 
 					if (typeof data === "string") {
 						setErro(data);
@@ -162,7 +167,7 @@ export default function CadastroFarmacia() {
 										secundario
 										fullWidth
 										onClick={() => {
-											router.back()
+											router.back();
 										}}
 									>
 										Cancelar

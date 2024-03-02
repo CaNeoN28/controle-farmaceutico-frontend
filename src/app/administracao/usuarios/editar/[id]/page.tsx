@@ -88,7 +88,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
 
 		if (imagem) {
 			await fetchImagem
-				.postImagem(imagem)
+				.postImagem(imagem, "usuario")
 				.then((res) => {
 					urlImagemNova = Object.keys(res.data).map((k) => {
 						const imagem = res.data[k];
@@ -111,9 +111,18 @@ export default function EditarUsuario({ params }: { params: Params }) {
 		if (!erroImagem) {
 			await putUsuario(id_usuario, data, token)
 				.then((res) => {
-					if (urlImagemNova && urlImagemVelha) {
+					const usuario = res.data as IUsuarioAPI;
+
+					if (urlImagemNova && imagem) {
+						if (urlImagemVelha) {
+							fetchImagem
+								.removeImagem("usuario", usuario._id!, urlImagemVelha, token)
+								.then(() => {})
+								.catch(() => {});
+						}
+
 						fetchImagem
-							.removeImagem(urlImagemVelha)
+							.confirmarImagem(imagem, "usuario", usuario._id!, urlImagemNova)
 							.then(() => {})
 							.catch(() => {});
 					}
@@ -133,19 +142,10 @@ export default function EditarUsuario({ params }: { params: Params }) {
 						}
 					});
 
-					setErros(erros);
-					setErroEdicao("Não foi possível editar o usuário");
+					if (Object.keys(erros).length == 0)
+						setErroEdicao("Não foi possível editar o usuário");
 
-					if (urlImagemNova) {
-						fetchImagem
-							.removeImagem(urlImagemNova)
-							.then(() => {
-								console.log("Removeu imagem nova");
-							})
-							.catch((err) => {
-								console.log(err);
-							});
-					}
+					setErros(erros);
 				});
 		}
 	}

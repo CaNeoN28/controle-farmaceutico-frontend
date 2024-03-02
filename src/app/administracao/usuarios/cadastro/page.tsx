@@ -17,164 +17,177 @@ import Alert from "@/components/Alert";
 import Botao from "@/components/Botao";
 
 export default function CadastroUsuario() {
-  const router = useRouter();
-  const fAuth = new FetchAutenticacao();
-  const fImagem = new FetchImagem();
+	const router = useRouter();
+	const fAuth = new FetchAutenticacao();
+	const fImagem = new FetchImagem();
 
-  const [imagem, setImagem] = useState<File>();
-  const [erroImagem, setErroImagem] = useState<FieldError>();
-  const [erros, setErros] = useState<{ [key: string]: FieldError }>({});
+	const [imagem, setImagem] = useState<File>();
+	const [erroImagem, setErroImagem] = useState<FieldError>();
+	const [erros, setErros] = useState<{ [key: string]: FieldError }>({});
 
-  const [mensagemCriacao, setMensagemCriacao] = useState("");
-  const [erroCriacao, setErroCriacao] = useState("");
+	const [mensagemCriacao, setMensagemCriacao] = useState("");
+	const [erroCriacao, setErroCriacao] = useState("");
 
-  const [usuarioEditor, setUsuarioEditor] = useState<IUsuarioAPI>();
-  const [token, setToken] = useState("");
+	const [usuarioEditor, setUsuarioEditor] = useState<IUsuarioAPI>();
+	const [token, setToken] = useState("");
 
-  const getUsuario = async () => {
-    const token = getCookie("authentication") || "";
+	const getUsuario = async () => {
+		const token = getCookie("authentication") || "";
 
-    await fAuth
-      .getPerfil(token)
-      .then((res) => {
-        const usuario = res.data as IUsuarioAPI;
+		await fAuth
+			.getPerfil(token)
+			.then((res) => {
+				const usuario = res.data as IUsuarioAPI;
 
-        setToken(token);
-        setUsuarioEditor(usuario);
-      })
-      .catch(() => {
-        deleteCookie("authentication");
-        router.push("/login");
-      });
-  };
+				setToken(token);
+				setUsuarioEditor(usuario);
+			})
+			.catch(() => {
+				deleteCookie("authentication");
+				router.push("/login");
+			});
+	};
 
-  const fetchUsuario = async (data: IUsuarioAPI) => {
-    let erroImagem = "";
-    let urlImagem = "";
+	const fetchUsuario = async (data: IUsuarioAPI) => {
+		let erroImagem = "";
+		let urlImagem = "";
 
-    if (imagem) {
-      await fImagem
-        .postImagem(imagem)
-        .then((res) => {
-          urlImagem = Object.keys(res.data).map((k) => {
-            const imagem = res.data[k];
+		if (imagem) {
+			await fImagem
+				.postImagem(imagem, "usuario")
+				.then((res) => {
+					urlImagem = Object.keys(res.data).map((k) => {
+						const imagem = res.data[k];
 
-            return imagem
-          })[0];
+						return imagem;
+					})[0];
 
-          setErroImagem(undefined);
-        })
-        .catch((err) => {
-          erroImagem = "Arquivo inválido";
+					setErroImagem(undefined);
+				})
+				.catch((err) => {
+					erroImagem = "Arquivo inválido";
 
-          setErroImagem({
-            type: "validate",
-            message: erroImagem,
-          });
-        });
-    }
+					setErroImagem({
+						type: "validate",
+						message: erroImagem,
+					});
+				});
+		}
 
-    if (!erroImagem) {
-      await postUsuario(data, token)
-        .then((res) => {
-          setMensagemCriacao("Usuário cadastrado com sucesso");
-        })
-        .catch((err) => {
-          const data = err.response.data;
-          const erros: { [key: string]: FieldError } = {};
+		if (!erroImagem) {
+			await postUsuario(data, token)
+				.then((res) => {
+					const usuario = res.data as IUsuarioAPI;
 
-          Object.keys(data).map((k) => {
-            if (!erros[k]) {
-              erros[k] = {
-                message: data[k],
-                type: "validate",
-              };
-            }
-          });
+					if (imagem && usuario.imagem_url)
+						fImagem
+							.confirmarImagem(
+								imagem,
+								"farmacia",
+								usuario._id!,
+								usuario.imagem_url
+							)
+							.then(() => {})
+							.catch(() => {});
 
-          setErros(erros);
-          setErroCriacao("Não foi possível criar o usuário");
+					setMensagemCriacao("Usuário cadastrado com sucesso");
+				})
+				.catch((err) => {
+					const data = err.response.data;
+					const erros: { [key: string]: FieldError } = {};
 
-          if (urlImagem) fImagem.removeImagem(erroImagem);
-        });
-    }
-  };
+					Object.keys(data).map((k) => {
+						if (!erros[k]) {
+							erros[k] = {
+								message: data[k],
+								type: "validate",
+							};
+						}
+					});
 
-  useEffect(() => {
-    getUsuario();
-  }, []);
+					if (Object.keys(erros).length == 0)
+						setErroCriacao("Não foi possível criar o usuário");
 
-  useEffect(() => {
-    setErroImagem(undefined);
-  }, [imagem]);
+					setErros(erros);
+				});
+		}
+	};
 
-  if (usuarioEditor)
-    return (
-      <>
-        <Menu />
-        <CadastroMain>
-          <TituloSecao>CADASTRO DE USUÁRIO</TituloSecao>
-          <FormularioUsuario
-            usuarioEditor={usuarioEditor}
-            erroImagem={erroImagem}
-            erros={erros}
-            fetchUsuario={fetchUsuario}
-            setImagem={setImagem}
-          />
-        </CadastroMain>
-        <Alert
-          show={!!mensagemCriacao}
-          onClickBackground={() => {
-            setMensagemCriacao("");
-            router.back();
-          }}
-        >
-          <div className={styles.alert}>
-            <span className={styles.alert_texto}>{mensagemCriacao}</span>
-            <Botao
-              fullWidth
-              onClick={() => {
-                setMensagemCriacao("");
-                router.back();
-              }}
-            >
-              Confirmar
-            </Botao>
-          </div>
-        </Alert>
-        <Alert
-          show={!!erroCriacao}
-          onClickBackground={() => {
-            setErroCriacao("");
-            router.back();
-          }}
-        >
-          <div className={styles.alert}>
-            <span className={styles.alert_texto}>{erroCriacao}</span>
-            <div className={styles.alert_opcoes}>
-              <Botao
-                fullWidth
-                onClick={() => {
-                  setErroCriacao("");
-                }}
-              >
-                Continuar
-              </Botao>
-              <Botao
-                secundario
-                fullWidth
-                onClick={() => {
-                  setErroCriacao("");
-                  router.back();
-                }}
-              >
-                Cancelar
-              </Botao>
-            </div>
-          </div>
-        </Alert>
-      </>
-    );
+	useEffect(() => {
+		getUsuario();
+	}, []);
 
-  return <></>;
+	useEffect(() => {
+		setErroImagem(undefined);
+	}, [imagem]);
+
+	if (usuarioEditor)
+		return (
+			<>
+				<Menu />
+				<CadastroMain>
+					<TituloSecao>CADASTRO DE USUÁRIO</TituloSecao>
+					<FormularioUsuario
+						usuarioEditor={usuarioEditor}
+						erroImagem={erroImagem}
+						erros={erros}
+						fetchUsuario={fetchUsuario}
+						setImagem={setImagem}
+					/>
+				</CadastroMain>
+				<Alert
+					show={!!mensagemCriacao}
+					onClickBackground={() => {
+						setMensagemCriacao("");
+						router.back();
+					}}
+				>
+					<div className={styles.alert}>
+						<span className={styles.alert_texto}>{mensagemCriacao}</span>
+						<Botao
+							fullWidth
+							onClick={() => {
+								setMensagemCriacao("");
+								router.back();
+							}}
+						>
+							Confirmar
+						</Botao>
+					</div>
+				</Alert>
+				<Alert
+					show={!!erroCriacao}
+					onClickBackground={() => {
+						setErroCriacao("");
+						router.back();
+					}}
+				>
+					<div className={styles.alert}>
+						<span className={styles.alert_texto}>{erroCriacao}</span>
+						<div className={styles.alert_opcoes}>
+							<Botao
+								fullWidth
+								onClick={() => {
+									setErroCriacao("");
+								}}
+							>
+								Continuar
+							</Botao>
+							<Botao
+								secundario
+								fullWidth
+								onClick={() => {
+									setErroCriacao("");
+									router.back();
+								}}
+							>
+								Cancelar
+							</Botao>
+						</div>
+					</div>
+				</Alert>
+			</>
+		);
+
+	return <></>;
 }

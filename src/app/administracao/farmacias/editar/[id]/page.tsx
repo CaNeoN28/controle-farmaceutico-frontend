@@ -32,8 +32,7 @@ export default function EditarFarmacia({
 
 	const getPerfil = new FetchAutenticacao().getPerfil;
 	const fetchFarmacia = new FetchFarmacia();
-	const deleteImagem = new FetchImagem().removeImagem;
-	const fetchImagem = new FetchImagem().postImagem;
+	const fetchImagem = new FetchImagem();
 
 	const date = new Date();
 
@@ -92,43 +91,56 @@ export default function EditarFarmacia({
 		let erroImagem = "";
 
 		if (imagem) {
-			if (imagem) {
-				await fetchImagem(imagem)
-					.then((res) => {
-						const imagens = res.data as { [key: string]: string };
+			await fetchImagem
+				.postImagem(imagem, "farmacia")
+				.then((res) => {
+					const imagens = res.data as { [key: string]: string };
 
-						const imagensArray: string[] = [];
+					const imagensArray: string[] = [];
 
-						Object.keys(imagens).map((k: string) => {
-							imagensArray.push(imagens[k]);
-						});
-
-						urlImagemNova = imagensArray[0];
-						erroImagem = "";
-					})
-					.catch((err) => {
-						erroImagem = "Extensão inválida de arquivo";
-
-						setErroImagem({
-							type: "validate",
-							message: erroImagem,
-						});
+					Object.keys(imagens).map((k: string) => {
+						imagensArray.push(imagens[k]);
 					});
-			}
+
+					urlImagemNova = imagensArray[0];
+					erroImagem = "";
+				})
+				.catch((err) => {
+					erroImagem = "Extensão inválida de arquivo";
+
+					setErroImagem({
+						type: "validate",
+						message: erroImagem,
+					});
+				});
 		}
 
 		if (!erroImagem) {
-			if (urlImagemNova && urlImagemVelha) {
+			if (urlImagemNova) {
 				data.imagem_url = urlImagemNova;
 			}
 
 			await fetchFarmacia
 				.updateFarmacia(data, id_farmacia, token)
 				.then((res) => {
-					if (urlImagemNova && urlImagemVelha) {
-						deleteImagem(urlImagemVelha)
-							.then(() => {})
-							.catch(() => {});
+					const farmacia = res.data as IFarmacia;
+
+					if (urlImagemNova && imagem) {
+						if (urlImagemVelha) {
+							fetchImagem.removeImagem(
+								"farmacia",
+								farmacia._id,
+								urlImagemVelha,
+								token
+							).then(() => {}).catch(() => {});
+						}
+
+						fetchImagem.confirmarImagem(
+							imagem,
+							"farmacia",
+							farmacia._id,
+							urlImagemNova
+						).then(() => {}).catch(() => {});
 					}
 
 					setErroEdicao(undefined);
@@ -140,12 +152,6 @@ export default function EditarFarmacia({
 					const {
 						response: { data },
 					} = err;
-
-					if (urlImagemNova) {
-						deleteImagem(urlImagemNova)
-							.then(() => {})
-							.catch(() => {});
-					}
 
 					if (typeof data === "string") {
 						setErroEdicao(data);

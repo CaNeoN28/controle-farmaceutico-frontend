@@ -35,10 +35,15 @@ export default class FetchImagem {
 	removeImagem(
 		finalidade: string,
 		id_finalidade: string,
-		caminho_imagem: string
+		caminho_imagem: string,
+		token?: string
 	) {
 		const resposta = axios.delete(
-			`${API_URL}/${finalidade}/${id_finalidade}/imagem/${caminho_imagem}`
+			`${API_URL}/${finalidade}/${id_finalidade}/imagem/${caminho_imagem}`, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			}
 		);
 
 		return resposta;
