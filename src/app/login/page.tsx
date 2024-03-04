@@ -81,6 +81,9 @@ export default function Login() {
 
 	return (
 		<>
+			<head>
+				<title>Login</title>
+			</head>
 			<Menu />
 			<main className={styles.main}>
 				<form onSubmit={handleSubmit(onSubmit)} className={classesContainer}>
@@ -123,11 +126,17 @@ export default function Login() {
 					</div>
 					{erro && <span className={styles.erro}>{erro}</span>}
 					<div className={styles.botoes}>
-						<Botao fullWidth type="submit">Login</Botao>
-						<Botao fullWidth secundario onClick={(e) => {
-              e.preventDefault()
-              router.push("/esqueci-senha")
-            }}>
+						<Botao fullWidth type="submit">
+							Login
+						</Botao>
+						<Botao
+							fullWidth
+							secundario
+							onClick={(e) => {
+								e.preventDefault();
+								router.push("/esqueci-senha");
+							}}
+						>
 							Esqueci a senha
 						</Botao>
 					</div>

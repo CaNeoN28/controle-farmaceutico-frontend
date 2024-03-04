@@ -131,7 +131,7 @@ export default function Perfil() {
 
 		if (imagem) {
 			await fImagens
-				.postImagem(imagem)
+				.postImagem(imagem, "usuario")
 				.then((res) => {
 					const imagens = res.data as { [key: string]: string };
 
@@ -180,11 +180,18 @@ export default function Perfil() {
 			await fAuth
 				.updatePerfil(usuario, token)
 				.then((res) => {
-					if (urlImagemNova)
-						fImagens
-							.removeImagem(urlImagemVelha)
-							.then(() => {})
-							.catch(() => {});
+					const usuario = res.data as IUsuarioAPI;
+
+					if (urlImagemNova && imagem) {
+						if (urlImagemVelha) {
+							fImagens
+								.removeImagem("usuario", usuario._id!, urlImagemVelha, token)
+								.then(() => {})
+								.catch(() => {});
+						}
+
+						fImagens.confirmarImagem(imagem, "usuario", usuario._id!, urlImagemNova)
+					}
 
 					cancelarEdicao();
 				})
@@ -200,8 +207,6 @@ export default function Perfil() {
 							setError(key, { message: erro[key], type: "server" });
 						});
 					}
-
-					if (urlImagemNova) fImagens.removeImagem(urlImagemNova);
 				});
 		}
 	};
@@ -391,7 +396,7 @@ export default function Perfil() {
 									<div className={styles.imagem}>
 										{usuario.imagem_url || localImageUrl ? (
 											<img
-												src={localImageUrl || `${API_URL}${usuario.imagem_url}`}
+												src={localImageUrl || `${API_URL}/imagem/${usuario.imagem_url}`}
 											/>
 										) : (
 											<div className={styles.placeholder}>
