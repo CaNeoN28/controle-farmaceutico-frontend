@@ -185,7 +185,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
 					show={!!erroEdicao}
 					onClickBackground={() => {
 						setErroEdicao("");
-						router.back();
+						router.push("/administracao/usuarios");
 					}}
 				>
 					<div className={styles.alert}>
@@ -204,7 +204,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
 								secundario
 								onClick={() => {
 									setErroEdicao("");
-									router.back();
+									router.push("/administracao/usuarios");
 								}}
 							>
 								Cancelar
@@ -216,7 +216,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
 					show={!!mensagemEdicao}
 					onClickBackground={() => {
 						setMensagemEdicao("");
-						router.back();
+						router.push("/administracao/usuarios");
 					}}
 				>
 					<div className={styles.alert}>
@@ -225,7 +225,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
 							fullWidth
 							onClick={() => {
 								setMensagemEdicao("");
-								router.back();
+								router.push("/administracao/usuarios");
 							}}
 						>
 							Confirmar
