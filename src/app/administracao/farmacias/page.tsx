@@ -268,6 +268,7 @@ export default function FarmaciasAdministracao() {
 	if (usuario)
 		return (
 			<>
+				<title>Administração de farmácias</title>
 				<Menu />
 				<AdministracaoMain>
 					<TituloSecao>LISTAGEM DE FARMÁCIAS</TituloSecao>

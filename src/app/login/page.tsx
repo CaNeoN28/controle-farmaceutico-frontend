@@ -81,9 +81,7 @@ export default function Login() {
 
 	return (
 		<>
-			<head>
-				<title>Login</title>
-			</head>
+			<title>Login</title>
 			<Menu />
 			<main className={styles.main}>
 				<form onSubmit={handleSubmit(onSubmit)} className={classesContainer}>

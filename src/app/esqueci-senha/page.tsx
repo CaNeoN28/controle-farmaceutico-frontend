@@ -35,7 +35,7 @@ export default function EsqueciSenha() {
 	const onSubmit: SubmitHandler<{ email: string }> = async (data) => {
 		await esqueciSenha(data.email)
 			.then((res) => {
-				router.push("/email-enviado")
+				router.push("/email-enviado");
 			})
 			.catch((err) => {
 				const erro = err.response.data as string;
@@ -54,6 +54,7 @@ export default function EsqueciSenha() {
 
 	return (
 		<>
+			<title>Esqueceu a senha</title>
 			<Menu />
 			<main className={styles.main}>
 				<CenterBox

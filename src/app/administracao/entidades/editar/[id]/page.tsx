@@ -94,6 +94,7 @@ export default function EditarEntidade({
 	if (usuario)
 		return (
 			<>
+				<title>Editar entidade</title>
 				<Menu />
 				{entidade ? (
 					<CadastroMain>

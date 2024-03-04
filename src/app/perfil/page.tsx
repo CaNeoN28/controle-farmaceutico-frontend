@@ -2,12 +2,11 @@
 
 import Menu from "@/components/Menu";
 import styles from "./Perfil.module.scss";
-import { CadastroBotoes, CadastroContainer } from "@/components/Cadastro";
+import { CadastroBotoes } from "@/components/Cadastro";
 import { ChangeEventHandler, useEffect, useState } from "react";
 import IUsuarioGet, {
 	IUsuarioAPI,
 	IUsuarioCadastro,
-	IUsuarioPost,
 	IUsuarioPut,
 } from "@/types/Usuario";
 import FetchAutenticacao from "@/fetch/autenticacao";
@@ -15,7 +14,6 @@ import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import {
 	Controller,
-	FieldError,
 	SubmitHandler,
 	useForm,
 } from "react-hook-form";
@@ -190,7 +188,12 @@ export default function Perfil() {
 								.catch(() => {});
 						}
 
-						fImagens.confirmarImagem(imagem, "usuario", usuario._id!, urlImagemNova)
+						fImagens.confirmarImagem(
+							imagem,
+							"usuario",
+							usuario._id!,
+							urlImagemNova
+						);
 					}
 
 					cancelarEdicao();
@@ -226,6 +229,7 @@ export default function Perfil() {
 	if (usuario)
 		return (
 			<>
+				<title>Perfil</title>
 				<Menu />
 				<main className={styles.main}>
 					<form onSubmit={handleSubmit(onUpdate)}>
@@ -396,7 +400,10 @@ export default function Perfil() {
 									<div className={styles.imagem}>
 										{usuario.imagem_url || localImageUrl ? (
 											<img
-												src={localImageUrl || `${API_URL}/imagem/${usuario.imagem_url}`}
+												src={
+													localImageUrl ||
+													`${API_URL}/imagem/${usuario.imagem_url}`
+												}
 											/>
 										) : (
 											<div className={styles.placeholder}>

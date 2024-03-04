@@ -124,6 +124,7 @@ export default function CadastroUsuario() {
 	if (usuarioEditor)
 		return (
 			<>
+				<title>Cadastrar usuário</title>
 				<Menu />
 				<CadastroMain>
 					<TituloSecao>CADASTRO DE USUÁRIO</TituloSecao>

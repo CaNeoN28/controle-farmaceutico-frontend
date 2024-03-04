@@ -127,20 +127,16 @@ export default function EditarFarmacia({
 
 					if (urlImagemNova && imagem) {
 						if (urlImagemVelha) {
-							fetchImagem.removeImagem(
-								"farmacia",
-								farmacia._id,
-								urlImagemVelha,
-								token
-							).then(() => {}).catch(() => {});
+							fetchImagem
+								.removeImagem("farmacia", farmacia._id, urlImagemVelha, token)
+								.then(() => {})
+								.catch(() => {});
 						}
 
-						fetchImagem.confirmarImagem(
-							imagem,
-							"farmacia",
-							farmacia._id,
-							urlImagemNova
-						).then(() => {}).catch(() => {});
+						fetchImagem
+							.confirmarImagem(imagem, "farmacia", farmacia._id, urlImagemNova)
+							.then(() => {})
+							.catch(() => {});
 					}
 
 					setErroEdicao(undefined);
@@ -176,6 +172,7 @@ export default function EditarFarmacia({
 	if (usuario)
 		return (
 			<>
+				<title>Editar farmácia</title>
 				<Menu />
 				{farmacia ? (
 					<CadastroMain>

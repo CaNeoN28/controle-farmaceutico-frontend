@@ -120,17 +120,12 @@ export default function AutoCadastro() {
 			await fetchCadastro(usuario)
 				.then((res) => {
 					const usuario = res.data as IUsuarioAPI;
-					const imagem_url = usuario.imagem_url
-					console.log(usuario)
+					const imagem_url = usuario.imagem_url;
+					console.log(usuario);
 
 					if (imagem) {
 						fetchImagem
-							.confirmarImagem(
-								imagem,
-								"usuario",
-								usuario._id!,
-								imagem_url
-							)
+							.confirmarImagem(imagem, "usuario", usuario._id!, imagem_url)
 							.then(() => {})
 							.catch((err) => {
 								console.log(err);
@@ -206,6 +201,7 @@ export default function AutoCadastro() {
 
 	return (
 		<>
+			<title>Cadastro</title>
 			<Menu />
 			<main className={styles.main}>
 				<form className={styles.form} onSubmit={handleSubmit(onSubmit)}>

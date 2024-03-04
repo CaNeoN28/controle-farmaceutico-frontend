@@ -55,6 +55,7 @@ export default function Administracao() {
 	if (usuario)
 		return (
 			<>
+				<title>Administração</title>
 				<Menu />
 				<main className={classesMain}>
 					<div className={styles.opcoes}>

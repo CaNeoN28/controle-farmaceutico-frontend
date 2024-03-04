@@ -130,6 +130,7 @@ export default function CadastroFarmacia() {
 	if (usuario)
 		return (
 			<>
+				<title>Cadastrar farmácia</title>
 				<Menu />
 				<CadastroMain>
 					<TituloSecao>CADASTRO DE FARMÁCIA</TituloSecao>

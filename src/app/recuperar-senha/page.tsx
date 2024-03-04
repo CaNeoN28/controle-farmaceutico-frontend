@@ -75,6 +75,7 @@ export default function RecuperarSenha({
 	if (token && !erroToken)
 		return (
 			<>
+				<title>Recuperar senha</title>
 				<Menu />
 				<main className={styles.main}>
 					{!mensagem ? (

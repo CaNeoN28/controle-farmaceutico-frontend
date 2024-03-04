@@ -10,13 +10,14 @@ export default function EmailEnviado() {
 
 	return (
 		<>
+			<title>Email enviado</title>
 			<Menu />
 			<main className={styles.main}>
 				<CenterBox
 					titulo="EMAIL ENVIADO"
 					submitText="Confirmar"
 					onSubmit={(e) => {
-            e.preventDefault()
+						e.preventDefault();
 						router.push("/");
 					}}
 				>

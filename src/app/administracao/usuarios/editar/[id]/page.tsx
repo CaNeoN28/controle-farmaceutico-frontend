@@ -161,6 +161,7 @@ export default function EditarUsuario({ params }: { params: Params }) {
 	if (usuarioLogado) {
 		return (
 			<>
+				<title>Editar usuário</title>
 				<Menu />
 				{usuario ? (
 					<CadastroMain>

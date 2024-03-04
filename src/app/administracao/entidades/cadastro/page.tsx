@@ -62,6 +62,7 @@ export default function CadastroEntidades() {
 	if (usuario)
 		return (
 			<>
+				<title>Cadastrar entidade</title>
 				<Menu />
 				<CadastroMain>
 					<TituloSecao>CADASTRO DE ENTIDADE</TituloSecao>

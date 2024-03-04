@@ -7,6 +7,7 @@ import LinkButton from "@/components/LinkButton";
 export default function CadastroFinalizado() {
 	return (
 		<>
+			<title>Cadastro finalizado</title>
 			<Menu />
 			<main className={styles.container}>
 				<div className={styles.content}>

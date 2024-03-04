@@ -174,6 +174,7 @@ export default function Farmacias() {
 
 	return (
 		<>
+			<title>Farmácias</title>
 			<Menu />
 			<main className={styles.main}>
 				<div className={styles.input_container}>

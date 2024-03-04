@@ -50,7 +50,7 @@ export default function UsuariosAdministracao() {
 		pagina: Number(searchParams.get("pagina")) || 1,
 		entidade_relacionada: searchParams.get("entidade_relacionada") || "",
 		nome_usuario: searchParams.get("nome_usuario") || "",
-		funcao: searchParams.get("funcao") as Funcao || "",
+		funcao: (searchParams.get("funcao") as Funcao) || "",
 	};
 
 	const { control, handleSubmit, watch, setValue } = useForm<Filtros>({
@@ -269,6 +269,7 @@ export default function UsuariosAdministracao() {
 	if (usuario)
 		return (
 			<>
+				<title>Administração de usuários</title>
 				<Menu />
 				<AdministracaoMain>
 					<TituloSecao>LISTAGEM DE USUÁRIOS</TituloSecao>
@@ -349,7 +350,14 @@ export default function UsuariosAdministracao() {
 
 									const conteudoSecundario = (
 										<>
-											<span>{f.dados_administrativos.funcao} ({f.dados_administrativos.entidade_relacionada.nome_entidade})</span>
+											<span>
+												{f.dados_administrativos.funcao} (
+												{
+													f.dados_administrativos.entidade_relacionada
+														.nome_entidade
+												}
+												)
+											</span>
 											<span>{f.email}</span>
 										</>
 									);

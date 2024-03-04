@@ -245,6 +245,7 @@ export default function EntidadesAdministracao() {
 	if (usuario)
 		return (
 			<>
+				<title>Administração de entidades</title>
 				<Menu />
 				<AdministracaoMain>
 					<TituloSecao>LISTAGEM DE ENTIDADES</TituloSecao>
