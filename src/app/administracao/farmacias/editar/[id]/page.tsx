@@ -122,18 +122,18 @@ export default function EditarFarmacia({
 
 			await fetchFarmacia
 				.updateFarmacia(data, id_farmacia, token)
-				.then((res) => {
+				.then(async (res) => {
 					const farmacia = res.data as IFarmacia;
 
 					if (urlImagemNova && imagem) {
 						if (urlImagemVelha) {
-							fetchImagem
+							await fetchImagem
 								.removeImagem("farmacia", farmacia._id, urlImagemVelha, token)
 								.then(() => {})
 								.catch(() => {});
 						}
 
-						fetchImagem
+						await fetchImagem
 							.confirmarImagem(imagem, "farmacia", farmacia._id, urlImagemNova)
 							.then(() => {})
 							.catch(() => {});

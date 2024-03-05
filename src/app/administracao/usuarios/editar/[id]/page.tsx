@@ -110,18 +110,18 @@ export default function EditarUsuario({ params }: { params: Params }) {
 
 		if (!erroImagem) {
 			await putUsuario(id_usuario, data, token)
-				.then((res) => {
+				.then(async (res) => {
 					const usuario = res.data as IUsuarioAPI;
 
 					if (urlImagemNova && imagem) {
 						if (urlImagemVelha) {
-							fetchImagem
+							await fetchImagem
 								.removeImagem("usuario", usuario._id!, urlImagemVelha, token)
 								.then(() => {})
 								.catch(() => {});
 						}
 
-						fetchImagem
+						await fetchImagem
 							.confirmarImagem(imagem, "usuario", usuario._id!, urlImagemNova)
 							.then(() => {})
 							.catch(() => {});
