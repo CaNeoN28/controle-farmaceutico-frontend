@@ -26,12 +26,11 @@ export default function CardFarmacia({
 	return (
 		<Link href={link_farmacia} className={classesCard}>
 			<div className={styles.imagem}>
-				{imagem_url ? (
-					<img src={`${API_URL}${imagem_url}`} alt="imagem" />
-				) : (
 					<div className={styles.placeholder}>
 						<MdLocalPharmacy />
 					</div>
+				{imagem_url && (
+					<img src={`${API_URL}/imagem/${imagem_url}`} alt="imagem" loading="lazy"/>
 				)}
 			</div>
 			<div className={styles.dados}>

@@ -4,7 +4,7 @@
 	overflow: hidden;
 
 	gap: 16px;
-  padding: 8px;
+	padding: 8px;
 
 	border: 1px solid var(--primary-color);
 	border-radius: 8px;
@@ -24,22 +24,39 @@
 }
 
 .imagem {
+	position: relative;
 	display: flex;
 	align-items: center;
 
+	width: 56px;
+	aspect-ratio: calc(1 / 1);
+
 	img {
+		position: absolute;
 		object-fit: cover;
 
 		border-radius: 8px;
 
 		max-width: 56px;
 		aspect-ratio: calc(1 / 1);
+
+		left: 50%;
+		top: 50%;
+
+		transform: translate(-50%, -50%);
 	}
 }
 
 .placeholder {
+	position: absolute;
+	justify-content: center;
 	display: flex;
 	color: var(--white);
+
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
 
 	background-color: var(--secondary-color);
 	border-radius: 8px;
@@ -59,10 +76,11 @@
 	}
 
 	.imagem {
-		border-bottom: 1px solid var(--primary-color);
 		border-radius: 8px;
 
 		padding: 20px;
+
+		width: 160px;
 
 		img {
 			max-width: 160px;
@@ -78,7 +96,7 @@
 
 	.dados {
 		margin: auto;
-		
+
 		padding: 12px;
 		gap: 4px;
 	}
