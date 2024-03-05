@@ -47,6 +47,7 @@
 }
 
 .item_imagem {
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -61,13 +62,22 @@
 	aspect-ratio: calc(1 / 1);
 
 	img {
-		width: 100%;
+		position: absolute;
 		object-fit: cover;
+
+		aspect-ratio: calc(1 / 1);
+		max-width: 100%;
+
+		left: 50%;
+		top: 50%;
+
+		transform: translate(-50%, -50%);
 	}
 }
 
 .placeholder {
 	display: flex;
+	position: absolute;
 	align-items: center;
 	justify-content: center;
 

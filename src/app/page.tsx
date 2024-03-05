@@ -238,7 +238,7 @@ export default function Home() {
                       />
                     </div>
                   <Link className={styles.link_farmacia} href={`/farmacias/${farmaciaMaisProxima._id}`}>
-                      <TituloFarmacia>
+                      <TituloFarmacia image_url={farmaciaMaisProxima.imagem_url}>
                         <div className={styles.info}>
                           <span>{farmaciaMaisProxima.nome_fantasia}</span>
                           <span>Farmácia aberta mais próxima</span>
@@ -271,6 +271,7 @@ export default function Home() {
                             }
                             nome={f.nome_fantasia}
                             para={`/farmacias/${f._id}`}
+														imagem_url={f.imagem_url}
                           />
                         );
                       })}
@@ -303,6 +304,7 @@ export default function Home() {
                         informacao={f.dia_semana}
                         nome={f.nome_fantasia}
                         para={`/farmacias/${f._id}`}
+												imagem_url={f.imagem_url}
                       />
                     ))}
                   </div>

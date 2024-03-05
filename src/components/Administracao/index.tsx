@@ -206,13 +206,10 @@ export function AdministracaoItem({
 				}}
 			>
 				<div className={styles.item_imagem}>
-					{imagem_url ? (
-						<img src={`${API_URL}${imagem_url}`} />
-					) : (
-						<div className={styles.placeholder}>
-							<MdLocalPharmacy />
-						</div>
-					)}
+					<div className={styles.placeholder}>
+						<MdLocalPharmacy />
+					</div>
+					{imagem_url && <img src={`${API_URL}/imagem/${imagem_url}`} />}
 				</div>
 				<div className={styles.main_content}>{conteudoPrincipal}</div>
 				<div id={`dropbutton_${id}`} className={styles.item_dropbutton}>
