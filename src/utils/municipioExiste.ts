@@ -13,8 +13,6 @@ export default async function municipioExiste(
 		const municipios = res.data;
 
 		existe = !!municipios.find((m) => m.nome === municipio);
-
-		console.log(existe);
 	});
 
 	return existe;

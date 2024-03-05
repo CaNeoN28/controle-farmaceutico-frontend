@@ -67,8 +67,6 @@ export default function Farmacia({ params }: { params: Params }) {
 				rota = `https://www.google.com/maps/dir/${lat},${lng}/${x},${y}`;
 			} else {
 				rota = `https://www.google.com/maps/dir//${x},${y}`;
-
-				console.log(rota);
 			}
 
 			setRota(rota);
@@ -161,10 +159,6 @@ export default function Farmacia({ params }: { params: Params }) {
 			setAberto(aberto);
 		}
 	}, [farmacia]);
-
-	useEffect(() => {
-		console.log(rota);
-	}, [rota]);
 
 	useEffect(() => {
 		getRota();
