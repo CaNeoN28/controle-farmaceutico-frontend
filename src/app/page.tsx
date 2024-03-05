@@ -114,7 +114,7 @@ export default function Home() {
         filtrosPlantoes.municipio = municipio;
       }
 
-      fFarmacias
+      await fFarmacias
         .getFarmaciasProximas(filtrosProximas)
         .then((res) => {
           const resposta = res.data as GetManyRequest<IFarmacia[]>;
@@ -129,7 +129,7 @@ export default function Home() {
           setErroFarmaciasProximas(err.response.data);
         });
 
-      fFarmacias
+      await fFarmacias
         .getFarmaciasPlantoes(filtrosPlantoes)
         .then((res) => {
           const resposta = res.data as GetManyRequest<Escala>;
