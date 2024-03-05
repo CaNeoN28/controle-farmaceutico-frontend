@@ -64,13 +64,13 @@ export default function Administracao() {
 								tipo="farmacia"
 								url_destino="/administracao/farmacias"
 							>
-								Listagem de Farmácias
+								Listagem de farmácias
 							</OpcaoAdministrativa>
 							<OpcaoAdministrativa
 								tipo="farmacia"
 								url_destino="/administracao/farmacias/cadastro"
 							>
-								Cadastro de Farmácia
+								Cadastro de farmácia
 							</OpcaoAdministrativa>
 						</div>
 						<div className={styles.conjunto}>
@@ -78,13 +78,13 @@ export default function Administracao() {
 								tipo="usuario"
 								url_destino="/administracao/usuarios"
 							>
-								Listagem de Usuários
+								Listagem de usuários
 							</OpcaoAdministrativa>
 							<OpcaoAdministrativa
 								tipo="usuario"
 								url_destino="/administracao/usuarios/cadastro"
 							>
-								Cadastro de Usuário
+								Cadastro de usuário
 							</OpcaoAdministrativa>
 						</div>
 						<div className={styles.conjunto}>
@@ -92,13 +92,13 @@ export default function Administracao() {
 								tipo="entidade"
 								url_destino="/administracao/entidades"
 							>
-								Listagem de Entidades
+								Listagem de entidades
 							</OpcaoAdministrativa>
 							<OpcaoAdministrativa
 								tipo="entidade"
 								url_destino="/administracao/entidades/cadastro"
 							>
-								Cadastro de Entidade
+								Cadastro de entidade
 							</OpcaoAdministrativa>
 						</div>
 					</div>

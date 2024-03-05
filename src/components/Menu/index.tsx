@@ -120,7 +120,7 @@ export default function Menu({}: Props) {
 						/>
 					</span>
 					<BotaoMenu link="/">Início</BotaoMenu>
-					<BotaoMenu link="/listagem/farmacias">Listagem de farmácia</BotaoMenu>
+					<BotaoMenu link="/listagem/farmacias">Listagem de farmácias</BotaoMenu>
 					<BotaoMenu link="/listagem/plantoes">Listagem de plantões</BotaoMenu>
 					{userId && <BotaoMenu link="/administracao">Administracao</BotaoMenu>}
 					{userId ? (
