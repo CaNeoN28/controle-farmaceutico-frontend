@@ -20,7 +20,6 @@
 .formulario_cadastro {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
 
 	gap: 40px;
 	min-height: 60vh;
@@ -48,6 +47,7 @@
 
 .botoes_cadastro {
 	display: flex;
+	margin-top: auto;
 	flex-direction: column;
 
 	gap: 24px;

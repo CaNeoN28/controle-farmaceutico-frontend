@@ -17,7 +17,6 @@
 }
 
 .image{
-	position: relative;
 	border: 1px solid var(--primary-color);
 	border-radius: 8px;
 
@@ -27,23 +26,16 @@
 	width: 56px;
 
 	img {
-		position: absolute;
 		object-fit: cover;
 
 		aspect-ratio: calc(1 / 1);
 
 		border-radius: 8px;
 		max-width: 100%;
-
-		left: 50%;
-		top: 50%;
-
-		transform: translate(-50%, -50%);
 	}
 }
 
 .placeholder {
-	position: absolute;
 	display: flex;
 	align-items: center;
 	justify-content: center;
