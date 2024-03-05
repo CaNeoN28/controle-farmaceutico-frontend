@@ -389,7 +389,7 @@ export default function AutoCadastro() {
 								control={control}
 								rules={{
 									required: {
-										message: "Senha é obrigatório",
+										message: "Senha é obrigatória",
 										value: true,
 									},
 									pattern: {
@@ -418,7 +418,7 @@ export default function AutoCadastro() {
 								control={control}
 								rules={{
 									required: {
-										message: "Senha de confirmação é obrigatório",
+										message: "Senha de confirmação é obrigatória",
 										value: true,
 									},
 									pattern: {
