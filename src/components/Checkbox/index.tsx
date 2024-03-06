@@ -4,10 +4,11 @@ import styles from "./Checkbox.module.scss";
 import classNames from "classnames";
 
 interface Props extends ComponentPropsWithoutRef<"input"> {
-	label: string;
+	ativo: string;
+	inativo: string;
 }
 
-export default function Checkbox({ label, ...props }: Props) {
+export default function Checkbox({ inativo, ativo, ...props }: Props) {
 	const { value, onChange } = props;
 
 	const [checked, setChecked] = useState<boolean>(false);
@@ -28,7 +29,7 @@ export default function Checkbox({ label, ...props }: Props) {
 
 	return (
 		<label className={classesContainer}>
-			{label}
+			{checked ? ativo : inativo}
 			<span className={styles.checkmark}>
 				<FaCheck />
 			</span>

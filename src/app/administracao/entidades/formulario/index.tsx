@@ -232,10 +232,14 @@ export default function FormularioEntidade({
                 name="ativo"
                 render={({ field }) => {
                   return (
-                    <Checkbox
-                      label="Ativo"
-                      {...{ ...field, ref: null, value: String(field.value) }}
-                    />
+                    <InputContainer id="ativo" label="Situação">
+                      <Checkbox
+                        id="ativo"
+                        inativo="Inativo"
+                        ativo="Ativo"
+                        {...{ ...field, ref: null, value: String(field.value) }}
+                      />
+                    </InputContainer>
                   );
                 }}
               />
