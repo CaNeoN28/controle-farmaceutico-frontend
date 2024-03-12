@@ -1,5 +1,9 @@
 import "./globals.css";
 
+export const metadata = {
+	title: "Controle de plantão farmacêutico",
+};
+
 export default function RootLayout({
 	children,
 }: {
@@ -9,7 +13,6 @@ export default function RootLayout({
 		<html lang="pt-br">
 			<head>
 				<link rel="icon" href="/favicon.svg" sizes="any" />
-				<title>Controle de plantão farmacêutico</title>
 			</head>
 			<body>{children}</body>
 		</html>
