@@ -21,39 +21,43 @@ export async function EncontrarCoordenada(
 			apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
 		});
 
-		const { Geocoder } = (await google.maps.importLibrary(
-			"geocoding"
-		)) as google.maps.GeocodingLibrary;
+		const map_center = await loader.load().then(async () => {
+			const { Geocoder } = (await google.maps.importLibrary(
+				"geocoding"
+			)) as google.maps.GeocodingLibrary;
 
-		const geocoder = new Geocoder();
+			const geocoder = new Geocoder();
 
-		const pesquisa = [
-			cep,
-			estado,
-			municipio,
-			bairro,
-			logradouro,
-			numero,
-			nome_farmacia,
-		].join(" ");
+			const pesquisa = [
+				cep,
+				estado,
+				municipio,
+				bairro,
+				logradouro,
+				numero,
+				nome_farmacia,
+			].join(" ");
 
-		let map_center: Coordenadas = { lat: 0, lng: 0 };
+			let map_center: Coordenadas = { lat: 0, lng: 0 };
 
-		await geocoder
-			.geocode({ address: pesquisa })
-			.then((res) => {
-				const resultado = res.results[0].geometry.location.toJSON();
+			await geocoder
+				.geocode({ address: pesquisa })
+				.then((res) => {
+					const resultado = res.results[0].geometry.location.toJSON();
 
-				if (
-					resultado.lat != map_center?.lat &&
-					resultado.lng != map_center?.lng
-				) {
-					map_center = resultado;
-				}
-			})
-			.catch(() => {});
+					if (
+						resultado.lat != map_center?.lat &&
+						resultado.lng != map_center?.lng
+					) {
+						map_center = resultado;
+					}
+				})
+				.catch(() => {});
 
-		return map_center;
+			return map_center;
+		});
+
+		return map_center
 	}
 
 	return {

@@ -1,39 +1,79 @@
 import styles from "./Map.module.scss";
 import { Loader } from "@googlemaps/js-api-loader";
+import LeafLet from "leaflet";
 import { Coordenadas } from "@/types/Localizacao";
 import React, { Dispatch, SetStateAction } from "react";
 
 interface Props {
-  map_center?: Coordenadas;
-  map_options?: google.maps.MapOptions;
-  setLocalizacao?: Dispatch<SetStateAction<Coordenadas>>;
+	map_center?: Coordenadas;
+	map_options?: google.maps.MapOptions;
+	setLocalizacao?: Dispatch<SetStateAction<Coordenadas>>;
 }
 
 export default class Map extends React.Component {
-  props: Props = {};
+	props: Props = {};
+	map: LeafLet.Map | undefined = undefined;
 
-  constructor(props: Props) {
-    super(props);
+	constructor(props: Props) {
+		super(props);
 
-    this.props = props;
-  }
+		this.props = props;
+	}
 
-  shouldComponentUpdate(nextProps: Props) {
-    if (this.props.map_center && nextProps.map_center) {
-      if (this.props.map_center.lat === nextProps.map_center.lat) {
-        return false;
-      } else {
-        return true;
-      }
-    }
+	componentDidMount(): void {
+		const { map_center } = this.props;
 
-    return false;
-  }
+		if (this.map === undefined) {
+			let map = LeafLet.map("map").setView(
+				[map_center?.lat || 0, map_center?.lng || 0],
+				18
+			);
 
-  render(): React.ReactNode {
-    const { map_center, setLocalizacao } = this.props;
+			LeafLet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+				maxZoom: 19,
+				attribution:
+					'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+			}).addTo(map);
 
-    const loader = new Loader({
+			this.map = map;
+		}
+	}
+
+	componentDidUpdate(): void {
+		const { map_center } = this.props;
+
+		if (this.map) {
+			this.map.remove()
+			
+			let map = LeafLet.map("map").setView(
+				[map_center?.lat || 0, map_center?.lng || 0],
+				18
+			);
+
+			LeafLet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+				maxZoom: 19,
+				attribution:
+					'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+			}).addTo(map);
+
+			this.map = map;
+		}
+	}
+
+	shouldComponentUpdate(nextProps: Props) {
+		if (this.props.map_center && nextProps.map_center) {
+			if (this.props.map_center.lat === nextProps.map_center.lat) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	render(): React.ReactNode {
+		/* const loader = new Loader({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
     });
 
@@ -69,8 +109,8 @@ export default class Map extends React.Component {
 
         if (setLocalizacao && e.latLng) setLocalizacao(e.latLng.toJSON());
       });
-    });
+    }); */
 
-    return <div id="google_map" className={styles.map} />;
-  }
+		return <div id="map" className={styles.map}></div>;
+	}
 }
