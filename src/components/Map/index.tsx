@@ -3,6 +3,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 import LeafLet from "leaflet";
 import { Coordenadas } from "@/types/Localizacao";
 import React, { Dispatch, SetStateAction } from "react";
+import Endereco from "@/types/Endereco";
 
 interface Props {
 	map_center?: Coordenadas;

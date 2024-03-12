@@ -1,6 +1,11 @@
 import Botao from "@/components/Botao";
 import styles from "./FormularioFarmacia.module.scss";
-import { Controller, FieldError, SubmitHandler, useForm } from "react-hook-form";
+import {
+	Controller,
+	FieldError,
+	SubmitHandler,
+	useForm,
+} from "react-hook-form";
 import IFarmacia, { IHorário } from "@/types/Farmacia";
 import InputContainer from "@/components/InputContainer";
 import Input from "@/components/Input";
@@ -129,11 +134,8 @@ export default function FormularioFarmacia({
 	const mapPesquisa = async () => {
 		const { endereco, nome_fantasia } = watchFarmacia();
 
-		if (endereco && nome_fantasia) {
-			const coordenadas = await EncontrarCoordenada({
-				...endereco,
-				nome_farmacia: nome_fantasia,
-			});
+		if (endereco) {
+			const coordenadas = await EncontrarCoordenada({ ...endereco });
 
 			if (
 				coordenadas.lat != mapCenter.lat ||
@@ -266,7 +268,7 @@ export default function FormularioFarmacia({
 
 	useEffect(() => {
 		mapPesquisa();
-	}, [watchFarmacia()]);
+	}, [watchFarmacia("endereco.municipio"), watchFarmacia("endereco.estado")]);
 
 	return (
 		<CadastroContainer>
@@ -554,11 +556,7 @@ export default function FormularioFarmacia({
 				<Plantoes plantoes={plantoes} setPlantoes={setPlantoes} />
 			</Secao>
 			<CadastroBotoes>
-				<Botao
-					onClick={handleSubmitFarmacia(onSubmit)}
-					fullWidth
-					type="submit"
-				>
+				<Botao onClick={handleSubmitFarmacia(onSubmit)} fullWidth type="submit">
 					Salvar
 				</Botao>
 				<Botao fullWidth secundario>
