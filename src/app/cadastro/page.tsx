@@ -132,7 +132,11 @@ export default function AutoCadastro() {
 							});
 					}
 
-					router.push(`/cadastro-finalizado`);
+					if (usuario.dados_administrativos.funcao! === "ADMINISTRADOR") {
+						router.push("/login")
+					} else {
+						router.push(`/cadastro-finalizado`);
+					}
 				})
 				.catch((err: RequestErro<{ [key: string]: string }>) => {
 					const resposta = err.response;
