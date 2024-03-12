@@ -45,7 +45,7 @@ export default function Home() {
 	const [numFarmacias, setNumFarmacias] = useState<number>(5);
 
 	const getLocation = async () => {
-		let localizacao: Coordenadas | undefined = undefined;
+		let localizacao: Coordenadas = {lat: 0, lng: 0};
 
 		if (navigator.geolocation) {
 			navigator.geolocation.watchPosition(
@@ -56,20 +56,16 @@ export default function Home() {
 						lat: latitude,
 						lng: longitude,
 					};
-
-					setLocalizacao(localizacao);
 				},
 				(error) => {
-					setLocalizacao({
-						lat: 0,
-						lng: 0,
-					});
 					setErroLocalizacao("Não foi possível determinar sua localização");
 				}
 			);
 		} else {
 			setErroLocalizacao("Localização não é permitida pelo seu navegador");
 		}
+
+		setLocalizacao(localizacao)
 	};
 
 	const getRota = () => {
