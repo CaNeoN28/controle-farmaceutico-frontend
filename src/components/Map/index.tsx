@@ -13,6 +13,7 @@ interface Props {
 export default class Map extends React.Component {
 	props: Props = {};
 	map: LeafLet.Map | undefined = undefined;
+	marker: LeafLet.Marker | undefined = undefined;
 
 	constructor(props: Props) {
 		super(props);
@@ -20,43 +21,55 @@ export default class Map extends React.Component {
 		this.props = props;
 	}
 
+	mapMount(map_center: Coordenadas) {
+		const { setLocalizacao } = this.props;
+
+		let map = LeafLet.map("map").setView(
+			[map_center.lat || 0, map_center.lng || 0],
+			18
+		);
+		let marker: LeafLet.Marker<any> | undefined = undefined;
+
+		if (setLocalizacao) {
+			map.on("click", (e) => {
+				const { latlng } = e;
+
+				setLocalizacao({...latlng})
+
+				if (this.marker) {
+					this.marker.remove();
+				}
+
+				marker = LeafLet.marker(latlng).addTo(map);
+
+				this.marker = marker;
+			});
+		}
+
+		LeafLet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+			maxZoom: 19,
+			attribution:
+				'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+		}).addTo(map);
+
+		this.map = map;
+	}
+
 	componentDidMount(): void {
-		const { map_center } = this.props;
+		const { map_center = { lat: 0, lng: 0 } } = this.props;
 
 		if (this.map === undefined) {
-			let map = LeafLet.map("map").setView(
-				[map_center?.lat || 0, map_center?.lng || 0],
-				18
-			);
-
-			LeafLet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-				maxZoom: 19,
-				attribution:
-					'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-			}).addTo(map);
-
-			this.map = map;
+			this.mapMount(map_center);
 		}
 	}
 
 	componentDidUpdate(): void {
-		const { map_center } = this.props;
+		const { map_center = { lat: 0, lng: 0 } } = this.props;
 
 		if (this.map) {
-			this.map.remove()
-			
-			let map = LeafLet.map("map").setView(
-				[map_center?.lat || 0, map_center?.lng || 0],
-				18
-			);
+			this.map.remove();
 
-			LeafLet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-				maxZoom: 19,
-				attribution:
-					'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-			}).addTo(map);
-
-			this.map = map;
+			this.mapMount(map_center);
 		}
 	}
 
